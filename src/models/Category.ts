@@ -1,17 +1,17 @@
 import { Schema, model, Model, Document } from 'mongoose';
 import { EMODELS } from './models.types';
 
-const BrandSchema = new Schema({
+const CategorySchema = new Schema({
     name: {
         type: Schema.Types.String,
         required: true,
     },
 });
 
-export interface IBrand {
+export interface ICategory {
     name: Schema.Types.String;
 }
 
-export type IBrandModel = Model<IBrand & Document>;
+export type ICategoryModel = Model<ICategory & Document>;
 
-export const BrandModel: IBrandModel = model(EMODELS.BRAND, BrandSchema);
+export const CategoryModel: ICategoryModel = model(EMODELS.CATEGORY, CategorySchema);

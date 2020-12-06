@@ -5,4 +5,5 @@ export enum EMODELS {
     TAXBRACKET = 'TAXBRACKET',
     SALE = 'SALE',
     BRAND = 'BRAND',
+    CATEGORY = 'CATEGORY',
 }

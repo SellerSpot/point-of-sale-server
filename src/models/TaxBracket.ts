@@ -5,12 +5,10 @@ const TaxBracketSchema = new Schema({
     bracketName: {
         type: Schema.Types.String,
         required: true,
-        description: 'Identification name for the Tax Bracket',
     },
     slabPercentage: {
         type: Schema.Types.Number,
         required: true,
-        description: 'The percentage of the Selling Price set aside as tax cost',
     },
 });
 
