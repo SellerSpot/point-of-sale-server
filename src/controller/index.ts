@@ -1,1 +1,2 @@
-export * from './home';
+export * as home from './home';
+export * as category from './category';

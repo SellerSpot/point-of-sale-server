@@ -1,4 +1,5 @@
 // exports from models
-export * from './Base';
+export * as BaseModal from './Base';
+export * as CategoryModel from './Category';
 
 export const handshake = true;
