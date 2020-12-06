@@ -34,6 +34,7 @@ const ProductSchema = new Schema({
         },
         valueType: {
             type: Schema.Types.String,
+            required: true,
             enum: ['percent', 'price'],
         },
     },
@@ -45,7 +46,17 @@ const ProductSchema = new Schema({
 });
 
 export interface IProduct {
-    name: string;
+    productName: Schema.Types.String;
+    gtinNumber?: Schema.Types.String;
+    mrpPrice?: Schema.Types.Number;
+    landingPrice?: Schema.Types.Number;
+    sellingPrice: Schema.Types.Number;
+    markup?: {
+        value: Schema.Types.Number;
+        direction: ['positive', 'negative'];
+        valueType: ['percent', 'price'];
+    };
+    taxBracket?: Schema.Types.ObjectId;
 }
 
 export type IProductModel = Model<IProduct & Document>;

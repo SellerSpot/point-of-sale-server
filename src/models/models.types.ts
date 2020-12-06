@@ -2,4 +2,5 @@
 export enum EMODELS {
     BASE = 'BASE',
     PRODUCT = 'PRODUCT',
+    TAXBRACKET = 'TAXBRACKET',
 }
