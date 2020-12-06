@@ -6,19 +6,27 @@
 	},
 	"item": [
 		{
-			"name": "yahoo.com",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "yahoo.com",
-					"host": [
-						"yahoo",
-						"com"
-					]
+			"name": "Category",
+			"item": [
+				{
+					"name": "Get All Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/category",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"category"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"protocolProfileBehavior": {}
