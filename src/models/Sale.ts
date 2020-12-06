@@ -21,6 +21,10 @@ const SaleSchema = new Schema(
                 },
             },
         ],
+        discount: {
+            type: Schema.Types.Number,
+            required: false,
+        },
         amountPaid: {
             type: Schema.Types.Number,
             required: false,
