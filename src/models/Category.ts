@@ -5,6 +5,7 @@ const CategorySchema = new Schema({
     name: {
         type: Schema.Types.String,
         required: true,
+        unique: true,
     },
 });
 

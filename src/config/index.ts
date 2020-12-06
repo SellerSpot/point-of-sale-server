@@ -2,16 +2,8 @@
 export * from './database-config';
 export * from './express-middlewares';
 
-// global config should be under here
-interface IConfig {
-    ENV: 'development' | 'production';
-    PORT: number;
-    DATABASE_SERVER_URL: string;
-    BASE_DB_NAME: string;
-    GET_DATABASE_CONNECTION_URL: () => string;
-}
-export const CONFIG: IConfig = {
-    ENV: 'development',
+export const CONFIG = {
+    ENV: 'development', //development | production
     PORT: 8000,
     DATABASE_SERVER_URL: 'mongodb://127.0.0.1:27017/',
     BASE_DB_NAME: 'pos-base',
