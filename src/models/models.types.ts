@@ -4,4 +4,5 @@ export enum EMODELS {
     PRODUCT = 'PRODUCT',
     TAXBRACKET = 'TAXBRACKET',
     SALE = 'SALE',
+    BRAND = 'BRAND',
 }
