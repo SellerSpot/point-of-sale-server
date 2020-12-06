@@ -8,12 +8,12 @@ const ProductSchema = new Schema({
     },
     category: {
         type: Schema.Types.ObjectId,
-        ref: 'CATEGORY',
+        ref: EMODELS.CATEGORY,
         required: false,
     },
     brand: {
         type: Schema.Types.ObjectId,
-        ref: 'BRAND',
+        ref: EMODELS.BRAND,
         required: false,
     },
     gtinNumber: {
@@ -33,33 +33,31 @@ const ProductSchema = new Schema({
         required: true,
     },
     stockInformation: {
-        availableStock: Schema.Types.Number,
+        required: true,
+        availableStock: {
+            type: Schema.Types.Number,
+            min: 0,
+            required: true,
+        },
         stockUnit: {
             type: Schema.Types.ObjectId,
-            ref: 'STOCKUNIT',
-        },
-    },
-    markup: {
-        value: {
-            type: Schema.Types.Number,
+            ref: EMODELS.STOCKUNIT,
             required: true,
         },
-        direction: {
-            type: Schema.Types.String,
-            enum: ['positive', 'negative'],
-            required: true,
-        },
-        valueType: {
-            type: Schema.Types.String,
-            required: true,
-            enum: ['percent', 'price'],
-        },
     },
-    taxBracket: {
-        type: Schema.Types.ObjectId,
-        required: false,
-        ref: 'taxBrackets',
+    profitPercent: {
+        type: Schema.Types.Number,
+        min: -100,
+        max: 100,
+        required: true,
     },
+    taxBracket: [
+        {
+            type: Schema.Types.ObjectId,
+            required: false,
+            ref: EMODELS.TAXBRACKET,
+        },
+    ],
 });
 
 export interface IProduct {
@@ -74,12 +72,8 @@ export interface IProduct {
         availableStock: Schema.Types.Number;
         stockUnit: Schema.Types.ObjectId;
     };
-    markup?: {
-        value: Schema.Types.Number;
-        direction: ['positive', 'negative'];
-        valueType: ['percent', 'price'];
-    };
-    taxBracket?: Schema.Types.ObjectId;
+    profitPercent: Schema.Types.Number;
+    taxBracket?: Schema.Types.ObjectId[];
 }
 
 export type IProductModel = Model<IProduct & Document>;

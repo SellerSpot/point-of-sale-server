@@ -1,18 +1,24 @@
 import { Schema, model, Model, Document } from 'mongoose';
 import { EMODELS } from './models.types';
 
+export enum ESaleStatus {
+    COMPLETED = 'COMPLETED',
+    PENDING = 'PENDING',
+    CANCELLED = 'CANCELLED',
+}
+
 const SaleSchema = new Schema(
     {
         status: {
             type: Schema.Types.String,
-            enum: ['completed', 'pending', 'cancelled'],
+            enum: ESaleStatus,
             required: true,
         },
         items: [
             {
                 itemId: {
                     type: Schema.Types.ObjectId,
-                    ref: 'PRODUCT',
+                    ref: EMODELS.PRODUCT,
                     required: true,
                 },
                 quantity: {
@@ -21,20 +27,37 @@ const SaleSchema = new Schema(
                 },
             },
         ],
-        discount: {
+        discountPercent: {
             type: Schema.Types.Number,
+            min: 0,
+            max: 100,
             required: false,
         },
-        amountPaid: {
+        totalTax: {
             type: Schema.Types.Number,
-            required: false,
+            min: 0,
+            required: true,
+        },
+        grandTotal: {
+            type: Schema.Types.Number,
+            min: 0,
+            required: true,
         },
     },
     { timestamps: true },
 );
 
+export interface ISaleItem {
+    itemId: Schema.Types.ObjectId;
+    quantity: Schema.Types.Number;
+}
+
 export interface ISale {
-    name: string;
+    status: ESaleStatus;
+    items: ISaleItem[];
+    discountPercent?: Schema.Types.Number;
+    totalTax: Schema.Types.Number;
+    grandTotal: Schema.Types.Number;
 }
 
 export type ISaleModel = Model<ISale & Document>;

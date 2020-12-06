@@ -6,4 +6,5 @@ export enum EMODELS {
     SALE = 'SALE',
     BRAND = 'BRAND',
     CATEGORY = 'CATEGORY',
+    STOCKUNIT = 'STOCKUNIT',
 }
