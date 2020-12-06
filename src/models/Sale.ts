@@ -4,7 +4,6 @@ import { EMODELS } from './models.types';
 export enum ESaleStatus {
     COMPLETED = 'COMPLETED',
     PENDING = 'PENDING',
-    CANCELLED = 'CANCELLED',
 }
 
 const SaleSchema = new Schema(

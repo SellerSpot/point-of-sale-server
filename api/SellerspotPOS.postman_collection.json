@@ -1,0 +1,25 @@
+{
+	"info": {
+		"_postman_id": "ac02caae-d638-4b60-a612-d41e91d16705",
+		"name": "SellerspotPOS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "yahoo.com",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "yahoo.com",
+					"host": [
+						"yahoo",
+						"com"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
