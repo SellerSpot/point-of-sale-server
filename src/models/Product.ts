@@ -2,9 +2,19 @@ import { Schema, model, Model, Document } from 'mongoose';
 import { EMODELS } from './models.types';
 
 const ProductSchema = new Schema({
-    productName: {
+    name: {
         type: Schema.Types.String,
         required: true,
+    },
+    category: {
+        type: Schema.Types.ObjectId,
+        ref: 'CATEGORY',
+        required: false,
+    },
+    brand: {
+        type: Schema.Types.ObjectId,
+        ref: 'BRAND',
+        required: false,
     },
     gtinNumber: {
         type: Schema.Types.String,
@@ -21,6 +31,13 @@ const ProductSchema = new Schema({
     sellingPrice: {
         type: Schema.Types.Number,
         required: true,
+    },
+    stockInformation: {
+        availableStock: Schema.Types.Number,
+        stockUnit: {
+            type: Schema.Types.ObjectId,
+            ref: 'STOCKUNIT',
+        },
     },
     markup: {
         value: {
@@ -46,11 +63,17 @@ const ProductSchema = new Schema({
 });
 
 export interface IProduct {
-    productName: Schema.Types.String;
+    name: Schema.Types.String;
+    category: Schema.Types.ObjectId;
+    brand: Schema.Types.ObjectId;
     gtinNumber?: Schema.Types.String;
     mrpPrice?: Schema.Types.Number;
     landingPrice?: Schema.Types.Number;
     sellingPrice: Schema.Types.Number;
+    stockInformation: {
+        availableStock: Schema.Types.Number;
+        stockUnit: Schema.Types.ObjectId;
+    };
     markup?: {
         value: Schema.Types.Number;
         direction: ['positive', 'negative'];
