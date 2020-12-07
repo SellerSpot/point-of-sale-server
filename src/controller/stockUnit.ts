@@ -65,7 +65,7 @@ export const updateStockUnit: RequestHandler = async (req: Request, res: Respons
         if ((await dbModal.find({ name: stockUnitName })).length !== 0) {
             await dbModal.findOneAndUpdate(
                 {
-                    name: req.body['stockUnitName'],
+                    name: stockUnitName,
                 },
                 { name: newStockUnitName },
             );
@@ -75,7 +75,7 @@ export const updateStockUnit: RequestHandler = async (req: Request, res: Respons
         } else {
             response = {
                 status: false,
-                data: 'Stoc kUnit does not exist in database',
+                data: 'Stock Unit does not exist in database',
             };
         }
     } catch (e) {
