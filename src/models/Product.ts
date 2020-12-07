@@ -33,7 +33,6 @@ const ProductSchema = new Schema({
         required: true,
     },
     stockInformation: {
-        required: true,
         availableStock: {
             type: Schema.Types.Number,
             min: 0,
