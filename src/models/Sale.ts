@@ -10,7 +10,7 @@ const SaleSchema = new Schema(
     {
         status: {
             type: Schema.Types.String,
-            enum: ESaleStatus,
+            enum: [ESaleStatus.COMPLETED, ESaleStatus.PENDING],
             required: true,
         },
         items: [

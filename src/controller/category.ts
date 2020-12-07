@@ -11,10 +11,10 @@ const getCategoryModel = (currentDb: Connection = global.currentDb): CategoryMod
 export const getCategories: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModal = getCategoryModel();
+        const dbModel = getCategoryModel();
         response = {
             status: true,
-            data: await dbModal.find(),
+            data: await dbModel.find(),
         };
     } catch (e) {
         response = {
@@ -28,10 +28,10 @@ export const getCategories: RequestHandler = async (req: Request, res: Response)
 export const createCategory: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModal = getCategoryModel();
+        const dbModel = getCategoryModel();
         // checking if category already exists
-        if ((await dbModal.find({ name: req.body['categoryName'] })).length === 0) {
-            await dbModal.create({
+        if ((await dbModel.find({ name: req.body['categoryName'] })).length === 0) {
+            await dbModel.create({
                 name: req.body['categoryName'],
             });
             response = {
@@ -55,10 +55,10 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
 export const updateCategory: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModal = getCategoryModel();
+        const dbModel = getCategoryModel();
         // checking if category already exists
-        if ((await dbModal.find({ name: req.body['categoryName'] })).length !== 0) {
-            await dbModal.findOneAndUpdate({ name: req.body['categoryName'] }, { name: req.body['newCategoryName'] });
+        if ((await dbModel.find({ name: req.body['categoryName'] })).length !== 0) {
+            await dbModel.findOneAndUpdate({ name: req.body['categoryName'] }, { name: req.body['newCategoryName'] });
             response = {
                 status: true,
             };
@@ -80,10 +80,10 @@ export const updateCategory: RequestHandler = async (req: Request, res: Response
 export const deleteCategory: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModal = getCategoryModel();
+        const dbModel = getCategoryModel();
         // checking if category already exists
-        if ((await dbModal.find({ name: req.body['categoryName'] })).length !== 0) {
-            await dbModal.findOneAndDelete({ name: req.body['categoryName'] });
+        if ((await dbModel.find({ name: req.body['categoryName'] })).length !== 0) {
+            await dbModel.findOneAndDelete({ name: req.body['categoryName'] });
             response = {
                 status: true,
             };

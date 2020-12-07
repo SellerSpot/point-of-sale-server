@@ -11,10 +11,10 @@ const getBrandModel = (currentDb: Connection = global.currentDb): BrandModel.IBr
 export const getBrands: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModal = getBrandModel();
+        const dbModel = getBrandModel();
         response = {
             status: true,
-            data: await dbModal.find(),
+            data: await dbModel.find(),
         };
     } catch (e) {
         response = {
@@ -29,10 +29,10 @@ export const getBrands: RequestHandler = async (req: Request, res: Response) => 
 export const createBrand: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModal = getBrandModel();
+        const dbModel = getBrandModel();
         // checking if brand already exists
-        if ((await dbModal.find({ name: req.body['brandName'] })).length === 0) {
-            await dbModal.create({
+        if ((await dbModel.find({ name: req.body['brandName'] })).length === 0) {
+            await dbModel.create({
                 name: req.body['brandName'],
             });
             response = {
@@ -57,10 +57,10 @@ export const createBrand: RequestHandler = async (req: Request, res: Response) =
 export const updateBrand: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModal = getBrandModel();
+        const dbModel = getBrandModel();
         // checking if brand already exists
-        if ((await dbModal.find({ name: req.body['brandName'] })).length !== 0) {
-            await dbModal.findOneAndUpdate(
+        if ((await dbModel.find({ name: req.body['brandName'] })).length !== 0) {
+            await dbModel.findOneAndUpdate(
                 {
                     name: req.body['brandName'],
                 },
@@ -88,10 +88,10 @@ export const updateBrand: RequestHandler = async (req: Request, res: Response) =
 export const deleteBrand: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModal = getBrandModel();
+        const dbModel = getBrandModel();
         // checking if brand already exists
-        if ((await dbModal.find({ name: req.body['brandName'] })).length !== 0) {
-            await dbModal.findOneAndDelete({
+        if ((await dbModel.find({ name: req.body['brandName'] })).length !== 0) {
+            await dbModel.findOneAndDelete({
                 name: req.body['brandName'],
             });
             response = {

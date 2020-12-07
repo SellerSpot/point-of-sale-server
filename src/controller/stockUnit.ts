@@ -11,10 +11,10 @@ const getStockUnitModel = (currentDb: Connection = global.currentDb): StockUnitM
 export const getStockUnits: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModal = getStockUnitModel();
+        const dbModel = getStockUnitModel();
         response = {
             status: true,
-            data: await dbModal.find(),
+            data: await dbModel.find(),
         };
     } catch (e) {
         response = {
@@ -29,11 +29,11 @@ export const getStockUnits: RequestHandler = async (req: Request, res: Response)
 export const createStockUnit: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModal = getStockUnitModel();
+        const dbModel = getStockUnitModel();
         const stockUnitName = req.body['stockUnitName'];
         // checking if StockUnit already exists
-        if ((await dbModal.find({ name: stockUnitName })).length === 0) {
-            await dbModal.create({
+        if ((await dbModel.find({ name: stockUnitName })).length === 0) {
+            await dbModel.create({
                 name: stockUnitName,
             });
             response = {
@@ -58,12 +58,12 @@ export const createStockUnit: RequestHandler = async (req: Request, res: Respons
 export const updateStockUnit: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModal = getStockUnitModel();
+        const dbModel = getStockUnitModel();
         const stockUnitName = req.body['stockUnitName'];
         const newStockUnitName = req.body['newStockUnitName'];
         // checking if StockUnit already exists
-        if ((await dbModal.find({ name: stockUnitName })).length !== 0) {
-            await dbModal.findOneAndUpdate(
+        if ((await dbModel.find({ name: stockUnitName })).length !== 0) {
+            await dbModel.findOneAndUpdate(
                 {
                     name: stockUnitName,
                 },
@@ -91,11 +91,11 @@ export const updateStockUnit: RequestHandler = async (req: Request, res: Respons
 export const deleteStockUnit: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModal = getStockUnitModel();
+        const dbModel = getStockUnitModel();
         const stockUnitName = req.body['stockUnitName'];
         // checking if StockUnit already exists
-        if ((await dbModal.find({ name: stockUnitName })).length !== 0) {
-            await dbModal.findOneAndDelete({
+        if ((await dbModel.find({ name: stockUnitName })).length !== 0) {
+            await dbModel.findOneAndDelete({
                 name: stockUnitName,
             });
             response = {

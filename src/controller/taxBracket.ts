@@ -11,10 +11,10 @@ const getTaxBracketModel = (currentDb: Connection = global.currentDb): TaxBracke
 export const getTaxBrackets: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModal = getTaxBracketModel();
+        const dbModel = getTaxBracketModel();
         response = {
             status: true,
-            data: await dbModal.find(),
+            data: await dbModel.find(),
         };
     } catch (e) {
         response = {
@@ -29,11 +29,11 @@ export const getTaxBrackets: RequestHandler = async (req: Request, res: Response
 export const createTaxBracket: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModal = getTaxBracketModel();
+        const dbModel = getTaxBracketModel();
         const taxBracketName = req.body['taxBracketName'];
         // checking if TaxBracket already exists
-        if ((await dbModal.find({ name: taxBracketName })).length === 0) {
-            await dbModal.create({
+        if ((await dbModel.find({ name: taxBracketName })).length === 0) {
+            await dbModel.create({
                 name: taxBracketName,
                 taxPercent: req.body['taxBracketPercent'],
             });
@@ -59,13 +59,13 @@ export const createTaxBracket: RequestHandler = async (req: Request, res: Respon
 export const updateTaxBracket: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModal = getTaxBracketModel();
+        const dbModel = getTaxBracketModel();
         const taxBracketName = req.body['taxBracketName'];
         const newTaxBracketName = req.body['newTaxBracketName'];
         const newTaxBracketPercent = req.body['newTaxBracketPercent'];
         // checking if TaxBracket already exists
-        if ((await dbModal.find({ name: taxBracketName })).length !== 0) {
-            await dbModal.findOneAndUpdate(
+        if ((await dbModel.find({ name: taxBracketName })).length !== 0) {
+            await dbModel.findOneAndUpdate(
                 {
                     name: taxBracketName,
                 },
@@ -93,11 +93,11 @@ export const updateTaxBracket: RequestHandler = async (req: Request, res: Respon
 export const deleteTaxBracket: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModal = getTaxBracketModel();
+        const dbModel = getTaxBracketModel();
         const taxBracketName = req.body['taxBracketName'];
         // checking if TaxBracket already exists
-        if ((await dbModal.find({ name: taxBracketName })).length !== 0) {
-            await dbModal.findOneAndDelete({
+        if ((await dbModel.find({ name: taxBracketName })).length !== 0) {
+            await dbModel.findOneAndDelete({
                 name: taxBracketName,
             });
             response = {
