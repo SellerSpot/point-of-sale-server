@@ -3,6 +3,7 @@ import Joi from 'joi';
 import { Connection } from 'mongoose';
 import { SaleModel } from '../models';
 import { EMODELS } from '../models/models.types';
+import { ESaleStatus } from '../models/Sale';
 import { IResponse } from '../typings/request.types';
 import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 
@@ -61,6 +62,53 @@ export const getSingleSale: RequestHandler = async (req: Request, res: Response)
                     data: 'Sale does not exist in database',
                 };
             }
+        }
+    } catch (e) {
+        response = {
+            status: false,
+            statusCode: responseStatusCodes.INTERNALSERVERERROR,
+            data: e.message,
+        };
+    } finally {
+        res.send(response);
+    }
+};
+
+export const createSale: RequestHandler = async (req: Request, res: Response) => {
+    let response: IResponse;
+    try {
+        const requestBodySchema = Joi.object({
+            status: Joi.string().valid(ESaleStatus.COMPLETED, ESaleStatus.PENDING).required(),
+            products: Joi.array().items({
+                product: commonJoiSchemas.MONGODBID.required(),
+                quantity: Joi.number().min(0).required(),
+            }),
+            discountPercent: Joi.number().min(0).max(100),
+            totalTax: Joi.number().min(0).required(),
+            grandTotal: Joi.number().min(0).required(),
+        });
+        const { error, value } = requestBodySchema.validate(req.body, joiSchemaOptions);
+        req.body = value;
+        if (error) {
+            response = {
+                status: false,
+                statusCode: responseStatusCodes.BADREQUEST,
+                data: error.message,
+            };
+        } else {
+            const dbModel = getSaleModel();
+            const { status, grandTotal, products, totalTax, discountPercent } = req.body;
+            await dbModel.create({
+                status,
+                grandTotal,
+                products,
+                totalTax,
+                discountPercent,
+            });
+            response = {
+                status: true,
+                statusCode: responseStatusCodes.CREATED,
+            };
         }
     } catch (e) {
         response = {

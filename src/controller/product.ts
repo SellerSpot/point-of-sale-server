@@ -113,7 +113,7 @@ export const createProduct: RequestHandler = async (req: Request, res: Response)
                 profitPercent,
                 taxBracket,
             } = req.body;
-            dbModel.create({
+            await dbModel.create({
                 name,
                 brand,
                 category,
