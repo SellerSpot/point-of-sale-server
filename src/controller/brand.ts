@@ -4,7 +4,7 @@ import { Connection } from 'mongoose';
 import { BrandModel } from '../models';
 import { EMODELS } from '../models/models.types';
 import { IResponse } from '../typings/request.types';
-import { joiSchemaOptions } from '../utils';
+import { commonJoiSchemas, joiSchemaOptions } from '../utils';
 
 const getBrandModel = (currentDb: Connection = global.currentDb): BrandModel.IBrandModel => {
     return currentDb.model(EMODELS.BRAND);
@@ -79,7 +79,7 @@ export const deleteBrand: RequestHandler = async (req: Request, res: Response) =
     let response: IResponse;
     try {
         const requestParamsSchema = Joi.object({
-            brandid: Joi.string().alphanum().length(24).required(),
+            brandid: commonJoiSchemas.MONGODBID.required(),
         });
         const { error, value } = requestParamsSchema.validate(req.params, joiSchemaOptions);
         req.params = value;
@@ -91,10 +91,11 @@ export const deleteBrand: RequestHandler = async (req: Request, res: Response) =
             };
         } else {
             const dbModel = getBrandModel();
+            const { brandId } = req.params;
             // checking if brand already exists
-            if ((await dbModel.find({ name: req.body['brandName'] })).length !== 0) {
-                await dbModel.findOneAndDelete({
-                    name: req.body['brandName'],
+            if ((await dbModel.findById({ brandId })) !== null) {
+                await dbModel.findByIdAndDelete({
+                    brandId,
                 });
                 response = {
                     status: true,

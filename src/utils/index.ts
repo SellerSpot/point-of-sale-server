@@ -1,3 +1,5 @@
+import Joi from 'joi';
+
 // joi schema options
 export const joiSchemaOptions = {
     abortEarly: true,
@@ -21,4 +23,9 @@ export const responseStatusCodes = {
     NOTFOUND: 404,
     // for denoting that no content is being sent in the response
     NOCONTENT: 204,
+};
+
+// common joi schemas
+export const commonJoiSchemas = {
+    MONGODBID: Joi.string().alphanum().length(24),
 };
