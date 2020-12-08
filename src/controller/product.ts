@@ -4,7 +4,7 @@ import { Connection } from 'mongoose';
 import { ProductModel } from '../models';
 import { EMODELS } from '../models/models.types';
 import { IResponse } from '../typings/request.types';
-import { commonJoiSchemas, joiSchemaOptions } from '../utils';
+import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 
 const getProductModel = (currentDb: Connection = global.currentDb): ProductModel.IProductModel => {
     return currentDb.model(EMODELS.PRODUCT);
@@ -16,13 +16,13 @@ export const getProducts: RequestHandler = async (req: Request, res: Response) =
         const dbModel = getProductModel();
         response = {
             status: true,
-            statusCode: 'OK',
+            statusCode: responseStatusCodes.OK,
             data: await dbModel.find(),
         };
     } catch (e) {
         response = {
             status: false,
-            statusCode: 'INTERNALSERVERERROR',
+            statusCode: responseStatusCodes.INTERNALSERVERERROR,
             data: e.message,
         };
     } finally {
@@ -41,7 +41,7 @@ export const getSingleProduct: RequestHandler = async (req: Request, res: Respon
         if (error) {
             response = {
                 status: false,
-                statusCode: 'BADREQUEST',
+                statusCode: responseStatusCodes.BADREQUEST,
                 data: error.message,
             };
         } else {
@@ -51,13 +51,13 @@ export const getSingleProduct: RequestHandler = async (req: Request, res: Respon
             if ((await dbModel.findById({ productid })) !== null) {
                 response = {
                     status: true,
-                    statusCode: 'OK',
+                    statusCode: responseStatusCodes.OK,
                     data: await dbModel.findById({ productid }),
                 };
             } else {
                 response = {
                     status: false,
-                    statusCode: 'NOTFOUND',
+                    statusCode: responseStatusCodes.NOTFOUND,
                     data: 'Product does not exist in database',
                 };
             }
@@ -65,7 +65,7 @@ export const getSingleProduct: RequestHandler = async (req: Request, res: Respon
     } catch (e) {
         response = {
             status: false,
-            statusCode: 'INTERNALSERVERERROR',
+            statusCode: responseStatusCodes.INTERNALSERVERERROR,
             data: e.message,
         };
     } finally {
@@ -84,7 +84,7 @@ export const deleteProduct: RequestHandler = async (req: Request, res: Response)
         if (error) {
             response = {
                 status: false,
-                statusCode: 'BADREQUEST',
+                statusCode: responseStatusCodes.BADREQUEST,
                 data: error.message,
             };
         } else {
@@ -95,12 +95,12 @@ export const deleteProduct: RequestHandler = async (req: Request, res: Response)
                 await dbModel.findByIdAndDelete({ productid });
                 response = {
                     status: true,
-                    statusCode: 'NOCONTENT',
+                    statusCode: responseStatusCodes.NOCONTENT,
                 };
             } else {
                 response = {
                     status: false,
-                    statusCode: 'NOTFOUND',
+                    statusCode: responseStatusCodes.NOTFOUND,
                     data: 'Product does not exist in database',
                 };
             }
@@ -108,7 +108,7 @@ export const deleteProduct: RequestHandler = async (req: Request, res: Response)
     } catch (e) {
         response = {
             status: false,
-            statusCode: 'INTERNALSERVERERROR',
+            statusCode: responseStatusCodes.INTERNALSERVERERROR,
             data: e.message,
         };
     } finally {

@@ -4,7 +4,7 @@ import { Connection } from 'mongoose';
 import { StockUnitModel } from '../models';
 import { EMODELS } from '../models/models.types';
 import { IResponse } from '../typings/request.types';
-import { commonJoiSchemas, joiSchemaOptions } from '../utils';
+import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 
 const getStockUnitModel = (currentDb: Connection = global.currentDb): StockUnitModel.IStockUnitModel => {
     return currentDb.model(EMODELS.STOCKUNIT);
@@ -16,13 +16,13 @@ export const getStockUnits: RequestHandler = async (req: Request, res: Response)
         const dbModel = getStockUnitModel();
         response = {
             status: true,
-            statusCode: 'OK',
+            statusCode: responseStatusCodes.OK,
             data: await dbModel.find(),
         };
     } catch (e) {
         response = {
             status: false,
-            statusCode: 'INTERNALSERVERERROR',
+            statusCode: responseStatusCodes.INTERNALSERVERERROR,
             data: e.message,
         };
     } finally {
@@ -41,7 +41,7 @@ export const createStockUnit: RequestHandler = async (req: Request, res: Respons
         if (error) {
             response = {
                 status: false,
-                statusCode: 'BADREQUEST',
+                statusCode: responseStatusCodes.BADREQUEST,
                 data: error.message,
             };
         } else {
@@ -54,12 +54,12 @@ export const createStockUnit: RequestHandler = async (req: Request, res: Respons
                 });
                 response = {
                     status: true,
-                    statusCode: 'CREATED',
+                    statusCode: responseStatusCodes.CREATED,
                 };
             } else {
                 response = {
                     status: false,
-                    statusCode: 'CONFLICT',
+                    statusCode: responseStatusCodes.CONFLICT,
                     data: 'Stock Unit already exists in database',
                 };
             }
@@ -67,7 +67,7 @@ export const createStockUnit: RequestHandler = async (req: Request, res: Respons
     } catch (e) {
         response = {
             status: false,
-            statusCode: 'INTERNALSERVERERROR',
+            statusCode: responseStatusCodes.INTERNALSERVERERROR,
             data: e.message,
         };
     } finally {
@@ -94,12 +94,12 @@ export const deleteStockUnit: RequestHandler = async (req: Request, res: Respons
                 });
                 response = {
                     status: true,
-                    statusCode: 'NOCONTENT',
+                    statusCode: responseStatusCodes.NOCONTENT,
                 };
             } else {
                 response = {
                     status: false,
-                    statusCode: 'NOTFOUND',
+                    statusCode: responseStatusCodes.NOTFOUND,
                     data: 'Stock Unit does not exist in database',
                 };
             }
@@ -107,7 +107,7 @@ export const deleteStockUnit: RequestHandler = async (req: Request, res: Respons
     } catch (e) {
         response = {
             status: false,
-            statusCode: 'INTERNALSERVERERROR',
+            statusCode: responseStatusCodes.INTERNALSERVERERROR,
             data: e.message,
         };
     } finally {

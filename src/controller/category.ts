@@ -4,7 +4,7 @@ import { Connection } from 'mongoose';
 import { CategoryModel } from '../models';
 import { EMODELS } from '../models/models.types';
 import { IResponse } from '../typings/request.types';
-import { commonJoiSchemas, joiSchemaOptions } from '../utils';
+import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 
 const getCategoryModel = (currentDb: Connection = global.currentDb): CategoryModel.ICategoryModel => {
     return currentDb.model(EMODELS.CATEGORY);
@@ -16,13 +16,13 @@ export const getCategories: RequestHandler = async (req: Request, res: Response)
         const dbModel = getCategoryModel();
         response = {
             status: true,
-            statusCode: 'OK',
+            statusCode: responseStatusCodes.OK,
             data: await dbModel.find(),
         };
     } catch (e) {
         response = {
             status: false,
-            statusCode: 'INTERNALSERVERERROR',
+            statusCode: responseStatusCodes.INTERNALSERVERERROR,
             data: e.message,
         };
     } finally {
@@ -41,7 +41,7 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
         if (error) {
             response = {
                 status: false,
-                statusCode: 'BADREQUEST',
+                statusCode: responseStatusCodes.BADREQUEST,
                 data: error.message,
             };
         } else {
@@ -54,12 +54,12 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
                 });
                 response = {
                     status: true,
-                    statusCode: 'CREATED',
+                    statusCode: responseStatusCodes.CREATED,
                 };
             } else {
                 response = {
                     status: false,
-                    statusCode: 'CONFLICT',
+                    statusCode: responseStatusCodes.CONFLICT,
                     data: 'Category already exists in database',
                 };
             }
@@ -67,7 +67,7 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
     } catch (e) {
         response = {
             status: false,
-            statusCode: 'INTERNALSERVERERROR',
+            statusCode: responseStatusCodes.INTERNALSERVERERROR,
             data: e.message,
         };
     } finally {
@@ -86,7 +86,7 @@ export const deleteCategory: RequestHandler = async (req: Request, res: Response
         if (error) {
             response = {
                 status: false,
-                statusCode: 'BADREQUEST',
+                statusCode: responseStatusCodes.BADREQUEST,
                 data: error.message,
             };
         } else {
@@ -97,12 +97,12 @@ export const deleteCategory: RequestHandler = async (req: Request, res: Response
                 await dbModel.findByIdAndDelete({ categoryid });
                 response = {
                     status: true,
-                    statusCode: 'NOCONTENT',
+                    statusCode: responseStatusCodes.NOCONTENT,
                 };
             } else {
                 response = {
                     status: false,
-                    statusCode: 'NOTFOUND',
+                    statusCode: responseStatusCodes.NOTFOUND,
                     data: 'Category does not exist in database',
                 };
             }
@@ -110,7 +110,7 @@ export const deleteCategory: RequestHandler = async (req: Request, res: Response
     } catch (e) {
         response = {
             status: false,
-            statusCode: 'INTERNALSERVERERROR',
+            statusCode: responseStatusCodes.INTERNALSERVERERROR,
             data: e.message,
         };
     } finally {

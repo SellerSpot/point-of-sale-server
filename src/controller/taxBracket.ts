@@ -4,7 +4,7 @@ import { EMODELS } from '../models/models.types';
 import { TaxBracketModel } from '../models';
 import { IResponse } from '../typings/request.types';
 import Joi from 'joi';
-import { commonJoiSchemas, joiSchemaOptions } from '../utils';
+import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 
 const getTaxBracketModel = (currentDb: Connection = global.currentDb): TaxBracketModel.ITaxBracketModel => {
     return currentDb.model(EMODELS.TAXBRACKET);
@@ -16,13 +16,13 @@ export const getTaxBrackets: RequestHandler = async (req: Request, res: Response
         const dbModel = getTaxBracketModel();
         response = {
             status: true,
-            statusCode: 'OK',
+            statusCode: responseStatusCodes.OK,
             data: await dbModel.find(),
         };
     } catch (e) {
         response = {
             status: false,
-            statusCode: 'INTERNALSERVERERROR',
+            statusCode: responseStatusCodes.INTERNALSERVERERROR,
             data: e.message,
         };
     } finally {
@@ -42,7 +42,7 @@ export const createTaxBracket: RequestHandler = async (req: Request, res: Respon
         if (error) {
             response = {
                 status: false,
-                statusCode: 'BADREQUEST',
+                statusCode: responseStatusCodes.BADREQUEST,
                 data: error.message,
             };
         } else {
@@ -56,12 +56,12 @@ export const createTaxBracket: RequestHandler = async (req: Request, res: Respon
                 });
                 response = {
                     status: true,
-                    statusCode: 'CREATED',
+                    statusCode: responseStatusCodes.CREATED,
                 };
             } else {
                 response = {
                     status: false,
-                    statusCode: 'CONFLICT',
+                    statusCode: responseStatusCodes.CONFLICT,
                     data: 'Tax Bracket already exists in database',
                 };
             }
@@ -69,7 +69,7 @@ export const createTaxBracket: RequestHandler = async (req: Request, res: Respon
     } catch (e) {
         response = {
             status: false,
-            statusCode: 'INTERNALSERVERERROR',
+            statusCode: responseStatusCodes.INTERNALSERVERERROR,
             data: e.message,
         };
     } finally {
@@ -88,7 +88,7 @@ export const deleteTaxBracket: RequestHandler = async (req: Request, res: Respon
         if (error) {
             response = {
                 status: false,
-                statusCode: 'BADREQUEST',
+                statusCode: responseStatusCodes.BADREQUEST,
                 data: error.message,
             };
         } else {
@@ -101,12 +101,12 @@ export const deleteTaxBracket: RequestHandler = async (req: Request, res: Respon
                 });
                 response = {
                     status: true,
-                    statusCode: 'NOCONTENT',
+                    statusCode: responseStatusCodes.NOCONTENT,
                 };
             } else {
                 response = {
                     status: false,
-                    statusCode: 'NOTFOUND',
+                    statusCode: responseStatusCodes.NOTFOUND,
                     data: 'Tax Bracket does not exist in database',
                 };
             }
@@ -114,7 +114,7 @@ export const deleteTaxBracket: RequestHandler = async (req: Request, res: Respon
     } catch (e) {
         response = {
             status: false,
-            statusCode: 'INTERNALSERVERERROR',
+            statusCode: responseStatusCodes.INTERNALSERVERERROR,
             data: e.message,
         };
     } finally {
