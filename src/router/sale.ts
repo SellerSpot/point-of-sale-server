@@ -3,9 +3,8 @@ import { sale } from '../controller';
 
 const saleRouter: Router = Router();
 
-// saleRouter.post('/', sale.createsale);
 saleRouter.get('/', sale.getSales);
-// saleRouter.put('/', sale.updatesale);
+saleRouter.get('/:saleid', sale.getSales);
 saleRouter.delete('/', sale.deleteSale);
 
 export default saleRouter;
