@@ -13,11 +13,11 @@ const getStockUnitModel = (currentDb: Connection = global.currentDb): StockUnitM
 export const getStockUnits: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModel = getStockUnitModel();
+        const StockUnitModelReference = getStockUnitModel();
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await dbModel.find(),
+            data: await StockUnitModelReference.find(),
         };
     } catch (e) {
         response = {
@@ -46,10 +46,10 @@ export const createStockUnit: RequestHandler = async (req: Request, res: Respons
             };
         } else {
             const { stockUnitName } = req.body;
-            const dbModel = getStockUnitModel();
+            const StockUnitModelReference = getStockUnitModel();
             // checking if StockUnit already exists
-            if ((await dbModel.find({ name: stockUnitName })).length === 0) {
-                await dbModel.create({
+            if ((await StockUnitModelReference.find({ name: stockUnitName })).length === 0) {
+                await StockUnitModelReference.create({
                     name: stockUnitName,
                 });
                 response = {
@@ -85,11 +85,11 @@ export const deleteStockUnit: RequestHandler = async (req: Request, res: Respons
         req.params = value;
         if (error) {
         } else {
-            const dbModel = getStockUnitModel();
+            const StockUnitModelReference = getStockUnitModel();
             const { stockunitid } = req.params;
             // checking if StockUnit already exists
-            if ((await dbModel.findById(stockunitid)) !== null) {
-                await dbModel.findByIdAndDelete(stockunitid);
+            if ((await StockUnitModelReference.findById(stockunitid)) !== null) {
+                await StockUnitModelReference.findByIdAndDelete(stockunitid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,

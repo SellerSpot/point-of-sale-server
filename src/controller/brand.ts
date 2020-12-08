@@ -13,11 +13,11 @@ const getBrandModel = (currentDb: Connection = global.currentDb): BrandModel.IBr
 export const getBrands: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModel = getBrandModel();
+        const BrandModelReference = getBrandModel();
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await dbModel.find(),
+            data: await BrandModelReference.find(),
         };
     } catch (e) {
         response = {
@@ -46,10 +46,10 @@ export const createBrand: RequestHandler = async (req: Request, res: Response) =
             };
         } else {
             const { brandName } = req.body;
-            const dbModel = getBrandModel();
+            const BrandModelReference = getBrandModel();
             // checking if brand already exists
-            if ((await dbModel.find({ name: brandName })).length === 0) {
-                await dbModel.create({
+            if ((await BrandModelReference.find({ name: brandName })).length === 0) {
+                await BrandModelReference.create({
                     name: brandName,
                 });
                 response = {
@@ -90,11 +90,11 @@ export const deleteBrand: RequestHandler = async (req: Request, res: Response) =
                 data: error.message,
             };
         } else {
-            const dbModel = getBrandModel();
+            const BrandModelReference = getBrandModel();
             const { brandid } = req.params;
             // checking if brand already exists
-            if ((await dbModel.findById(brandid)) !== null) {
-                await dbModel.findByIdAndDelete(brandid);
+            if ((await BrandModelReference.findById(brandid)) !== null) {
+                await BrandModelReference.findByIdAndDelete(brandid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,

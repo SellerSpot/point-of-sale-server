@@ -14,11 +14,11 @@ const getSaleModel = (currentDb: Connection = global.currentDb): SaleModel.ISale
 export const getSales: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModel = getSaleModel();
+        const SaleModelReference = getSaleModel();
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await dbModel.find(),
+            data: await SaleModelReference.find(),
         };
     } catch (e) {
         response = {
@@ -46,14 +46,14 @@ export const getSingleSale: RequestHandler = async (req: Request, res: Response)
                 data: error.message,
             };
         } else {
-            const dbModel = getSaleModel();
+            const SaleModelReference = getSaleModel();
             const { saleid } = req.params;
             // checking if sale already exists
-            if ((await dbModel.findById(saleid)) !== null) {
+            if ((await SaleModelReference.findById(saleid)) !== null) {
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.OK,
-                    data: await dbModel.findById(saleid),
+                    data: await SaleModelReference.findById(saleid),
                 };
             } else {
                 response = {
@@ -96,9 +96,9 @@ export const createSale: RequestHandler = async (req: Request, res: Response) =>
                 data: error.message,
             };
         } else {
-            const dbModel = getSaleModel();
+            const SaleModelReference = getSaleModel();
             const { status, grandTotal, products, totalTax, discountPercent } = req.body;
-            await dbModel.create({
+            await SaleModelReference.create({
                 status,
                 grandTotal,
                 products,
@@ -136,11 +136,11 @@ export const deleteSale: RequestHandler = async (req: Request, res: Response) =>
                 data: error.message,
             };
         } else {
-            const dbModel = getSaleModel();
+            const SaleModelReference = getSaleModel();
             const { saleid } = req.params;
             // checking if Sale already exists
-            if ((await dbModel.findById(saleid)) !== null) {
-                await dbModel.findByIdAndDelete(saleid);
+            if ((await SaleModelReference.findById(saleid)) !== null) {
+                await SaleModelReference.findByIdAndDelete(saleid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,

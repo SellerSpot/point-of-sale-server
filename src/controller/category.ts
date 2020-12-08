@@ -13,11 +13,11 @@ const getCategoryModel = (currentDb: Connection = global.currentDb): CategoryMod
 export const getCategories: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModel = getCategoryModel();
+        const CategoryModelReference = getCategoryModel();
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await dbModel.find(),
+            data: await CategoryModelReference.find(),
         };
     } catch (e) {
         response = {
@@ -45,11 +45,11 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
                 data: error.message,
             };
         } else {
-            const dbModel = getCategoryModel();
+            const CategoryModelReference = getCategoryModel();
             const { categoryName } = req.body;
             // checking if category already exists
-            if ((await dbModel.find({ name: categoryName })).length === 0) {
-                await dbModel.create({
+            if ((await CategoryModelReference.find({ name: categoryName })).length === 0) {
+                await CategoryModelReference.create({
                     name: categoryName,
                 });
                 response = {
@@ -90,11 +90,11 @@ export const deleteCategory: RequestHandler = async (req: Request, res: Response
                 data: error.message,
             };
         } else {
-            const dbModel = getCategoryModel();
+            const CategoryModelReference = getCategoryModel();
             const { categoryid } = req.params;
             // checking if category already exists
-            if ((await dbModel.findById(categoryid)) !== null) {
-                await dbModel.findByIdAndDelete(categoryid);
+            if ((await CategoryModelReference.findById(categoryid)) !== null) {
+                await CategoryModelReference.findByIdAndDelete(categoryid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,

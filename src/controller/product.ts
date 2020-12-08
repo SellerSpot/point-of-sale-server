@@ -13,11 +13,11 @@ const getProductModel = (currentDb: Connection = global.currentDb): ProductModel
 export const getProducts: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModel = getProductModel();
+        const ProductModelReference = getProductModel();
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await dbModel.find(),
+            data: await ProductModelReference.find(),
         };
     } catch (e) {
         response = {
@@ -45,14 +45,14 @@ export const getSingleProduct: RequestHandler = async (req: Request, res: Respon
                 data: error.message,
             };
         } else {
-            const dbModel = getProductModel();
+            const ProductModelReference = getProductModel();
             const { productid } = req.params;
             // checking if Product already exists
-            if ((await dbModel.findById(productid)) !== null) {
+            if ((await ProductModelReference.findById(productid)) !== null) {
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.OK,
-                    data: await dbModel.findById(productid),
+                    data: await ProductModelReference.findById(productid),
                 };
             } else {
                 response = {
@@ -100,7 +100,7 @@ export const createProduct: RequestHandler = async (req: Request, res: Response)
                 data: error.message,
             };
         } else {
-            const dbModel = getProductModel();
+            const ProductModelReference = getProductModel();
             const {
                 name,
                 category,
@@ -113,7 +113,7 @@ export const createProduct: RequestHandler = async (req: Request, res: Response)
                 profitPercent,
                 taxBracket,
             } = req.body;
-            await dbModel.create({
+            await ProductModelReference.create({
                 name,
                 brand,
                 category,
@@ -156,11 +156,11 @@ export const deleteProduct: RequestHandler = async (req: Request, res: Response)
                 data: error.message,
             };
         } else {
-            const dbModel = getProductModel();
+            const ProductModelReference = getProductModel();
             const { productid } = req.params;
             // checking if Product already exists
-            if ((await dbModel.findById(productid)) !== null) {
-                await dbModel.findByIdAndDelete(productid);
+            if ((await ProductModelReference.findById(productid)) !== null) {
+                await ProductModelReference.findByIdAndDelete(productid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,

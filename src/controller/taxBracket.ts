@@ -13,11 +13,11 @@ const getTaxBracketModel = (currentDb: Connection = global.currentDb): TaxBracke
 export const getTaxBrackets: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModel = getTaxBracketModel();
+        const TaxBracketModelReference = getTaxBracketModel();
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await dbModel.find(),
+            data: await TaxBracketModelReference.find(),
         };
     } catch (e) {
         response = {
@@ -46,11 +46,11 @@ export const createTaxBracket: RequestHandler = async (req: Request, res: Respon
                 data: error.message,
             };
         } else {
-            const dbModel = getTaxBracketModel();
+            const TaxBracketModelReference = getTaxBracketModel();
             const { name, taxPercent } = req.body;
             // checking if TaxBracket already exists
-            if ((await dbModel.find({ name: name })).length === 0) {
-                await dbModel.create({
+            if ((await TaxBracketModelReference.find({ name: name })).length === 0) {
+                await TaxBracketModelReference.create({
                     name: name,
                     taxPercent: taxPercent,
                 });
@@ -92,11 +92,11 @@ export const deleteTaxBracket: RequestHandler = async (req: Request, res: Respon
                 data: error.message,
             };
         } else {
-            const dbModel = getTaxBracketModel();
+            const TaxBracketModelReference = getTaxBracketModel();
             const { taxBracketid } = req.params;
             // checking if TaxBracket already exists
-            if ((await dbModel.findById(taxBracketid)) !== null) {
-                await dbModel.findByIdAndDelete(taxBracketid);
+            if ((await TaxBracketModelReference.findById(taxBracketid)) !== null) {
+                await TaxBracketModelReference.findByIdAndDelete(taxBracketid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,
