@@ -1,23 +1,23 @@
 import { RequestHandler, Request, Response } from 'express';
-import Joi from 'joi';
 import { Connection } from 'mongoose';
-import { CategoryModel } from '../models';
 import { EMODELS } from '../models/models.types';
+import { TaxBracketModel } from '../models';
 import { IResponse } from '../typings/request.types';
+import Joi from 'joi';
 import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 
-const getCategoryModel = (currentDb: Connection = global.currentDb): CategoryModel.ICategoryModel => {
-    return currentDb.model(EMODELS.CATEGORY);
+const getTaxBracketModel = (currentDb: Connection = global.currentDb): TaxBracketModel.ITaxBracketModel => {
+    return currentDb.model(EMODELS.TAXBRACKET);
 };
 
-export const getCategories: RequestHandler = async (req: Request, res: Response) => {
+export const getTaxBrackets: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const CategoryModelReference = getCategoryModel();
+        const TaxBracketModelReference = getTaxBracketModel();
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await CategoryModelReference.find(),
+            data: await TaxBracketModelReference.find(),
         };
     } catch (e) {
         response = {
@@ -30,11 +30,12 @@ export const getCategories: RequestHandler = async (req: Request, res: Response)
     }
 };
 
-export const createCategory: RequestHandler = async (req: Request, res: Response) => {
+export const createTaxBracket: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
         const requestBodySchema = Joi.object({
-            categoryName: Joi.string().alphanum().required(),
+            name: Joi.string().alphanum().required(),
+            taxPercent: Joi.number().max(100).min(0).required(),
         });
         const { error, value } = requestBodySchema.validate(req.body, joiSchemaOptions);
         req.body = value;
@@ -45,12 +46,13 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
                 data: error.message,
             };
         } else {
-            const CategoryModelReference = getCategoryModel();
-            const { categoryName } = req.body;
-            // checking if category already exists
-            if ((await CategoryModelReference.find({ name: categoryName })).length === 0) {
-                await CategoryModelReference.create({
-                    name: categoryName,
+            const TaxBracketModelReference = getTaxBracketModel();
+            const { name, taxPercent } = req.body;
+            // checking if TaxBracket already exists
+            if ((await TaxBracketModelReference.find({ name: name })).length === 0) {
+                await TaxBracketModelReference.create({
+                    name: name,
+                    taxPercent: taxPercent,
                 });
                 response = {
                     status: true,
@@ -60,7 +62,7 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
                 response = {
                     status: false,
                     statusCode: responseStatusCodes.CONFLICT,
-                    data: 'Category already exists in database',
+                    data: 'Tax Bracket already exists in database',
                 };
             }
         }
@@ -75,11 +77,11 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
     }
 };
 
-export const deleteCategory: RequestHandler = async (req: Request, res: Response) => {
+export const deleteTaxBracket: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
         const requestParamsSchema = Joi.object({
-            categoryid: commonJoiSchemas.MONGODBID.required(),
+            taxBracketid: commonJoiSchemas.MONGODBID.required(),
         });
         const { error, value } = requestParamsSchema.validate(req.params, joiSchemaOptions);
         req.params = value;
@@ -90,11 +92,11 @@ export const deleteCategory: RequestHandler = async (req: Request, res: Response
                 data: error.message,
             };
         } else {
-            const CategoryModelReference = getCategoryModel();
-            const { categoryid } = req.params;
-            // checking if category already exists
-            if ((await CategoryModelReference.findById(categoryid)) !== null) {
-                await CategoryModelReference.findByIdAndDelete(categoryid);
+            const TaxBracketModelReference = getTaxBracketModel();
+            const { taxBracketid } = req.params;
+            // checking if TaxBracket already exists
+            if ((await TaxBracketModelReference.findById(taxBracketid)) !== null) {
+                await TaxBracketModelReference.findByIdAndDelete(taxBracketid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,
@@ -103,7 +105,7 @@ export const deleteCategory: RequestHandler = async (req: Request, res: Response
                 response = {
                     status: false,
                     statusCode: responseStatusCodes.NOTFOUND,
-                    data: 'Category does not exist in database',
+                    data: 'Tax Bracket does not exist in database',
                 };
             }
         }

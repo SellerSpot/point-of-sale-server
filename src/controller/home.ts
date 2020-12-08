@@ -1,11 +1,11 @@
 import { RequestHandler, Request, Response } from 'express';
 import { Connection } from 'mongoose';
-import { BaseModal } from '../models';
+import { BaseModel } from '../models';
 import { EMODELS } from '../models/models.types';
 
 export const homeController: RequestHandler = (req: Request, res: Response) => {
     const dbConnection: Connection = global.currentDb;
-    const BaseModel: BaseModal.IBaseModel = dbConnection.model(EMODELS.BASE);
+    const BaseModel: BaseModel.IBaseModel = dbConnection.model(EMODELS.BASE);
     const base = new BaseModel({
         name: 'test-name',
     });

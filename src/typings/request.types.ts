@@ -1,5 +1,5 @@
 export interface IResponse {
     status: boolean;
-    error?: unknown;
+    statusCode: number;
     data?: unknown;
 }

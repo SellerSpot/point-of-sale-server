@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ac02caae-d638-4b60-a612-d41e91d16705",
+		"_postman_id": "699482ee-24e6-4824-9809-5013051a906e",
 		"name": "SellerspotPOS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -20,6 +20,481 @@
 							],
 							"path": [
 								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"categoryName\": \"Drinks\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/category",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/category/5fcf216f5db0dd5aa89d1006",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"category",
+								"5fcf216f5db0dd5aa89d1006"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Brand",
+			"item": [
+				{
+					"name": "Get All Brands",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/brand",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"brand"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Brand",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"brandName\": \"Pepsi\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/brand",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"brand"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Brand",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/brand/5fcf1d475db0dd5aa89d0ffe",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"brand",
+								"5fcf1d475db0dd5aa89d0ffe"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "StockUnit",
+			"item": [
+				{
+					"name": "Get All StockUnits",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/stockunit",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"stockunit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create StockUnit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"stockUnitName\": \"piece\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/stockunit",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"stockunit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete StockUnit",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/stockunit/5fcf20175db0dd5aa89d1002",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"stockunit",
+								"5fcf20175db0dd5aa89d1002"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "TaxBracket",
+			"item": [
+				{
+					"name": "Get All TaxBrackets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/taxbracket",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"taxbracket"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create TaxBracket",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"CGST\",\r\n    \"taxPercent\": \"50\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/taxbracket",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"taxbracket"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete TaxBracket",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/taxbracket/5fcf22115db0dd5aa89d1008",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"taxbracket",
+								"5fcf22115db0dd5aa89d1008"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/product",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/product/5fcf3337ef83e23b142823e6",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product",
+								"5fcf3337ef83e23b142823e6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/product/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Energy Right Now\",\r\n    \"category\": \"5fcf3109dca85c0714bbe194\",\r\n    \"brand\": \"5fcf3125dca85c0714bbe195\",\r\n    \"gtinNumber\": \"012345678905\",\r\n    \"mrpPrice\": 200.00,\r\n    \"landingPrice\": 150.00,\r\n    \"sellingPrice\": 180.00,\r\n    \"stockInformation\": {\r\n        \"availableStock\": 25,\r\n        \"stockUnit\": \"5fcf32a8ef83e23b142823e4\"\r\n    },\r\n    \"profitPercent\": -20,\r\n    \"taxBracket\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/product",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Sale",
+			"item": [
+				{
+					"name": "Get All Sales",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/sale",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sale"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Sale",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/sale/5fcf3cdcee196c3514bb0282",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sale",
+								"5fcf3cdcee196c3514bb0282"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Sale",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"PENDING\",\r\n    \"totalTax\": 100.00,\r\n    \"products\": [{\r\n        \"product\": \"5fcf3337ef83e23b142823e6\",\r\n        \"quantity\": 3\r\n    }],\r\n    \"discountPercent\":20,\r\n    \"grandTotal\": 2000.00\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/sale",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sale"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Sale",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/sale",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sale"
 							]
 						}
 					},

@@ -1,23 +1,23 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
 import { Connection } from 'mongoose';
-import { CategoryModel } from '../models';
+import { StockUnitModel } from '../models';
 import { EMODELS } from '../models/models.types';
 import { IResponse } from '../typings/request.types';
 import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 
-const getCategoryModel = (currentDb: Connection = global.currentDb): CategoryModel.ICategoryModel => {
-    return currentDb.model(EMODELS.CATEGORY);
+const getStockUnitModel = (currentDb: Connection = global.currentDb): StockUnitModel.IStockUnitModel => {
+    return currentDb.model(EMODELS.STOCKUNIT);
 };
 
-export const getCategories: RequestHandler = async (req: Request, res: Response) => {
+export const getStockUnits: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const CategoryModelReference = getCategoryModel();
+        const StockUnitModelReference = getStockUnitModel();
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await CategoryModelReference.find(),
+            data: await StockUnitModelReference.find(),
         };
     } catch (e) {
         response = {
@@ -30,11 +30,11 @@ export const getCategories: RequestHandler = async (req: Request, res: Response)
     }
 };
 
-export const createCategory: RequestHandler = async (req: Request, res: Response) => {
+export const createStockUnit: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
         const requestBodySchema = Joi.object({
-            categoryName: Joi.string().alphanum().required(),
+            stockUnitName: Joi.string().alphanum().required(),
         });
         const { error, value } = requestBodySchema.validate(req.body, joiSchemaOptions);
         req.body = value;
@@ -45,12 +45,12 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
                 data: error.message,
             };
         } else {
-            const CategoryModelReference = getCategoryModel();
-            const { categoryName } = req.body;
-            // checking if category already exists
-            if ((await CategoryModelReference.find({ name: categoryName })).length === 0) {
-                await CategoryModelReference.create({
-                    name: categoryName,
+            const { stockUnitName } = req.body;
+            const StockUnitModelReference = getStockUnitModel();
+            // checking if StockUnit already exists
+            if ((await StockUnitModelReference.find({ name: stockUnitName })).length === 0) {
+                await StockUnitModelReference.create({
+                    name: stockUnitName,
                 });
                 response = {
                     status: true,
@@ -60,7 +60,7 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
                 response = {
                     status: false,
                     statusCode: responseStatusCodes.CONFLICT,
-                    data: 'Category already exists in database',
+                    data: 'Stock Unit already exists in database',
                 };
             }
         }
@@ -75,26 +75,21 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
     }
 };
 
-export const deleteCategory: RequestHandler = async (req: Request, res: Response) => {
+export const deleteStockUnit: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
         const requestParamsSchema = Joi.object({
-            categoryid: commonJoiSchemas.MONGODBID.required(),
+            stockunitid: commonJoiSchemas.MONGODBID.required(),
         });
         const { error, value } = requestParamsSchema.validate(req.params, joiSchemaOptions);
         req.params = value;
         if (error) {
-            response = {
-                status: false,
-                statusCode: responseStatusCodes.BADREQUEST,
-                data: error.message,
-            };
         } else {
-            const CategoryModelReference = getCategoryModel();
-            const { categoryid } = req.params;
-            // checking if category already exists
-            if ((await CategoryModelReference.findById(categoryid)) !== null) {
-                await CategoryModelReference.findByIdAndDelete(categoryid);
+            const StockUnitModelReference = getStockUnitModel();
+            const { stockunitid } = req.params;
+            // checking if StockUnit already exists
+            if ((await StockUnitModelReference.findById(stockunitid)) !== null) {
+                await StockUnitModelReference.findByIdAndDelete(stockunitid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,
@@ -103,7 +98,7 @@ export const deleteCategory: RequestHandler = async (req: Request, res: Response
                 response = {
                     status: false,
                     statusCode: responseStatusCodes.NOTFOUND,
-                    data: 'Category does not exist in database',
+                    data: 'Stock Unit does not exist in database',
                 };
             }
         }

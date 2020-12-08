@@ -10,12 +10,12 @@ const SaleSchema = new Schema(
     {
         status: {
             type: Schema.Types.String,
-            enum: ESaleStatus,
+            enum: [ESaleStatus.COMPLETED, ESaleStatus.PENDING],
             required: true,
         },
-        items: [
+        products: [
             {
-                itemId: {
+                product: {
                     type: Schema.Types.ObjectId,
                     ref: EMODELS.PRODUCT,
                     required: true,
@@ -47,13 +47,13 @@ const SaleSchema = new Schema(
 );
 
 export interface ISaleItem {
-    itemId: Schema.Types.ObjectId;
+    product: Schema.Types.ObjectId;
     quantity: Schema.Types.Number;
 }
 
 export interface ISale {
     status: ESaleStatus;
-    items: ISaleItem[];
+    products?: ISaleItem[];
     discountPercent?: Schema.Types.Number;
     totalTax: Schema.Types.Number;
     grandTotal: Schema.Types.Number;
