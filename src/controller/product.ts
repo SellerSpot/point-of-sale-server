@@ -26,11 +26,30 @@ export const getProducts: RequestHandler = async (req: Request, res: Response) =
     }
 };
 
+export const getSingleProduct: RequestHandler = async (req: Request, res: Response) => {
+    let response: IResponse;
+    const { productid } = req.params;
+    try {
+        const dbModel = getProductModel();
+        response = {
+            status: true,
+            data: await dbModel.find({ _id: productid }),
+        };
+    } catch (e) {
+        response = {
+            status: false,
+            error: e.message,
+        };
+    } finally {
+        res.send(response);
+    }
+};
+
 export const deleteProduct: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
         const dbModel = getProductModel();
-        const productId = req.body['productId'];
+        const { productId } = req.body;
         // checking if Product already exists
         if ((await dbModel.find({ _id: productId })).length !== 0) {
             await dbModel.findByIdAndDelete({ productId });
@@ -40,7 +59,7 @@ export const deleteProduct: RequestHandler = async (req: Request, res: Response)
         } else {
             response = {
                 status: false,
-                data: 'Product does not exist in database',
+                error: 'Product does not exist in database',
             };
         }
     } catch (e) {

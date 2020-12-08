@@ -56,6 +56,7 @@ export const createStockUnit: RequestHandler = async (req: Request, res: Respons
 };
 
 export const updateStockUnit: RequestHandler = async (req: Request, res: Response) => {
+    const type = {};
     let response: IResponse;
     try {
         const dbModel = getStockUnitModel();

@@ -60,10 +60,12 @@ export const updateTaxBracket: RequestHandler = async (req: Request, res: Respon
     let response: IResponse;
     try {
         const dbModel = getTaxBracketModel();
+
         const taxBracketName = req.body['taxBracketName'];
         const newTaxBracketName = req.body['newTaxBracketName'];
         const newTaxBracketPercent = req.body['newTaxBracketPercent'];
         // checking if TaxBracket already exists
+
         if ((await dbModel.find({ name: taxBracketName })).length !== 0) {
             await dbModel.findOneAndUpdate(
                 {
