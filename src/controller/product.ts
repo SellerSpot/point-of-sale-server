@@ -1,23 +1,17 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
-import { Connection } from 'mongoose';
-import { ProductModel } from '../models';
-import { EMODELS } from '../models/models.types';
 import { IResponse } from '../typings/request.types';
 import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
-
-const getProductModel = (currentDb: Connection = global.currentDb): ProductModel.IProductModel => {
-    return currentDb.model(EMODELS.PRODUCT);
-};
+import { getProductModel } from '../utils/modelService';
 
 export const getProducts: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const ProductModelReference = getProductModel();
+        const ProductModel = getProductModel();
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await ProductModelReference.find(),
+            data: await ProductModel.find(),
         };
     } catch (e) {
         response = {
@@ -45,14 +39,14 @@ export const getSingleProduct: RequestHandler = async (req: Request, res: Respon
                 data: error.message,
             };
         } else {
-            const ProductModelReference = getProductModel();
+            const ProductModel = getProductModel();
             const { productid } = req.params;
             // checking if Product already exists
-            if ((await ProductModelReference.findById(productid)) !== null) {
+            if ((await ProductModel.findById(productid)) !== null) {
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.OK,
-                    data: await ProductModelReference.findById(productid),
+                    data: await ProductModel.findById(productid),
                 };
             } else {
                 response = {
@@ -100,7 +94,7 @@ export const createProduct: RequestHandler = async (req: Request, res: Response)
                 data: error.message,
             };
         } else {
-            const ProductModelReference = getProductModel();
+            const ProductModel = getProductModel();
             const {
                 name,
                 category,
@@ -113,7 +107,7 @@ export const createProduct: RequestHandler = async (req: Request, res: Response)
                 profitPercent,
                 taxBracket,
             } = req.body;
-            await ProductModelReference.create({
+            await ProductModel.create({
                 name,
                 brand,
                 category,
@@ -156,11 +150,11 @@ export const deleteProduct: RequestHandler = async (req: Request, res: Response)
                 data: error.message,
             };
         } else {
-            const ProductModelReference = getProductModel();
+            const ProductModel = getProductModel();
             const { productid } = req.params;
             // checking if Product already exists
-            if ((await ProductModelReference.findById(productid)) !== null) {
-                await ProductModelReference.findByIdAndDelete(productid);
+            if ((await ProductModel.findById(productid)) !== null) {
+                await ProductModel.findByIdAndDelete(productid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,

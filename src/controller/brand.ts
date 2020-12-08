@@ -1,23 +1,17 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
-import { Connection } from 'mongoose';
-import { BrandModel } from '../models';
-import { EMODELS } from '../models/models.types';
 import { IResponse } from '../typings/request.types';
 import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
-
-const getBrandModel = (currentDb: Connection = global.currentDb): BrandModel.IBrandModel => {
-    return currentDb.model(EMODELS.BRAND);
-};
+import { getBrandModel } from '../utils/modelService';
 
 export const getBrands: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const BrandModelReference = getBrandModel();
+        const BrandModel = getBrandModel();
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await BrandModelReference.find(),
+            data: await BrandModel.find(),
         };
     } catch (e) {
         response = {
@@ -46,10 +40,10 @@ export const createBrand: RequestHandler = async (req: Request, res: Response) =
             };
         } else {
             const { brandName } = req.body;
-            const BrandModelReference = getBrandModel();
+            const BrandModel = getBrandModel();
             // checking if brand already exists
-            if ((await BrandModelReference.find({ name: brandName })).length === 0) {
-                await BrandModelReference.create({
+            if ((await BrandModel.find({ name: brandName })).length === 0) {
+                await BrandModel.create({
                     name: brandName,
                 });
                 response = {
@@ -90,11 +84,11 @@ export const deleteBrand: RequestHandler = async (req: Request, res: Response) =
                 data: error.message,
             };
         } else {
-            const BrandModelReference = getBrandModel();
+            const BrandModel = getBrandModel();
             const { brandid } = req.params;
             // checking if brand already exists
-            if ((await BrandModelReference.findById(brandid)) !== null) {
-                await BrandModelReference.findByIdAndDelete(brandid);
+            if ((await BrandModel.findById(brandid)) !== null) {
+                await BrandModel.findByIdAndDelete(brandid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,

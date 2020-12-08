@@ -1,23 +1,17 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
-import { Connection } from 'mongoose';
-import { CategoryModel } from '../models';
-import { EMODELS } from '../models/models.types';
 import { IResponse } from '../typings/request.types';
 import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
-
-const getCategoryModel = (currentDb: Connection = global.currentDb): CategoryModel.ICategoryModel => {
-    return currentDb.model(EMODELS.CATEGORY);
-};
+import { getCategoryModel } from '../utils/modelService';
 
 export const getCategories: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const CategoryModelReference = getCategoryModel();
+        const CategoryModel = getCategoryModel();
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await CategoryModelReference.find(),
+            data: await CategoryModel.find(),
         };
     } catch (e) {
         response = {
@@ -45,11 +39,11 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
                 data: error.message,
             };
         } else {
-            const CategoryModelReference = getCategoryModel();
+            const CategoryModel = getCategoryModel();
             const { categoryName } = req.body;
             // checking if category already exists
-            if ((await CategoryModelReference.find({ name: categoryName })).length === 0) {
-                await CategoryModelReference.create({
+            if ((await CategoryModel.find({ name: categoryName })).length === 0) {
+                await CategoryModel.create({
                     name: categoryName,
                 });
                 response = {
@@ -90,11 +84,11 @@ export const deleteCategory: RequestHandler = async (req: Request, res: Response
                 data: error.message,
             };
         } else {
-            const CategoryModelReference = getCategoryModel();
+            const CategoryModel = getCategoryModel();
             const { categoryid } = req.params;
             // checking if category already exists
-            if ((await CategoryModelReference.findById(categoryid)) !== null) {
-                await CategoryModelReference.findByIdAndDelete(categoryid);
+            if ((await CategoryModel.findById(categoryid)) !== null) {
+                await CategoryModel.findByIdAndDelete(categoryid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,

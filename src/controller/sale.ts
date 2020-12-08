@@ -1,24 +1,18 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
-import { Connection } from 'mongoose';
-import { SaleModel } from '../models';
-import { EMODELS } from '../models/models.types';
 import { ESaleStatus } from '../models/Sale';
 import { IResponse } from '../typings/request.types';
 import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
-
-const getSaleModel = (currentDb: Connection = global.currentDb): SaleModel.ISaleModel => {
-    return currentDb.model(EMODELS.SALE);
-};
+import { getSaleModel } from '../utils/modelService';
 
 export const getSales: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const SaleModelReference = getSaleModel();
+        const SaleModel = getSaleModel();
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await SaleModelReference.find(),
+            data: await SaleModel.find(),
         };
     } catch (e) {
         response = {
@@ -46,14 +40,14 @@ export const getSingleSale: RequestHandler = async (req: Request, res: Response)
                 data: error.message,
             };
         } else {
-            const SaleModelReference = getSaleModel();
+            const SaleModel = getSaleModel();
             const { saleid } = req.params;
             // checking if sale already exists
-            if ((await SaleModelReference.findById(saleid)) !== null) {
+            if ((await SaleModel.findById(saleid)) !== null) {
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.OK,
-                    data: await SaleModelReference.findById(saleid),
+                    data: await SaleModel.findById(saleid),
                 };
             } else {
                 response = {
@@ -96,9 +90,9 @@ export const createSale: RequestHandler = async (req: Request, res: Response) =>
                 data: error.message,
             };
         } else {
-            const SaleModelReference = getSaleModel();
+            const SaleModel = getSaleModel();
             const { status, grandTotal, products, totalTax, discountPercent } = req.body;
-            await SaleModelReference.create({
+            await SaleModel.create({
                 status,
                 grandTotal,
                 products,
@@ -136,11 +130,11 @@ export const deleteSale: RequestHandler = async (req: Request, res: Response) =>
                 data: error.message,
             };
         } else {
-            const SaleModelReference = getSaleModel();
+            const SaleModel = getSaleModel();
             const { saleid } = req.params;
             // checking if Sale already exists
-            if ((await SaleModelReference.findById(saleid)) !== null) {
-                await SaleModelReference.findByIdAndDelete(saleid);
+            if ((await SaleModel.findById(saleid)) !== null) {
+                await SaleModel.findByIdAndDelete(saleid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,
