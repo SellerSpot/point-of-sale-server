@@ -1,23 +1,17 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
-import { Connection } from 'mongoose';
-import { StockUnitModel } from '../models';
-import { EMODELS } from '../models/models.types';
 import { IResponse } from '../typings/request.types';
 import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
-
-const getStockUnitModel = (currentDb: Connection = global.currentDb): StockUnitModel.IStockUnitModel => {
-    return currentDb.model(EMODELS.STOCKUNIT);
-};
+import { getStockUnitModel } from '../utils/modelService';
 
 export const getStockUnits: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const StockUnitModelReference = getStockUnitModel();
+        const StockUnitModel = getStockUnitModel();
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await StockUnitModelReference.find(),
+            data: await StockUnitModel.find(),
         };
     } catch (e) {
         response = {
@@ -46,10 +40,10 @@ export const createStockUnit: RequestHandler = async (req: Request, res: Respons
             };
         } else {
             const { stockUnitName } = req.body;
-            const StockUnitModelReference = getStockUnitModel();
+            const StockUnitModel = getStockUnitModel();
             // checking if StockUnit already exists
-            if ((await StockUnitModelReference.find({ name: stockUnitName })).length === 0) {
-                await StockUnitModelReference.create({
+            if ((await StockUnitModel.find({ name: stockUnitName })).length === 0) {
+                await StockUnitModel.create({
                     name: stockUnitName,
                 });
                 response = {
@@ -85,11 +79,11 @@ export const deleteStockUnit: RequestHandler = async (req: Request, res: Respons
         req.params = value;
         if (error) {
         } else {
-            const StockUnitModelReference = getStockUnitModel();
+            const StockUnitModel = getStockUnitModel();
             const { stockunitid } = req.params;
             // checking if StockUnit already exists
-            if ((await StockUnitModelReference.findById(stockunitid)) !== null) {
-                await StockUnitModelReference.findByIdAndDelete(stockunitid);
+            if ((await StockUnitModel.findById(stockunitid)) !== null) {
+                await StockUnitModel.findByIdAndDelete(stockunitid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,

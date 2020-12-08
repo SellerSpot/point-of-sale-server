@@ -1,23 +1,17 @@
 import { RequestHandler, Request, Response } from 'express';
-import { Connection } from 'mongoose';
-import { EMODELS } from '../models/models.types';
-import { TaxBracketModel } from '../models';
 import { IResponse } from '../typings/request.types';
 import Joi from 'joi';
 import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
-
-const getTaxBracketModel = (currentDb: Connection = global.currentDb): TaxBracketModel.ITaxBracketModel => {
-    return currentDb.model(EMODELS.TAXBRACKET);
-};
+import { getTaxBracketModel } from '../utils/modelService';
 
 export const getTaxBrackets: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const TaxBracketModelReference = getTaxBracketModel();
+        const TaxBracketModel = getTaxBracketModel();
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await TaxBracketModelReference.find(),
+            data: await TaxBracketModel.find(),
         };
     } catch (e) {
         response = {
@@ -46,11 +40,11 @@ export const createTaxBracket: RequestHandler = async (req: Request, res: Respon
                 data: error.message,
             };
         } else {
-            const TaxBracketModelReference = getTaxBracketModel();
+            const TaxBracketModel = getTaxBracketModel();
             const { name, taxPercent } = req.body;
             // checking if TaxBracket already exists
-            if ((await TaxBracketModelReference.find({ name: name })).length === 0) {
-                await TaxBracketModelReference.create({
+            if ((await TaxBracketModel.find({ name: name })).length === 0) {
+                await TaxBracketModel.create({
                     name: name,
                     taxPercent: taxPercent,
                 });
@@ -92,11 +86,11 @@ export const deleteTaxBracket: RequestHandler = async (req: Request, res: Respon
                 data: error.message,
             };
         } else {
-            const TaxBracketModelReference = getTaxBracketModel();
+            const TaxBracketModel = getTaxBracketModel();
             const { taxBracketid } = req.params;
             // checking if TaxBracket already exists
-            if ((await TaxBracketModelReference.findById(taxBracketid)) !== null) {
-                await TaxBracketModelReference.findByIdAndDelete(taxBracketid);
+            if ((await TaxBracketModel.findById(taxBracketid)) !== null) {
+                await TaxBracketModel.findByIdAndDelete(taxBracketid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,
