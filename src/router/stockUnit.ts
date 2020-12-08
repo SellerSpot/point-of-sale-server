@@ -6,6 +6,6 @@ const stockUnitRouter: Router = Router();
 stockUnitRouter.post('/', stockUnit.createStockUnit);
 stockUnitRouter.get('/', stockUnit.getStockUnits);
 // stockUnitRouter.put('/', stockUnit.updateStockUnit);
-stockUnitRouter.delete('/', stockUnit.deleteStockUnit);
+stockUnitRouter.delete('/:stockunitid', stockUnit.deleteStockUnit);
 
 export default stockUnitRouter;

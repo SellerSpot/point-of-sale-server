@@ -91,10 +91,10 @@ export const deleteCategory: RequestHandler = async (req: Request, res: Response
             };
         } else {
             const dbModel = getCategoryModel();
-            const { categoryId } = req.params;
+            const { categoryid } = req.params;
             // checking if category already exists
-            if ((await dbModel.findById({ categoryId })) !== null) {
-                await dbModel.findByIdAndDelete({ categoryId });
+            if ((await dbModel.findById({ categoryid })) !== null) {
+                await dbModel.findByIdAndDelete({ categoryid });
                 response = {
                     status: true,
                     statusCode: 'NOCONTENT',

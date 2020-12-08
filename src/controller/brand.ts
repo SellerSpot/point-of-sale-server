@@ -91,11 +91,11 @@ export const deleteBrand: RequestHandler = async (req: Request, res: Response) =
             };
         } else {
             const dbModel = getBrandModel();
-            const { brandId } = req.params;
+            const { brandid } = req.params;
             // checking if brand already exists
-            if ((await dbModel.findById({ brandId })) !== null) {
+            if ((await dbModel.findById({ brandid })) !== null) {
                 await dbModel.findByIdAndDelete({
-                    brandId,
+                    brandid,
                 });
                 response = {
                     status: true,
