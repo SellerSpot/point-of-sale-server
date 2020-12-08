@@ -73,6 +73,74 @@ export const getSingleProduct: RequestHandler = async (req: Request, res: Respon
     }
 };
 
+export const createProduct: RequestHandler = async (req: Request, res: Response) => {
+    let response: IResponse;
+    try {
+        const requestBodySchema = Joi.object({
+            name: Joi.string().required(),
+            category: commonJoiSchemas.MONGODBID.required(),
+            brand: commonJoiSchemas.MONGODBID.required(),
+            gtinNumber: Joi.string(),
+            mrpPrice: Joi.number().min(0),
+            landingPrice: Joi.number().min(0),
+            sellingPrice: Joi.number().min(0),
+            stockInformation: Joi.object({
+                availableStock: Joi.number().min(0).required(),
+                stockUnit: commonJoiSchemas.MONGODBID.required(),
+            }),
+            profitPercent: Joi.number().min(-100).max(100).required(),
+            taxBracket: Joi.array().items(commonJoiSchemas.MONGODBID),
+        });
+        const { error, value } = requestBodySchema.validate(req.body, joiSchemaOptions);
+        req.body = value;
+        if (error) {
+            response = {
+                status: false,
+                statusCode: responseStatusCodes.BADREQUEST,
+                data: error.message,
+            };
+        } else {
+            const dbModel = getProductModel();
+            const {
+                name,
+                category,
+                brand,
+                gtinNumber,
+                mrpPrice,
+                landingPrice,
+                sellingPrice,
+                stockInformation,
+                profitPercent,
+                taxBracket,
+            } = req.body;
+            dbModel.create({
+                name,
+                brand,
+                category,
+                sellingPrice,
+                stockInformation,
+                gtinNumber,
+                landingPrice,
+                mrpPrice,
+                profitPercent,
+                taxBracket,
+            });
+            response = {
+                status: true,
+                statusCode: responseStatusCodes.CREATED,
+            };
+        }
+    } catch (e) {
+        response = {
+            status: false,
+            statusCode: responseStatusCodes.INTERNALSERVERERROR,
+            data: e.message,
+        };
+    } finally {
+        res.send(response);
+    }
+};
+
 export const deleteProduct: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {

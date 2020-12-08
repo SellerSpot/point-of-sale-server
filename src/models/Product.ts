@@ -19,14 +19,17 @@ const ProductSchema = new Schema({
     gtinNumber: {
         type: Schema.Types.String,
         required: false,
+        default: '00000000',
     },
     mrpPrice: {
         type: Schema.Types.Number,
         required: false,
+        default: 0,
     },
     landingPrice: {
         type: Schema.Types.Number,
         required: false,
+        default: 0,
     },
     sellingPrice: {
         type: Schema.Types.Number,
@@ -71,7 +74,7 @@ export interface IProduct {
         availableStock: Schema.Types.Number;
         stockUnit: Schema.Types.ObjectId;
     };
-    profitPercent: Schema.Types.Number;
+    profitPercent?: Schema.Types.Number;
     taxBracket?: Schema.Types.ObjectId[];
 }
 
