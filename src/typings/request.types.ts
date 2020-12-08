@@ -1,5 +1,7 @@
+import { responseStatusCodes } from '../utils';
+
 export interface IResponse {
     status: boolean;
-    error?: unknown;
+    statusCode: keyof typeof responseStatusCodes;
     data?: unknown;
 }

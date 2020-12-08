@@ -1,8 +1,10 @@
 import { RequestHandler, Request, Response } from 'express';
+import Joi from 'joi';
 import { Connection } from 'mongoose';
 import { BrandModel } from '../models';
 import { EMODELS } from '../models/models.types';
 import { IResponse } from '../typings/request.types';
+import { joiSchemaOptions } from '../utils';
 
 const getBrandModel = (currentDb: Connection = global.currentDb): BrandModel.IBrandModel => {
     return currentDb.model(EMODELS.BRAND);
@@ -14,12 +16,14 @@ export const getBrands: RequestHandler = async (req: Request, res: Response) => 
         const dbModel = getBrandModel();
         response = {
             status: true,
+            statusCode: 'OK',
             data: await dbModel.find(),
         };
     } catch (e) {
         response = {
             status: false,
-            error: e.message,
+            statusCode: 'INTERNALSERVERERROR',
+            data: e.message,
         };
     } finally {
         res.send(response);
@@ -29,84 +33,86 @@ export const getBrands: RequestHandler = async (req: Request, res: Response) => 
 export const createBrand: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModel = getBrandModel();
-        // checking if brand already exists
-        if ((await dbModel.find({ name: req.body['brandName'] })).length === 0) {
-            await dbModel.create({
-                name: req.body['brandName'],
-            });
-            response = {
-                status: true,
-            };
-        } else {
+        const requestBodySchema = Joi.object({
+            brandName: Joi.string().alphanum().required(),
+        });
+        const { error, value } = requestBodySchema.validate(req.body, joiSchemaOptions);
+        req.body = value;
+        if (error) {
             response = {
                 status: false,
-                data: 'Brand already exists in database',
+                statusCode: 'BADREQUEST',
+                data: error.message,
             };
+        } else {
+            const { brandName } = req.body;
+            const dbModel = getBrandModel();
+            // checking if brand already exists
+            if ((await dbModel.find({ name: brandName })).length === 0) {
+                await dbModel.create({
+                    name: brandName,
+                });
+                response = {
+                    status: true,
+                    statusCode: 'CREATED',
+                };
+            } else {
+                response = {
+                    status: false,
+                    statusCode: 'CONFLICT',
+                    data: 'Brand already exists in database',
+                };
+            }
         }
     } catch (e) {
         response = {
             status: false,
-            error: e.message,
+            statusCode: 'INTERNALSERVERERROR',
+            data: e.message,
         };
     } finally {
         res.send(response);
     }
 };
 
-// export const updateBrand: RequestHandler = async (req: Request, res: Response) => {
-//     let response: IResponse;
-//     try {
-//         const dbModel = getBrandModel();
-//         // checking if brand already exists
-//         if ((await dbModel.find({ name: req.body['brandName'] })).length !== 0) {
-//             await dbModel.findOneAndUpdate(
-//                 {
-//                     name: req.body['brandName'],
-//                 },
-//                 { name: req.body['newBrandName'] },
-//             );
-//             response = {
-//                 status: true,
-//             };
-//         } else {
-//             response = {
-//                 status: false,
-//                 data: 'Brand does not exist in database',
-//             };
-//         }
-//     } catch (e) {
-//         response = {
-//             status: false,
-//             error: e.message,
-//         };
-//     } finally {
-//         res.send(response);
-//     }
-// };
-
 export const deleteBrand: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
-        const dbModel = getBrandModel();
-        // checking if brand already exists
-        if ((await dbModel.find({ name: req.body['brandName'] })).length !== 0) {
-            await dbModel.findOneAndDelete({
-                name: req.body['brandName'],
-            });
-            response = {
-                status: true,
-            };
-        } else {
+        const requestParamsSchema = Joi.object({
+            brandid: Joi.string().alphanum().length(24).required(),
+        });
+        const { error, value } = requestParamsSchema.validate(req.params, joiSchemaOptions);
+        req.params = value;
+        if (error) {
             response = {
                 status: false,
-                data: 'Brand does not exist in database',
+                statusCode: 'BADREQUEST',
+                data: error.message,
             };
+        } else {
+            const dbModel = getBrandModel();
+            // checking if brand already exists
+            if ((await dbModel.find({ name: req.body['brandName'] })).length !== 0) {
+                await dbModel.findOneAndDelete({
+                    name: req.body['brandName'],
+                });
+                response = {
+                    status: true,
+                    statusCode: 'NOCONTENT',
+                };
+            } else {
+                response = {
+                    status: false,
+                    statusCode: 'NOTFOUND',
+                    data: 'Brand does not exist in database',
+                };
+            }
         }
     } catch (e) {
         response = {
             status: false,
-            error: e.message,
+            statusCode: 'INTERNALSERVERERROR',
+            data: e.message,
         };
     } finally {
         res.send(response);
