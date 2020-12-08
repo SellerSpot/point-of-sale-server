@@ -88,10 +88,8 @@ export const deleteStockUnit: RequestHandler = async (req: Request, res: Respons
             const dbModel = getStockUnitModel();
             const { stockunitid } = req.params;
             // checking if StockUnit already exists
-            if ((await dbModel.findById({ stockunitid })) !== null) {
-                await dbModel.findByIdAndDelete({
-                    stockunitid,
-                });
+            if ((await dbModel.findById(stockunitid)) !== null) {
+                await dbModel.findByIdAndDelete(stockunitid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,

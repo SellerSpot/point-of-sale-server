@@ -48,11 +48,11 @@ export const getSingleProduct: RequestHandler = async (req: Request, res: Respon
             const dbModel = getProductModel();
             const { productid } = req.params;
             // checking if Product already exists
-            if ((await dbModel.findById({ productid })) !== null) {
+            if ((await dbModel.findById(productid)) !== null) {
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.OK,
-                    data: await dbModel.findById({ productid }),
+                    data: await dbModel.findById(productid),
                 };
             } else {
                 response = {
@@ -91,8 +91,8 @@ export const deleteProduct: RequestHandler = async (req: Request, res: Response)
             const dbModel = getProductModel();
             const { productid } = req.params;
             // checking if Product already exists
-            if ((await dbModel.findById({ productid })) !== null) {
-                await dbModel.findByIdAndDelete({ productid });
+            if ((await dbModel.findById(productid)) !== null) {
+                await dbModel.findByIdAndDelete(productid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,

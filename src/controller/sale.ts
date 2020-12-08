@@ -48,11 +48,11 @@ export const getSingleSale: RequestHandler = async (req: Request, res: Response)
             const dbModel = getSaleModel();
             const { saleid } = req.params;
             // checking if sale already exists
-            if ((await dbModel.findById({ saleid })) !== null) {
+            if ((await dbModel.findById(saleid)) !== null) {
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.OK,
-                    data: await dbModel.findById({ saleid }),
+                    data: await dbModel.findById(saleid),
                 };
             } else {
                 response = {
@@ -91,8 +91,8 @@ export const deleteSale: RequestHandler = async (req: Request, res: Response) =>
             const dbModel = getSaleModel();
             const { saleid } = req.params;
             // checking if Sale already exists
-            if ((await dbModel.findById({ saleid })) !== null) {
-                await dbModel.findByIdAndDelete({ saleid });
+            if ((await dbModel.findById(saleid)) !== null) {
+                await dbModel.findByIdAndDelete(saleid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,

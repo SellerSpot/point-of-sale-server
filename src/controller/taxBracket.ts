@@ -95,10 +95,8 @@ export const deleteTaxBracket: RequestHandler = async (req: Request, res: Respon
             const dbModel = getTaxBracketModel();
             const { taxBracketid } = req.params;
             // checking if TaxBracket already exists
-            if ((await dbModel.findById({ taxBracketid })) !== null) {
-                await dbModel.findByIdAndDelete({
-                    taxBracketid,
-                });
+            if ((await dbModel.findById(taxBracketid)) !== null) {
+                await dbModel.findByIdAndDelete(taxBracketid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,

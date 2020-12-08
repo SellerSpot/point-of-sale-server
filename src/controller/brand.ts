@@ -93,10 +93,8 @@ export const deleteBrand: RequestHandler = async (req: Request, res: Response) =
             const dbModel = getBrandModel();
             const { brandid } = req.params;
             // checking if brand already exists
-            if ((await dbModel.findById({ brandid })) !== null) {
-                await dbModel.findByIdAndDelete({
-                    brandid,
-                });
+            if ((await dbModel.findById(brandid)) !== null) {
+                await dbModel.findByIdAndDelete(brandid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,
