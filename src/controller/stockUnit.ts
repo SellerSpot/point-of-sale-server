@@ -55,39 +55,39 @@ export const createStockUnit: RequestHandler = async (req: Request, res: Respons
     }
 };
 
-export const updateStockUnit: RequestHandler = async (req: Request, res: Response) => {
-    const type = {};
-    let response: IResponse;
-    try {
-        const dbModel = getStockUnitModel();
-        const stockUnitName = req.body['stockUnitName'];
-        const newStockUnitName = req.body['newStockUnitName'];
-        // checking if StockUnit already exists
-        if ((await dbModel.find({ name: stockUnitName })).length !== 0) {
-            await dbModel.findOneAndUpdate(
-                {
-                    name: stockUnitName,
-                },
-                { name: newStockUnitName },
-            );
-            response = {
-                status: true,
-            };
-        } else {
-            response = {
-                status: false,
-                data: 'Stock Unit does not exist in database',
-            };
-        }
-    } catch (e) {
-        response = {
-            status: false,
-            error: e.message,
-        };
-    } finally {
-        res.send(response);
-    }
-};
+// export const updateStockUnit: RequestHandler = async (req: Request, res: Response) => {
+//     const type = {};
+//     let response: IResponse;
+//     try {
+//         const dbModel = getStockUnitModel();
+//         const stockUnitName = req.body['stockUnitName'];
+//         const newStockUnitName = req.body['newStockUnitName'];
+//         // checking if StockUnit already exists
+//         if ((await dbModel.find({ name: stockUnitName })).length !== 0) {
+//             await dbModel.findOneAndUpdate(
+//                 {
+//                     name: stockUnitName,
+//                 },
+//                 { name: newStockUnitName },
+//             );
+//             response = {
+//                 status: true,
+//             };
+//         } else {
+//             response = {
+//                 status: false,
+//                 data: 'Stock Unit does not exist in database',
+//             };
+//         }
+//     } catch (e) {
+//         response = {
+//             status: false,
+//             error: e.message,
+//         };
+//     } finally {
+//         res.send(response);
+//     }
+// };
 
 export const deleteStockUnit: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;

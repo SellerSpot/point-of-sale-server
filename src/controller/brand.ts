@@ -54,36 +54,36 @@ export const createBrand: RequestHandler = async (req: Request, res: Response) =
     }
 };
 
-export const updateBrand: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
-    try {
-        const dbModel = getBrandModel();
-        // checking if brand already exists
-        if ((await dbModel.find({ name: req.body['brandName'] })).length !== 0) {
-            await dbModel.findOneAndUpdate(
-                {
-                    name: req.body['brandName'],
-                },
-                { name: req.body['newBrandName'] },
-            );
-            response = {
-                status: true,
-            };
-        } else {
-            response = {
-                status: false,
-                data: 'Brand does not exist in database',
-            };
-        }
-    } catch (e) {
-        response = {
-            status: false,
-            error: e.message,
-        };
-    } finally {
-        res.send(response);
-    }
-};
+// export const updateBrand: RequestHandler = async (req: Request, res: Response) => {
+//     let response: IResponse;
+//     try {
+//         const dbModel = getBrandModel();
+//         // checking if brand already exists
+//         if ((await dbModel.find({ name: req.body['brandName'] })).length !== 0) {
+//             await dbModel.findOneAndUpdate(
+//                 {
+//                     name: req.body['brandName'],
+//                 },
+//                 { name: req.body['newBrandName'] },
+//             );
+//             response = {
+//                 status: true,
+//             };
+//         } else {
+//             response = {
+//                 status: false,
+//                 data: 'Brand does not exist in database',
+//             };
+//         }
+//     } catch (e) {
+//         response = {
+//             status: false,
+//             error: e.message,
+//         };
+//     } finally {
+//         res.send(response);
+//     }
+// };
 
 export const deleteBrand: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;

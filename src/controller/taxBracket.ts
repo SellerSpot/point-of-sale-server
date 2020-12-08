@@ -56,41 +56,41 @@ export const createTaxBracket: RequestHandler = async (req: Request, res: Respon
     }
 };
 
-export const updateTaxBracket: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
-    try {
-        const dbModel = getTaxBracketModel();
+// export const updateTaxBracket: RequestHandler = async (req: Request, res: Response) => {
+//     let response: IResponse;
+//     try {
+//         const dbModel = getTaxBracketModel();
 
-        const taxBracketName = req.body['taxBracketName'];
-        const newTaxBracketName = req.body['newTaxBracketName'];
-        const newTaxBracketPercent = req.body['newTaxBracketPercent'];
-        // checking if TaxBracket already exists
+//         const taxBracketName = req.body['taxBracketName'];
+//         const newTaxBracketName = req.body['newTaxBracketName'];
+//         const newTaxBracketPercent = req.body['newTaxBracketPercent'];
+//         // checking if TaxBracket already exists
 
-        if ((await dbModel.find({ name: taxBracketName })).length !== 0) {
-            await dbModel.findOneAndUpdate(
-                {
-                    name: taxBracketName,
-                },
-                { name: newTaxBracketName, taxPercent: newTaxBracketPercent },
-            );
-            response = {
-                status: true,
-            };
-        } else {
-            response = {
-                status: false,
-                data: 'Tax Bracket does not exist in database',
-            };
-        }
-    } catch (e) {
-        response = {
-            status: false,
-            error: e.message,
-        };
-    } finally {
-        res.send(response);
-    }
-};
+//         if ((await dbModel.find({ name: taxBracketName })).length !== 0) {
+//             await dbModel.findOneAndUpdate(
+//                 {
+//                     name: taxBracketName,
+//                 },
+//                 { name: newTaxBracketName, taxPercent: newTaxBracketPercent },
+//             );
+//             response = {
+//                 status: true,
+//             };
+//         } else {
+//             response = {
+//                 status: false,
+//                 data: 'Tax Bracket does not exist in database',
+//             };
+//         }
+//     } catch (e) {
+//         response = {
+//             status: false,
+//             error: e.message,
+//         };
+//     } finally {
+//         res.send(response);
+//     }
+// };
 
 export const deleteTaxBracket: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;

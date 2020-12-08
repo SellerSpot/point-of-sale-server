@@ -52,31 +52,31 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
         res.send(response);
     }
 };
-export const updateCategory: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
-    try {
-        const dbModel = getCategoryModel();
-        // checking if category already exists
-        if ((await dbModel.find({ name: req.body['categoryName'] })).length !== 0) {
-            await dbModel.findOneAndUpdate({ name: req.body['categoryName'] }, { name: req.body['newCategoryName'] });
-            response = {
-                status: true,
-            };
-        } else {
-            response = {
-                status: false,
-                data: 'Category does not exist in database',
-            };
-        }
-    } catch (e) {
-        response = {
-            status: false,
-            error: e.message,
-        };
-    } finally {
-        res.send(response);
-    }
-};
+// export const updateCategory: RequestHandler = async (req: Request, res: Response) => {
+//     let response: IResponse;
+//     try {
+//         const dbModel = getCategoryModel();
+//         // checking if category already exists
+//         if ((await dbModel.find({ name: req.body['categoryName'] })).length !== 0) {
+//             await dbModel.findOneAndUpdate({ name: req.body['categoryName'] }, { name: req.body['newCategoryName'] });
+//             response = {
+//                 status: true,
+//             };
+//         } else {
+//             response = {
+//                 status: false,
+//                 data: 'Category does not exist in database',
+//             };
+//         }
+//     } catch (e) {
+//         response = {
+//             status: false,
+//             error: e.message,
+//         };
+//     } finally {
+//         res.send(response);
+//     }
+// };
 export const deleteCategory: RequestHandler = async (req: Request, res: Response) => {
     let response: IResponse;
     try {
