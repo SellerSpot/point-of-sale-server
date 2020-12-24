@@ -25,6 +25,14 @@ export const responseStatusCodes = {
     NOCONTENT: 204,
 };
 
+// fieldName constants
+export enum inputFieldNames {
+    // common to indicate fieldNameLess errors
+    COMMONERROR = 'commonError',
+    ADDBRANDFIELD = 'brandName',
+    ADDCATEGORYFIELD = 'categoryName',
+}
+
 // common joi schemas
 export const commonJoiSchemas = {
     MONGODBID: Joi.string().alphanum().length(24),

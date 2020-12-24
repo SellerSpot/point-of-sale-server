@@ -1,7 +1,7 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
 import { IResponse } from '../typings/request.types';
-import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
+import { commonJoiSchemas, inputFieldNames, joiSchemaOptions, responseStatusCodes } from '../utils';
 import { getCategoryModel } from '../utils/modelService';
 
 export const getCategories: RequestHandler = async (req: Request, res: Response) => {
@@ -36,7 +36,12 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
             response = {
                 status: false,
                 statusCode: responseStatusCodes.BADREQUEST,
-                data: error.message,
+                error: [
+                    {
+                        fieldName: inputFieldNames.ADDCATEGORYFIELD,
+                        message: error.message,
+                    },
+                ],
             };
         } else {
             const CategoryModel = getCategoryModel();
@@ -49,12 +54,23 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.CREATED,
+                    data: [
+                        {
+                            fieldName: inputFieldNames.ADDCATEGORYFIELD,
+                            message: 'Category successfully inserted into database',
+                        },
+                    ],
                 };
             } else {
                 response = {
                     status: false,
                     statusCode: responseStatusCodes.CONFLICT,
-                    data: 'Category already exists in database',
+                    error: [
+                        {
+                            fieldName: inputFieldNames.ADDCATEGORYFIELD,
+                            message: 'Category already exists in database',
+                        },
+                    ],
                 };
             }
         }
@@ -62,7 +78,12 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
         response = {
             status: false,
             statusCode: responseStatusCodes.INTERNALSERVERERROR,
-            data: e.message,
+            error: [
+                {
+                    fieldName: inputFieldNames.ADDCATEGORYFIELD,
+                    message: e.message,
+                },
+            ],
         };
     } finally {
         res.send(response);
