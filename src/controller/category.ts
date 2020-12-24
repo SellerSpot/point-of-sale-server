@@ -28,7 +28,10 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
     let response: IResponse;
     try {
         const requestBodySchema = Joi.object({
-            categoryName: Joi.string().alphanum().required(),
+            categoryName: Joi.string().alphanum().required().messages({
+                'string.base': 'Category Name must be a string',
+                'any.required': 'Category Name is required',
+            }),
         });
         const { error, value } = requestBodySchema.validate(req.body, joiSchemaOptions);
         req.body = value;
@@ -36,12 +39,12 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
             response = {
                 status: false,
                 statusCode: responseStatusCodes.BADREQUEST,
-                error: [
-                    {
-                        fieldName: inputFieldNames.ADDCATEGORYFIELD,
-                        message: error.message,
-                    },
-                ],
+                error: error.details.map((fieldError) => {
+                    return {
+                        fieldName: fieldError.context.label,
+                        message: fieldError.message,
+                    };
+                }),
             };
         } else {
             const CategoryModel = getCategoryModel();
@@ -54,12 +57,7 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.CREATED,
-                    data: [
-                        {
-                            fieldName: inputFieldNames.ADDCATEGORYFIELD,
-                            message: 'Category successfully inserted into database',
-                        },
-                    ],
+                    data: 'Category successfully inserted into database',
                 };
             } else {
                 response = {

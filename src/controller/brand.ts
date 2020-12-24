@@ -28,7 +28,10 @@ export const createBrand: RequestHandler = async (req: Request, res: Response) =
     let response: IResponse;
     try {
         const requestBodySchema = Joi.object({
-            brandName: Joi.string().alphanum().required(),
+            brandName: Joi.string().alphanum().required().messages({
+                'string.base': 'Brand Name must be a string',
+                'any.required': 'Brand Name is required',
+            }),
         });
         const { error, value } = requestBodySchema.validate(req.body, joiSchemaOptions);
         req.body = value;
@@ -36,12 +39,12 @@ export const createBrand: RequestHandler = async (req: Request, res: Response) =
             response = {
                 status: false,
                 statusCode: responseStatusCodes.BADREQUEST,
-                error: [
-                    {
-                        fieldName: inputFieldNames.ADDBRANDFIELD,
-                        message: error.message,
-                    },
-                ],
+                error: error.details.map((fieldError) => {
+                    return {
+                        fieldName: fieldError.context.label,
+                        message: fieldError.message,
+                    };
+                }),
             };
         } else {
             const { brandName } = req.body;
@@ -54,12 +57,7 @@ export const createBrand: RequestHandler = async (req: Request, res: Response) =
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.CREATED,
-                    data: [
-                        {
-                            fieldName: inputFieldNames.ADDBRANDFIELD,
-                            message: 'Brand created successfully',
-                        },
-                    ],
+                    data: 'Brand created successfully',
                 };
             } else {
                 response = {

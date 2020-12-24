@@ -2,7 +2,7 @@ import Joi from 'joi';
 
 // joi schema options
 export const joiSchemaOptions = {
-    abortEarly: true,
+    abortEarly: false,
     allowUnknown: false,
     stripUnknown: true,
 };
@@ -28,9 +28,25 @@ export const responseStatusCodes = {
 // fieldName constants
 export enum inputFieldNames {
     // common to indicate fieldNameLess errors
-    COMMONERROR = 'commonError',
+    COMMONMESSAGE = 'commonMessage',
+    // addbrands fields
     ADDBRANDFIELD = 'brandName',
+    // category fields
     ADDCATEGORYFIELD = 'categoryName',
+    // stockunit fields
+    ADDSTOCKUNITFIELD = 'stockUnitName',
+    // taxbracket fields
+    ADDTAXBRACKETNAMEFIELD = 'addTaxBracketName',
+    ADDTAXBRACKETPERCENTFIELD = 'addTaxBracketPercent',
+    // product fields
+    ADDPRODUCTNAMEFIELD = 'addProductName',
+    ADDPRODUCTCATEGORYFIELD = 'addProductCategory',
+    ADDPRODUCTBRANDFIELD = 'addProductBrand',
+    ADDPRODUCTGTINFIELD = 'addProductGtin',
+    ADDPRODUCTMRPFIELD = 'addProductMrp',
+    ADDPRODUCTLANDINGPRICEFIELD = 'addProductLandingPrice',
+    ADDPRODUCTSELLINGPRICEFIELD = 'addProductSellingPrice',
+    ADDPRODUCTAVAILABLESTOCKFIELD = 'addProductAvailableStock',
 }
 
 // common joi schemas
