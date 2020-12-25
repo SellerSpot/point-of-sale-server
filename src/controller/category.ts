@@ -1,7 +1,7 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
 import { IResponse } from '../typings/request.types';
-import { commonJoiSchemas, inputFieldNames, joiSchemaOptions, responseStatusCodes } from '../utils';
+import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 import { getCategoryModel } from '../utils/modelService';
 
 export const getCategories: RequestHandler = async (req: Request, res: Response) => {
@@ -28,7 +28,7 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
     let response: IResponse;
     try {
         const requestBodySchema = Joi.object({
-            categoryName: Joi.string().alphanum().required().messages({
+            categoryName: Joi.string().required().messages({
                 'string.base': 'Category Name must be a string',
                 'any.required': 'Category Name is required',
             }),
@@ -65,7 +65,7 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
                     statusCode: responseStatusCodes.CONFLICT,
                     error: [
                         {
-                            fieldName: inputFieldNames.ADDCATEGORYFIELD,
+                            fieldName: 'categoryName',
                             message: 'Category already exists in database',
                         },
                     ],
@@ -78,7 +78,7 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
             statusCode: responseStatusCodes.INTERNALSERVERERROR,
             error: [
                 {
-                    fieldName: inputFieldNames.ADDCATEGORYFIELD,
+                    fieldName: 'categoryName',
                     message: e.message,
                 },
             ],

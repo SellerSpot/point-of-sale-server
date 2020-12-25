@@ -1,7 +1,7 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
 import { IResponse } from '../typings/request.types';
-import { commonJoiSchemas, inputFieldNames, joiSchemaOptions, responseStatusCodes } from '../utils';
+import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 import { getBrandModel } from '../utils/modelService';
 
 export const getBrands: RequestHandler = async (req: Request, res: Response) => {
@@ -28,7 +28,7 @@ export const createBrand: RequestHandler = async (req: Request, res: Response) =
     let response: IResponse;
     try {
         const requestBodySchema = Joi.object({
-            brandName: Joi.string().alphanum().required().messages({
+            brandName: Joi.string().required().messages({
                 'string.base': 'Brand Name must be a string',
                 'any.required': 'Brand Name is required',
             }),
@@ -65,7 +65,7 @@ export const createBrand: RequestHandler = async (req: Request, res: Response) =
                     statusCode: responseStatusCodes.CONFLICT,
                     error: [
                         {
-                            fieldName: inputFieldNames.ADDBRANDFIELD,
+                            fieldName: 'brandName',
                             message: 'Brand already exists in database',
                         },
                     ],
@@ -78,7 +78,7 @@ export const createBrand: RequestHandler = async (req: Request, res: Response) =
             statusCode: responseStatusCodes.INTERNALSERVERERROR,
             error: [
                 {
-                    fieldName: inputFieldNames.ADDBRANDFIELD,
+                    fieldName: 'brandName',
                     message: e.message,
                 },
             ],

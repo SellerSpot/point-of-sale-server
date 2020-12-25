@@ -1,7 +1,7 @@
 import { RequestHandler, Request, Response } from 'express';
 import { IResponse } from '../typings/request.types';
 import Joi from 'joi';
-import { commonJoiSchemas, inputFieldNames, joiSchemaOptions, responseStatusCodes } from '../utils';
+import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 import { getTaxBracketModel } from '../utils/modelService';
 
 export const getTaxBrackets: RequestHandler = async (req: Request, res: Response) => {
@@ -34,6 +34,8 @@ export const createTaxBracket: RequestHandler = async (req: Request, res: Respon
             }),
             taxPercent: Joi.number().max(100).min(0).required().messages({
                 'number.base': 'Tax Bracket percent must be a number',
+                'number.max': 'Tax Bracket percent must be less than 100',
+                'number.min': 'Tax Bracket percent must be more than 0',
                 'any.required': 'Tax Bracket percent is required',
             }),
         });
@@ -70,7 +72,7 @@ export const createTaxBracket: RequestHandler = async (req: Request, res: Respon
                     statusCode: responseStatusCodes.CONFLICT,
                     error: [
                         {
-                            fieldName: inputFieldNames.ADDTAXBRACKETNAMEFIELD,
+                            fieldName: 'name',
                             message: 'Tax Bracket already exists in database',
                         },
                     ],
@@ -83,7 +85,7 @@ export const createTaxBracket: RequestHandler = async (req: Request, res: Respon
             statusCode: responseStatusCodes.INTERNALSERVERERROR,
             error: [
                 {
-                    fieldName: inputFieldNames.COMMONMESSAGE,
+                    fieldName: 'commonMessage',
                     message: e.message,
                 },
             ],

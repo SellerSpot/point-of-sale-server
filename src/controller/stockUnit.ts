@@ -1,7 +1,7 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
 import { IResponse } from '../typings/request.types';
-import { commonJoiSchemas, inputFieldNames, joiSchemaOptions, responseStatusCodes } from '../utils';
+import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 import { getStockUnitModel } from '../utils/modelService';
 
 export const getStockUnits: RequestHandler = async (req: Request, res: Response) => {
@@ -65,7 +65,7 @@ export const createStockUnit: RequestHandler = async (req: Request, res: Respons
                     statusCode: responseStatusCodes.CONFLICT,
                     error: [
                         {
-                            fieldName: inputFieldNames.ADDSTOCKUNITFIELD,
+                            fieldName: 'stockUnitName',
                             message: 'Stock Unit already exists in database',
                         },
                     ],
@@ -78,7 +78,7 @@ export const createStockUnit: RequestHandler = async (req: Request, res: Respons
             statusCode: responseStatusCodes.INTERNALSERVERERROR,
             error: [
                 {
-                    fieldName: inputFieldNames.ADDSTOCKUNITFIELD,
+                    fieldName: 'stockUnitName',
                     message: e.message,
                 },
             ],

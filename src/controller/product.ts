@@ -1,7 +1,7 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
 import { IResponse } from '../typings/request.types';
-import { commonJoiSchemas, inputFieldNames, joiSchemaOptions, responseStatusCodes } from '../utils';
+import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 import { getProductModel } from '../utils/modelService';
 
 export const getProducts: RequestHandler = async (req: Request, res: Response) => {
@@ -79,11 +79,11 @@ export const createProduct: RequestHandler = async (req: Request, res: Response)
                 'string.base': 'Category must be a string',
                 'any.required': 'Category is required',
             }),
-            brand: commonJoiSchemas.MONGODBID.required().messages({
+            brand: commonJoiSchemas.MONGODBID.required().allow('').messages({
                 'string.base': 'Brand must be a string',
                 'any.required': 'Brand is required',
             }),
-            gtinNumber: Joi.string().messages({
+            gtinNumber: Joi.string().allow('').messages({
                 'string.base': 'GTIN number must be a string',
             }),
             mrpPrice: Joi.number().min(0).messages({
@@ -168,7 +168,7 @@ export const createProduct: RequestHandler = async (req: Request, res: Response)
             statusCode: responseStatusCodes.INTERNALSERVERERROR,
             error: [
                 {
-                    fieldName: inputFieldNames.COMMONMESSAGE,
+                    fieldName: 'commonMessage',
                     message: e.message,
                 },
             ],

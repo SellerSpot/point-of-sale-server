@@ -25,30 +25,6 @@ export const responseStatusCodes = {
     NOCONTENT: 204,
 };
 
-// fieldName constants
-export enum inputFieldNames {
-    // common to indicate fieldNameLess errors
-    COMMONMESSAGE = 'commonMessage',
-    // addbrands fields
-    ADDBRANDFIELD = 'brandName',
-    // category fields
-    ADDCATEGORYFIELD = 'categoryName',
-    // stockunit fields
-    ADDSTOCKUNITFIELD = 'stockUnitName',
-    // taxbracket fields
-    ADDTAXBRACKETNAMEFIELD = 'addTaxBracketName',
-    ADDTAXBRACKETPERCENTFIELD = 'addTaxBracketPercent',
-    // product fields
-    ADDPRODUCTNAMEFIELD = 'addProductName',
-    ADDPRODUCTCATEGORYFIELD = 'addProductCategory',
-    ADDPRODUCTBRANDFIELD = 'addProductBrand',
-    ADDPRODUCTGTINFIELD = 'addProductGtin',
-    ADDPRODUCTMRPFIELD = 'addProductMrp',
-    ADDPRODUCTLANDINGPRICEFIELD = 'addProductLandingPrice',
-    ADDPRODUCTSELLINGPRICEFIELD = 'addProductSellingPrice',
-    ADDPRODUCTAVAILABLESTOCKFIELD = 'addProductAvailableStock',
-}
-
 // common joi schemas
 export const commonJoiSchemas = {
     MONGODBID: Joi.string().alphanum().length(24),
