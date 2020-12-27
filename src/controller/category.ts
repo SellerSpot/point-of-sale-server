@@ -28,7 +28,10 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
     let response: IResponse;
     try {
         const requestBodySchema = Joi.object({
-            categoryName: Joi.string().alphanum().required(),
+            categoryName: Joi.string().required().messages({
+                'string.base': 'Category Name must be a string',
+                'any.required': 'Category Name is required',
+            }),
         });
         const { error, value } = requestBodySchema.validate(req.body, joiSchemaOptions);
         req.body = value;
@@ -36,7 +39,12 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
             response = {
                 status: false,
                 statusCode: responseStatusCodes.BADREQUEST,
-                data: error.message,
+                error: error.details.map((fieldError) => {
+                    return {
+                        fieldName: fieldError.context.label,
+                        message: fieldError.message,
+                    };
+                }),
             };
         } else {
             const CategoryModel = getCategoryModel();
@@ -49,12 +57,18 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.CREATED,
+                    data: 'Category successfully inserted into database',
                 };
             } else {
                 response = {
                     status: false,
                     statusCode: responseStatusCodes.CONFLICT,
-                    data: 'Category already exists in database',
+                    error: [
+                        {
+                            fieldName: 'categoryName',
+                            message: 'Category already exists in database',
+                        },
+                    ],
                 };
             }
         }
@@ -62,7 +76,12 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
         response = {
             status: false,
             statusCode: responseStatusCodes.INTERNALSERVERERROR,
-            data: e.message,
+            error: [
+                {
+                    fieldName: 'categoryName',
+                    message: e.message,
+                },
+            ],
         };
     } finally {
         res.send(response);

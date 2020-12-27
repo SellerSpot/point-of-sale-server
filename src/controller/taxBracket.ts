@@ -28,8 +28,16 @@ export const createTaxBracket: RequestHandler = async (req: Request, res: Respon
     let response: IResponse;
     try {
         const requestBodySchema = Joi.object({
-            name: Joi.string().alphanum().required(),
-            taxPercent: Joi.number().max(100).min(0).required(),
+            name: Joi.string().required().messages({
+                'string.base': 'Tax Bracket name must be a string',
+                'any.required': 'Tax Bracket name is required',
+            }),
+            taxPercent: Joi.number().max(100).min(0).required().messages({
+                'number.base': 'Tax Bracket percent must be a number',
+                'number.max': 'Tax Bracket percent must be less than 100',
+                'number.min': 'Tax Bracket percent must be more than 0',
+                'any.required': 'Tax Bracket percent is required',
+            }),
         });
         const { error, value } = requestBodySchema.validate(req.body, joiSchemaOptions);
         req.body = value;
@@ -37,7 +45,12 @@ export const createTaxBracket: RequestHandler = async (req: Request, res: Respon
             response = {
                 status: false,
                 statusCode: responseStatusCodes.BADREQUEST,
-                data: error.message,
+                error: error.details.map((fieldError) => {
+                    return {
+                        fieldName: fieldError.context.label,
+                        message: fieldError.message,
+                    };
+                }),
             };
         } else {
             const TaxBracketModel = getTaxBracketModel();
@@ -51,12 +64,18 @@ export const createTaxBracket: RequestHandler = async (req: Request, res: Respon
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.CREATED,
+                    data: 'Tax Bracket created successfully',
                 };
             } else {
                 response = {
                     status: false,
                     statusCode: responseStatusCodes.CONFLICT,
-                    data: 'Tax Bracket already exists in database',
+                    error: [
+                        {
+                            fieldName: 'name',
+                            message: 'Tax Bracket already exists in database',
+                        },
+                    ],
                 };
             }
         }
@@ -64,7 +83,12 @@ export const createTaxBracket: RequestHandler = async (req: Request, res: Respon
         response = {
             status: false,
             statusCode: responseStatusCodes.INTERNALSERVERERROR,
-            data: e.message,
+            error: [
+                {
+                    fieldName: 'commonMessage',
+                    message: e.message,
+                },
+            ],
         };
     } finally {
         res.send(response);

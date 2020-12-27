@@ -28,7 +28,10 @@ export const createStockUnit: RequestHandler = async (req: Request, res: Respons
     let response: IResponse;
     try {
         const requestBodySchema = Joi.object({
-            stockUnitName: Joi.string().alphanum().required(),
+            stockUnitName: Joi.string().alphanum().required().messages({
+                'string.base': 'Stock Unit Name must be a string',
+                'any.required': 'Stock Unit Name is required',
+            }),
         });
         const { error, value } = requestBodySchema.validate(req.body, joiSchemaOptions);
         req.body = value;
@@ -36,7 +39,12 @@ export const createStockUnit: RequestHandler = async (req: Request, res: Respons
             response = {
                 status: false,
                 statusCode: responseStatusCodes.BADREQUEST,
-                data: error.message,
+                error: error.details.map((fieldError) => {
+                    return {
+                        fieldName: fieldError.context.label,
+                        message: fieldError.message,
+                    };
+                }),
             };
         } else {
             const { stockUnitName } = req.body;
@@ -49,12 +57,18 @@ export const createStockUnit: RequestHandler = async (req: Request, res: Respons
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.CREATED,
+                    data: 'Stock Unit successfully created',
                 };
             } else {
                 response = {
                     status: false,
                     statusCode: responseStatusCodes.CONFLICT,
-                    data: 'Stock Unit already exists in database',
+                    error: [
+                        {
+                            fieldName: 'stockUnitName',
+                            message: 'Stock Unit already exists in database',
+                        },
+                    ],
                 };
             }
         }
@@ -62,7 +76,12 @@ export const createStockUnit: RequestHandler = async (req: Request, res: Respons
         response = {
             status: false,
             statusCode: responseStatusCodes.INTERNALSERVERERROR,
-            data: e.message,
+            error: [
+                {
+                    fieldName: 'stockUnitName',
+                    message: e.message,
+                },
+            ],
         };
     } finally {
         res.send(response);

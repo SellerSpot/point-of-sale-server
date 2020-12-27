@@ -2,7 +2,7 @@ import Joi from 'joi';
 
 // joi schema options
 export const joiSchemaOptions = {
-    abortEarly: true,
+    abortEarly: false,
     allowUnknown: false,
     stripUnknown: true,
 };
