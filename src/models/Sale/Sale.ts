@@ -2,7 +2,7 @@ import { Schema, model, SchemaDefinition } from 'mongoose';
 import { EMODELS } from '../models.types';
 import { ESaleStatus, ISaleModel } from './Sale.types';
 
-export const SaleSchemaSample: SchemaDefinition = {
+export const saleSchemaDefinition: SchemaDefinition = {
     status: {
         type: Schema.Types.String,
         enum: [ESaleStatus.COMPLETED, ESaleStatus.PENDING],
@@ -48,6 +48,6 @@ export const SaleSchemaSample: SchemaDefinition = {
     },
 };
 
-const SaleSchema = new Schema(SaleSchemaSample, { timestamps: true });
+const SaleSchema = new Schema(saleSchemaDefinition, { timestamps: true });
 
 export const SaleModel: ISaleModel = model(EMODELS.SALE, SaleSchema);

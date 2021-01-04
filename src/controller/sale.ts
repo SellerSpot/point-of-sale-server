@@ -5,19 +5,8 @@ import { SaleModelTypes } from '../models';
 import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 import { getSaleModel } from '../utils/modelService';
 
-// holds common reference for the return type for API
-interface IResponse {
-    status: boolean;
-    statusCode: number;
-    data?: SaleModelTypes.IGetSales[] | SaleModelTypes.IGetSales | string;
-    error?: {
-        fieldName: string;
-        message: string;
-    }[];
-}
-
 export const getSales: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: SaleModelTypes.IResponse;
     try {
         const SaleModel = getSaleModel();
         const allSalesData = await SaleModel.find();
@@ -52,7 +41,7 @@ export const getSales: RequestHandler = async (req: Request, res: Response) => {
 };
 
 export const getSingleSale: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: SaleModelTypes.IResponse;
     try {
         const requestParamsSchema = Joi.object({
             saleid: commonJoiSchemas.MONGODBID.required(),
@@ -104,7 +93,7 @@ export const getSingleSale: RequestHandler = async (req: Request, res: Response)
 };
 
 export const createSale: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: SaleModelTypes.IResponse;
     try {
         // to validate the data passed
         const requestBodySchema = Joi.object<SaleModelTypes.ISale>({
@@ -166,7 +155,7 @@ export const createSale: RequestHandler = async (req: Request, res: Response) =>
 };
 
 export const deleteSale: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: SaleModelTypes.IResponse;
     try {
         const requestParamsSchema = Joi.object({
             saleid: commonJoiSchemas.MONGODBID.required(),
