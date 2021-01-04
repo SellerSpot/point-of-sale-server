@@ -1,6 +1,8 @@
 // exports from models
 export * as BaseModel from './Base';
-export * as CategoryModel from './Category';
+
+export * as CategoryModel from './Category/Category';
+export * as CategoryModelTypes from './Category/Category.types';
 
 export * as BrandModel from './Brand/Brand';
 export * as BrandModelTypes from './Brand/Brand.types';

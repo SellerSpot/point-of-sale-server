@@ -1,5 +1,6 @@
-import { Schema, model, Model, Document } from 'mongoose';
-import { EMODELS } from './models.types';
+import { Schema, model } from 'mongoose';
+import { EMODELS } from '../models.types';
+import { ICategoryModel } from './Category.types';
 
 const CategorySchema = new Schema({
     name: {
@@ -8,11 +9,5 @@ const CategorySchema = new Schema({
         unique: true,
     },
 });
-
-export interface ICategory {
-    name: Schema.Types.String;
-}
-
-export type ICategoryModel = Model<ICategory & Document>;
 
 export const CategoryModel: ICategoryModel = model(EMODELS.CATEGORY, CategorySchema);
