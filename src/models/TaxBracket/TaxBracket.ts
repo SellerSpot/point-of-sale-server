@@ -1,5 +1,6 @@
-import { Schema, model, Model, Document } from 'mongoose';
-import { EMODELS } from './models.types';
+import { Schema, model } from 'mongoose';
+import { EMODELS } from '../models.types';
+import { ITaxBracketModel } from './TaxBracket.types';
 
 const TaxBracketSchema = new Schema({
     name: {
@@ -13,12 +14,5 @@ const TaxBracketSchema = new Schema({
         required: true,
     },
 });
-
-export interface ITaxBracket {
-    name: Schema.Types.String;
-    taxPercent: Schema.Types.Number;
-}
-
-export type ITaxBracketModel = Model<ITaxBracket & Document>;
 
 export const TaxBracketModel: ITaxBracketModel = model(EMODELS.TAXBRACKET, TaxBracketSchema);

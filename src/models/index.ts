@@ -10,7 +10,8 @@ export * as BrandModelTypes from './Brand/Brand.types';
 export * as StockUnitModel from './StockUnit/StockUnit';
 export * as StockUnitModelTypes from './StockUnit/StockUnit.types';
 
-export * as TaxBracketModel from './TaxBracket';
+export * as TaxBracketModel from './TaxBracket/TaxBracket';
+export * as TaxBracketModelTypes from './TaxBracket/TaxBracket.types';
 
 export * as ProductModel from './Product';
 

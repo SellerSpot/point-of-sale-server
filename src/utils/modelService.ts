@@ -5,7 +5,7 @@ import {
     ProductModel,
     SaleModelTypes,
     StockUnitModelTypes,
-    TaxBracketModel,
+    TaxBracketModelTypes,
 } from '../models';
 
 import { EMODELS } from '../models/models.types';
@@ -30,6 +30,6 @@ export const getStockUnitModel = (currentDb: Connection = global.currentDb): Sto
     return currentDb.model(EMODELS.STOCKUNIT);
 };
 
-export const getTaxBracketModel = (currentDb: Connection = global.currentDb): TaxBracketModel.ITaxBracketModel => {
+export const getTaxBracketModel = (currentDb: Connection = global.currentDb): TaxBracketModelTypes.ITaxBracketModel => {
     return currentDb.model(EMODELS.TAXBRACKET);
 };
