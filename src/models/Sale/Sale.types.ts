@@ -18,6 +18,7 @@ export interface ISale {
     discountPercent?: number;
     totalTax?: number;
     grandTotal?: number;
+    createdAt: string;
 }
 
 export type ISaleModel = Model<ISale & Document>;
@@ -25,6 +26,7 @@ export type ISaleModel = Model<ISale & Document>;
 // holds common reference for the return type for API
 export interface IGetSales {
     _id: string;
+    createdAt: string;
     status: ESaleStatus;
     products: ISaleItem[];
     subTotal: number;

@@ -46,8 +46,12 @@ export const saleSchemaDefinition: SchemaDefinition = {
         required: false,
         default: 0,
     },
+    createdAt: {
+        type: Schema.Types.Number,
+        required: true,
+    },
 };
 
-const SaleSchema = new Schema(saleSchemaDefinition, { timestamps: true });
+const SaleSchema = new Schema(saleSchemaDefinition);
 
 export const SaleModel: ISaleModel = model(EMODELS.SALE, SaleSchema);

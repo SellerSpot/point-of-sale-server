@@ -16,6 +16,7 @@ export const getSales: RequestHandler = async (req: Request, res: Response) => {
         allSalesData.map((sale) => {
             compiledData.push({
                 _id: sale._id,
+                createdAt: sale.createdAt,
                 discountPercent: sale.discountPercent,
                 grandTotal: sale.grandTotal,
                 products: sale.products,
@@ -65,6 +66,7 @@ export const getSingleSale: RequestHandler = async (req: Request, res: Response)
                     statusCode: responseStatusCodes.OK,
                     data: {
                         _id: saleData._id,
+                        createdAt: saleData.createdAt,
                         discountPercent: saleData.discountPercent,
                         grandTotal: saleData.grandTotal,
                         products: saleData.products,
@@ -111,6 +113,7 @@ export const createSale: RequestHandler = async (req: Request, res: Response) =>
             discountPercent: Joi.number().min(0).max(100),
             totalTax: Joi.number().min(0),
             grandTotal: Joi.number().min(0),
+            createdAt: Joi.number().required(),
         });
         const { error, value } = requestBodySchema.validate(req.body, joiSchemaOptions);
         req.body = value;
@@ -129,6 +132,7 @@ export const createSale: RequestHandler = async (req: Request, res: Response) =>
                 totalTax,
                 subTotal,
                 discountPercent,
+                createdAt,
             } = req.body as SaleModelTypes.ISale;
             await SaleModel.create<SaleModelTypes.ISale>({
                 status,
@@ -136,6 +140,7 @@ export const createSale: RequestHandler = async (req: Request, res: Response) =>
                 products,
                 totalTax,
                 subTotal,
+                createdAt,
                 discountPercent,
             });
             response = {
