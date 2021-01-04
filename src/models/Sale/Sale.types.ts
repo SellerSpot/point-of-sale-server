@@ -23,16 +23,6 @@ export interface ISale {
 export type ISaleModel = Model<ISale & Document>;
 
 // holds common reference for the return type for API
-export interface IResponse {
-    status: boolean;
-    statusCode: number;
-    data?: IGetSales[] | IGetSales | string;
-    error?: {
-        fieldName: string;
-        message: string;
-    }[];
-}
-
 export interface IGetSales {
     _id: string;
     status: ESaleStatus;
@@ -41,4 +31,14 @@ export interface IGetSales {
     discountPercent: number;
     totalTax: number;
     grandTotal: number;
+}
+
+export interface IResponse {
+    status: boolean;
+    statusCode: number;
+    data?: IGetSales[] | IGetSales | string;
+    error?: {
+        fieldName: string;
+        message: string;
+    }[];
 }

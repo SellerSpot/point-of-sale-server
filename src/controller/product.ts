@@ -1,17 +1,36 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
-import { IResponse } from '../typings/request.types';
+import lodash from 'lodash';
+import { ProductModelTypes } from '../models';
 import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 import { getProductModel } from '../utils/modelService';
 
 export const getProducts: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: ProductModelTypes.IResponse;
     try {
         const ProductModel = getProductModel();
+        const productData = await ProductModel.find();
+        const compiledData: ProductModelTypes.IGetProduct[] = [];
+        productData.map((product) => {
+            compiledData.push({
+                _id: product.id,
+                brand: product.brand,
+                category: product.category,
+                gtinNumber: product.gtinNumber,
+                landingPrice: product.landingPrice,
+                mrpPrice: product.mrpPrice,
+                name: product.name,
+                profitPercent: product.profitPercent,
+                sellingPrice: product.sellingPrice,
+                stockInformation: product.stockInformation,
+                taxBracket: product.taxBracket,
+            });
+        });
+
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await ProductModel.find(),
+            data: compiledData,
         };
     } catch (e) {
         response = {
@@ -25,7 +44,7 @@ export const getProducts: RequestHandler = async (req: Request, res: Response) =
 };
 
 export const getSingleProduct: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: ProductModelTypes.IResponse;
     try {
         const requestParamsSchema = Joi.object({
             productid: commonJoiSchemas.MONGODBID.required(),
@@ -42,11 +61,24 @@ export const getSingleProduct: RequestHandler = async (req: Request, res: Respon
             const ProductModel = getProductModel();
             const { productid } = req.params;
             // checking if Product already exists
-            if ((await ProductModel.findById(productid)) !== null) {
+            const productData = await ProductModel.findById(productid);
+            if (!lodash.isNull(productData)) {
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.OK,
-                    data: await ProductModel.findById(productid),
+                    data: {
+                        _id: productData.id,
+                        brand: productData.brand,
+                        category: productData.category,
+                        gtinNumber: productData.gtinNumber,
+                        landingPrice: productData.landingPrice,
+                        mrpPrice: productData.mrpPrice,
+                        name: productData.name,
+                        profitPercent: productData.profitPercent,
+                        sellingPrice: productData.sellingPrice,
+                        stockInformation: productData.stockInformation,
+                        taxBracket: productData.taxBracket,
+                    },
                 };
             } else {
                 response = {
@@ -68,7 +100,7 @@ export const getSingleProduct: RequestHandler = async (req: Request, res: Respon
 };
 
 export const createProduct: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: ProductModelTypes.IResponse;
     try {
         const requestBodySchema = Joi.object({
             name: Joi.string().required().messages({
@@ -179,7 +211,7 @@ export const createProduct: RequestHandler = async (req: Request, res: Response)
 };
 
 export const deleteProduct: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: ProductModelTypes.IResponse;
     try {
         const requestParamsSchema = Joi.object({
             productid: commonJoiSchemas.MONGODBID.required(),
