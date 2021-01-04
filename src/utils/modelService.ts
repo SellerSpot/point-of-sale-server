@@ -1,5 +1,6 @@
 import { Connection } from 'mongoose';
-import { BrandModel, CategoryModel, ProductModel, SaleModel, StockUnitModel, TaxBracketModel } from '../models';
+import { BrandModel, CategoryModel, ProductModel, SaleModelTypes, StockUnitModel, TaxBracketModel } from '../models';
+
 import { EMODELS } from '../models/models.types';
 
 export const getBrandModel = (currentDb: Connection = global.currentDb): BrandModel.IBrandModel => {
@@ -14,7 +15,7 @@ export const getProductModel = (currentDb: Connection = global.currentDb): Produ
     return currentDb.model(EMODELS.PRODUCT);
 };
 
-export const getSaleModel = (currentDb: Connection = global.currentDb): SaleModel.ISaleModel => {
+export const getSaleModel = (currentDb: Connection = global.currentDb): SaleModelTypes.ISaleModel => {
     return currentDb.model(EMODELS.SALE);
 };
 

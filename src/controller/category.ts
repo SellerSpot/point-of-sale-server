@@ -17,7 +17,7 @@ export const getCategories: RequestHandler = async (req: Request, res: Response)
         response = {
             status: false,
             statusCode: responseStatusCodes.INTERNALSERVERERROR,
-            data: e.message,
+            error: e.message,
         };
     } finally {
         res.send(response);
