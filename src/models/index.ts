@@ -7,7 +7,8 @@ export * as CategoryModelTypes from './Category/Category.types';
 export * as BrandModel from './Brand/Brand';
 export * as BrandModelTypes from './Brand/Brand.types';
 
-export * as StockUnitModel from './StockUnit';
+export * as StockUnitModel from './StockUnit/StockUnit';
+export * as StockUnitModelTypes from './StockUnit/StockUnit.types';
 
 export * as TaxBracketModel from './TaxBracket';
 

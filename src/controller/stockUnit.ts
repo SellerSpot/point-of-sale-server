@@ -1,17 +1,25 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
-import { IResponse } from '../typings/request.types';
+import { StockUnitModelTypes } from '../models';
 import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 import { getStockUnitModel } from '../utils/modelService';
 
 export const getStockUnits: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: StockUnitModelTypes.IResponse;
     try {
         const StockUnitModel = getStockUnitModel();
+        const stockUnitData = await StockUnitModel.find();
+        const compiledData: StockUnitModelTypes.IGetStockUnit[] = [];
+        stockUnitData.map((stockUnit) => {
+            compiledData.push({
+                _id: stockUnit.id,
+                name: stockUnit.name,
+            });
+        });
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await StockUnitModel.find(),
+            data: compiledData,
         };
     } catch (e) {
         response = {
@@ -25,7 +33,7 @@ export const getStockUnits: RequestHandler = async (req: Request, res: Response)
 };
 
 export const createStockUnit: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: StockUnitModelTypes.IResponse;
     try {
         const requestBodySchema = Joi.object({
             stockUnitName: Joi.string().alphanum().required().messages({
@@ -89,7 +97,7 @@ export const createStockUnit: RequestHandler = async (req: Request, res: Respons
 };
 
 export const deleteStockUnit: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: StockUnitModelTypes.IResponse;
     try {
         const requestParamsSchema = Joi.object({
             stockunitid: commonJoiSchemas.MONGODBID.required(),

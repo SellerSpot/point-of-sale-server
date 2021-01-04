@@ -4,7 +4,7 @@ import {
     CategoryModelTypes,
     ProductModel,
     SaleModelTypes,
-    StockUnitModel,
+    StockUnitModelTypes,
     TaxBracketModel,
 } from '../models';
 
@@ -26,7 +26,7 @@ export const getSaleModel = (currentDb: Connection = global.currentDb): SaleMode
     return currentDb.model(EMODELS.SALE);
 };
 
-export const getStockUnitModel = (currentDb: Connection = global.currentDb): StockUnitModel.IStockUnitModel => {
+export const getStockUnitModel = (currentDb: Connection = global.currentDb): StockUnitModelTypes.IStockUnitModel => {
     return currentDb.model(EMODELS.STOCKUNIT);
 };
 
