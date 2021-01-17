@@ -1,5 +1,6 @@
-import { Schema, model, Model, Document } from 'mongoose';
-import { EMODELS } from './models.types';
+import { Schema, model } from 'mongoose';
+import { EMODELS } from '../models.types';
+import { IProductModel } from './Product.types';
 
 const ProductSchema = new Schema({
     name: {
@@ -61,23 +62,5 @@ const ProductSchema = new Schema({
         },
     ],
 });
-
-export interface IProduct {
-    name: Schema.Types.String;
-    category: Schema.Types.ObjectId;
-    brand: Schema.Types.ObjectId;
-    gtinNumber?: Schema.Types.String;
-    mrpPrice?: Schema.Types.Number;
-    landingPrice?: Schema.Types.Number;
-    sellingPrice: Schema.Types.Number;
-    stockInformation: {
-        availableStock: Schema.Types.Number;
-        stockUnit: Schema.Types.ObjectId;
-    };
-    profitPercent?: Schema.Types.Number;
-    taxBracket?: Schema.Types.ObjectId[];
-}
-
-export type IProductModel = Model<IProduct & Document>;
 
 export const ProductModel: IProductModel = model(EMODELS.PRODUCT, ProductSchema);

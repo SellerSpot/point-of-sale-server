@@ -1,17 +1,26 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
-import { IResponse } from '../typings/request.types';
+import { BrandModelTypes } from '../models';
 import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 import { getBrandModel } from '../utils/modelService';
 
 export const getBrands: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: BrandModelTypes.IResponse;
     try {
         const BrandModel = getBrandModel();
+        const brandData = await BrandModel.find();
+        const compiledData: BrandModelTypes.IGetBrands[] = [];
+        brandData.map((brand) => {
+            compiledData.push({
+                _id: brand._id,
+                name: brand.name,
+            });
+        });
+
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await BrandModel.find(),
+            data: compiledData,
         };
     } catch (e) {
         response = {
@@ -25,7 +34,7 @@ export const getBrands: RequestHandler = async (req: Request, res: Response) => 
 };
 
 export const createBrand: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: BrandModelTypes.IResponse;
     try {
         const requestBodySchema = Joi.object({
             brandName: Joi.string().required().messages({
@@ -89,7 +98,7 @@ export const createBrand: RequestHandler = async (req: Request, res: Response) =
 };
 
 export const deleteBrand: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: BrandModelTypes.IResponse;
     try {
         const requestParamsSchema = Joi.object({
             brandid: commonJoiSchemas.MONGODBID.required(),

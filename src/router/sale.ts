@@ -6,6 +6,6 @@ const saleRouter: Router = Router();
 saleRouter.post('/', sale.createSale);
 saleRouter.get('/', sale.getSales);
 saleRouter.get('/:saleid', sale.getSingleSale);
-saleRouter.delete('/', sale.deleteSale);
+saleRouter.delete('/:saleid', sale.deleteSale);
 
 export default saleRouter;

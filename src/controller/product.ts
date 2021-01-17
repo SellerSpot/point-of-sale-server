@@ -1,17 +1,43 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
-import { IResponse } from '../typings/request.types';
+import lodash from 'lodash';
+import { ProductModelTypes } from '../models';
+import { addProductRequestBodySchema, IPostCreateProduct } from '../models/Product/Product.types';
 import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 import { getProductModel } from '../utils/modelService';
 
 export const getProducts: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: ProductModelTypes.IResponse;
     try {
         const ProductModel = getProductModel();
+        const productData = await ProductModel.find()
+            .populate({ path: 'category' })
+            .populate({ path: 'brand' })
+            .populate({
+                path: 'stockInformation.stockUnit',
+            })
+            .populate({ path: 'taxBracket' });
+        const compiledData: ProductModelTypes.IGetProduct[] = [];
+        productData.map((product) => {
+            compiledData.push({
+                _id: product.id,
+                brand: product.brand,
+                category: product.category,
+                gtinNumber: product.gtinNumber,
+                landingPrice: product.landingPrice,
+                mrpPrice: product.mrpPrice,
+                name: product.name,
+                profitPercent: product.profitPercent,
+                sellingPrice: product.sellingPrice,
+                stockInformation: product.stockInformation,
+                taxBracket: product.taxBracket,
+            });
+        });
+
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await ProductModel.find(),
+            data: compiledData,
         };
     } catch (e) {
         response = {
@@ -25,7 +51,7 @@ export const getProducts: RequestHandler = async (req: Request, res: Response) =
 };
 
 export const getSingleProduct: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: ProductModelTypes.IResponse;
     try {
         const requestParamsSchema = Joi.object({
             productid: commonJoiSchemas.MONGODBID.required(),
@@ -42,11 +68,30 @@ export const getSingleProduct: RequestHandler = async (req: Request, res: Respon
             const ProductModel = getProductModel();
             const { productid } = req.params;
             // checking if Product already exists
-            if ((await ProductModel.findById(productid)) !== null) {
+            const productData = await ProductModel.findById(productid)
+                .populate({ path: 'category' })
+                .populate({ path: 'brand' })
+                .populate({
+                    path: 'stockInformation.stockUnit',
+                })
+                .populate({ path: 'taxBracket' });
+            if (!lodash.isNull(productData)) {
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.OK,
-                    data: await ProductModel.findById(productid),
+                    data: {
+                        _id: productData.id,
+                        brand: productData.brand,
+                        category: productData.category,
+                        gtinNumber: productData.gtinNumber,
+                        landingPrice: productData.landingPrice,
+                        mrpPrice: productData.mrpPrice,
+                        name: productData.name,
+                        profitPercent: productData.profitPercent,
+                        sellingPrice: productData.sellingPrice,
+                        stockInformation: productData.stockInformation,
+                        taxBracket: productData.taxBracket,
+                    },
                 };
             } else {
                 response = {
@@ -67,58 +112,14 @@ export const getSingleProduct: RequestHandler = async (req: Request, res: Respon
     }
 };
 
+/**
+ * Used to create a single product on server
+ */
 export const createProduct: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: ProductModelTypes.IResponse;
     try {
-        const requestBodySchema = Joi.object({
-            name: Joi.string().required().messages({
-                'string.base': 'Name must be a string',
-                'any.required': 'Name is required',
-            }),
-            category: commonJoiSchemas.MONGODBID.required().messages({
-                'string.base': 'Category must be a string',
-                'any.required': 'Category is required',
-            }),
-            brand: commonJoiSchemas.MONGODBID.required().allow('').messages({
-                'string.base': 'Brand must be a string',
-                'any.required': 'Brand is required',
-            }),
-            gtinNumber: Joi.string().allow('').messages({
-                'string.base': 'GTIN number must be a string',
-            }),
-            mrpPrice: Joi.number().min(0).messages({
-                'number.base': 'MRP must be a number',
-                'number.min': 'MRP should be greater than zero',
-            }),
-            landingPrice: Joi.number().min(0).messages({
-                'number.base': 'Landing Price must be a number',
-                'number.min': 'Landing Price should be greater than zero',
-            }),
-            sellingPrice: Joi.number().min(0).messages({
-                'number.base': 'Selling Price must be a number',
-                'number.min': 'Selling Price should be greater than zero',
-            }),
-            stockInformation: Joi.object({
-                availableStock: Joi.number().min(0).required().messages({
-                    'number.base': 'Available Stock must be a number',
-                    'number.min': 'Available Stock should be greater than zero',
-                    'any.required': 'Available Stock is required',
-                }),
-                stockUnit: commonJoiSchemas.MONGODBID.required().messages({
-                    'string.base': 'Stock Unit must be a string',
-                    'any.required': 'Stock Unit is required',
-                }),
-            }),
-            profitPercent: Joi.number().min(-100).max(100).required().messages({
-                'number.base': 'Profit Percent must be a number',
-                'number.min': 'Profit Percent must be greater than zero',
-                'number.max': 'Profit Percent must be lesser than 100',
-                'any.required': 'Profit Percent is required',
-            }),
-            taxBracket: Joi.array().items(commonJoiSchemas.MONGODBID),
-        });
-        const { error, value } = requestBodySchema.validate(req.body, joiSchemaOptions);
-        req.body = value;
+        const { error, value } = addProductRequestBodySchema.validate(req.body, joiSchemaOptions);
+        req.body = <IPostCreateProduct>value;
         if (error) {
             response = {
                 status: false,
@@ -132,29 +133,17 @@ export const createProduct: RequestHandler = async (req: Request, res: Response)
             };
         } else {
             const ProductModel = getProductModel();
-            const {
-                name,
-                category,
-                brand,
-                gtinNumber,
-                mrpPrice,
-                landingPrice,
-                sellingPrice,
-                stockInformation,
-                profitPercent,
-                taxBracket,
-            } = req.body;
             await ProductModel.create({
-                name,
-                brand,
-                category,
-                sellingPrice,
-                stockInformation,
-                gtinNumber,
-                landingPrice,
-                mrpPrice,
-                profitPercent,
-                taxBracket,
+                name: req.body.name,
+                brand: req.body.brand,
+                category: req.body.category,
+                sellingPrice: req.body.sellingPrice,
+                stockInformation: req.body.stockInformation,
+                gtinNumber: req.body.gtinNumber,
+                landingPrice: req.body.landingPrice,
+                mrpPrice: req.body.mrpPrice,
+                profitPercent: req.body.profitPercent,
+                taxBracket: req.body.taxBracket,
             });
             response = {
                 status: true,
@@ -179,7 +168,7 @@ export const createProduct: RequestHandler = async (req: Request, res: Response)
 };
 
 export const deleteProduct: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: ProductModelTypes.IResponse;
     try {
         const requestParamsSchema = Joi.object({
             productid: commonJoiSchemas.MONGODBID.required(),

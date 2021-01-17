@@ -1,23 +1,32 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
-import { IResponse } from '../typings/request.types';
+import { CategoryModelTypes } from '../models';
 import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 import { getCategoryModel } from '../utils/modelService';
 
 export const getCategories: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: CategoryModelTypes.IResponse;
     try {
         const CategoryModel = getCategoryModel();
+        // storing server data in seperate var to compile to required format
+        const categoryData = await CategoryModel.find();
+        const compiledData: CategoryModelTypes.IGetCategory[] = [];
+        categoryData.map((category) => {
+            compiledData.push({
+                _id: category.id,
+                name: category.name,
+            });
+        });
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await CategoryModel.find(),
+            data: compiledData,
         };
     } catch (e) {
         response = {
             status: false,
             statusCode: responseStatusCodes.INTERNALSERVERERROR,
-            data: e.message,
+            error: e.message,
         };
     } finally {
         res.send(response);
@@ -25,7 +34,7 @@ export const getCategories: RequestHandler = async (req: Request, res: Response)
 };
 
 export const createCategory: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: CategoryModelTypes.IResponse;
     try {
         const requestBodySchema = Joi.object({
             categoryName: Joi.string().required().messages({
@@ -89,7 +98,7 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
 };
 
 export const deleteCategory: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: CategoryModelTypes.IResponse;
     try {
         const requestParamsSchema = Joi.object({
             categoryid: commonJoiSchemas.MONGODBID.required(),

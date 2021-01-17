@@ -1,18 +1,34 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
-import { ESaleStatus } from '../models/Sale';
-import { IResponse } from '../typings/request.types';
+import lodash from 'lodash';
+import { SaleModelTypes } from '../models';
 import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
 import { getSaleModel } from '../utils/modelService';
 
 export const getSales: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: SaleModelTypes.IResponse;
     try {
         const SaleModel = getSaleModel();
+        const allSalesData = await SaleModel.find();
+        // variable to hold the compiled data to send as response
+        const compiledData: SaleModelTypes.IGetSales[] = [];
+        // push all data to array to send as response data
+        allSalesData.map((sale) => {
+            compiledData.push({
+                _id: sale._id,
+                createdAt: sale.createdAt,
+                discountPercent: sale.discountPercent,
+                grandTotal: sale.grandTotal,
+                products: sale.products,
+                status: sale.status,
+                subTotal: sale.subTotal,
+                totalTax: sale.totalTax,
+            });
+        });
         response = {
             status: true,
             statusCode: responseStatusCodes.OK,
-            data: await SaleModel.find(),
+            data: compiledData,
         };
     } catch (e) {
         response = {
@@ -26,7 +42,7 @@ export const getSales: RequestHandler = async (req: Request, res: Response) => {
 };
 
 export const getSingleSale: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: SaleModelTypes.IResponse;
     try {
         const requestParamsSchema = Joi.object({
             saleid: commonJoiSchemas.MONGODBID.required(),
@@ -43,11 +59,21 @@ export const getSingleSale: RequestHandler = async (req: Request, res: Response)
             const SaleModel = getSaleModel();
             const { saleid } = req.params;
             // checking if sale already exists
-            if ((await SaleModel.findById(saleid)) !== null) {
+            const saleData = await SaleModel.findById(saleid);
+            if (!lodash.isNull(saleData)) {
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.OK,
-                    data: await SaleModel.findById(saleid),
+                    data: {
+                        _id: saleData._id,
+                        createdAt: saleData.createdAt,
+                        discountPercent: saleData.discountPercent,
+                        grandTotal: saleData.grandTotal,
+                        products: saleData.products,
+                        status: saleData.status,
+                        subTotal: saleData.subTotal,
+                        totalTax: saleData.totalTax,
+                    },
                 };
             } else {
                 response = {
@@ -69,17 +95,25 @@ export const getSingleSale: RequestHandler = async (req: Request, res: Response)
 };
 
 export const createSale: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: SaleModelTypes.IResponse;
     try {
-        const requestBodySchema = Joi.object({
-            status: Joi.string().valid(ESaleStatus.COMPLETED, ESaleStatus.PENDING).required(),
+        // to validate the data passed
+        const requestBodySchema = Joi.object<SaleModelTypes.ISale>({
+            status: Joi.string()
+                .valid(SaleModelTypes.ESaleStatus.COMPLETED, SaleModelTypes.ESaleStatus.PENDING)
+                .required()
+                .messages({
+                    'any.required': 'Status is a required field',
+                }),
             products: Joi.array().items({
                 product: commonJoiSchemas.MONGODBID.required(),
                 quantity: Joi.number().min(0).required(),
             }),
+            subTotal: Joi.number().min(0),
             discountPercent: Joi.number().min(0).max(100),
-            totalTax: Joi.number().min(0).required(),
-            grandTotal: Joi.number().min(0).required(),
+            totalTax: Joi.number().min(0),
+            grandTotal: Joi.number().min(0),
+            createdAt: Joi.number().required(),
         });
         const { error, value } = requestBodySchema.validate(req.body, joiSchemaOptions);
         req.body = value;
@@ -91,12 +125,22 @@ export const createSale: RequestHandler = async (req: Request, res: Response) =>
             };
         } else {
             const SaleModel = getSaleModel();
-            const { status, grandTotal, products, totalTax, discountPercent } = req.body;
-            await SaleModel.create({
+            const {
                 status,
                 grandTotal,
                 products,
                 totalTax,
+                subTotal,
+                discountPercent,
+                createdAt,
+            } = req.body as SaleModelTypes.ISale;
+            await SaleModel.create<SaleModelTypes.ISale>({
+                status,
+                grandTotal,
+                products,
+                totalTax,
+                subTotal,
+                createdAt,
                 discountPercent,
             });
             response = {
@@ -116,7 +160,7 @@ export const createSale: RequestHandler = async (req: Request, res: Response) =>
 };
 
 export const deleteSale: RequestHandler = async (req: Request, res: Response) => {
-    let response: IResponse;
+    let response: SaleModelTypes.IResponse;
     try {
         const requestParamsSchema = Joi.object({
             saleid: commonJoiSchemas.MONGODBID.required(),
@@ -133,11 +177,12 @@ export const deleteSale: RequestHandler = async (req: Request, res: Response) =>
             const SaleModel = getSaleModel();
             const { saleid } = req.params;
             // checking if Sale already exists
-            if ((await SaleModel.findById(saleid)) !== null) {
+            if (!lodash.isNull(await SaleModel.findById(saleid))) {
                 await SaleModel.findByIdAndDelete(saleid);
                 response = {
                     status: true,
                     statusCode: responseStatusCodes.NOCONTENT,
+                    data: 'Sale deleted successfully',
                 };
             } else {
                 response = {
