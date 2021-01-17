@@ -2,21 +2,5 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
     },
-    "workbench.colorCustomizations": {
-        "activityBar.activeBackground": "#409c3b",
-        "activityBar.activeBorder": "#464cb9",
-        "activityBar.background": "#409c3b",
-        "activityBar.foreground": "#e7e7e7",
-        "activityBar.inactiveForeground": "#e7e7e799",
-        "activityBarBadge.background": "#464cb9",
-        "activityBarBadge.foreground": "#e7e7e7",
-        "statusBar.background": "#31772d",
-        "statusBar.foreground": "#e7e7e7",
-        "statusBarItem.hoverBackground": "#409c3b",
-        "titleBar.activeBackground": "#31772d",
-        "titleBar.activeForeground": "#e7e7e7",
-        "titleBar.inactiveBackground": "#31772d99",
-        "titleBar.inactiveForeground": "#e7e7e799"
-    },
-    "peacock.color": "#31772d",
+    "god.tsconfig": "./tsconfig.json"
 }
