@@ -1,18 +1,19 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
+import { IGetStockUnit } from 'models/StockUnit/StockUnit.types';
 import { StockUnitModelTypes } from '../models';
-import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
-import { getStockUnitModel } from '../utils/modelService';
+import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utilities';
+import { getStockUnitModel } from '../utilities/modelService';
 
 export const getStockUnits: RequestHandler = async (req: Request, res: Response) => {
     let response: StockUnitModelTypes.IResponse;
     try {
         const StockUnitModel = getStockUnitModel();
-        const stockUnitData = await StockUnitModel.find();
+        const stockUnitData: IGetStockUnit[] = await StockUnitModel.find();
         const compiledData: StockUnitModelTypes.IGetStockUnit[] = [];
         stockUnitData.map((stockUnit) => {
             compiledData.push({
-                _id: stockUnit.id,
+                _id: stockUnit._id,
                 name: stockUnit.name,
             });
         });

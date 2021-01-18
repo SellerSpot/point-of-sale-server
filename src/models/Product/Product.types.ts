@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import { Model, Document } from 'mongoose';
-import { commonJoiSchemas } from '../../utils';
+import { commonJoiSchemas } from '../../utilities';
 import { IGetBrands } from '../Brand/Brand.types';
 import { IGetCategory } from '../Category/Category.types';
 import { IGetStockUnit } from '../StockUnit/StockUnit.types';

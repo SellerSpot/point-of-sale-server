@@ -1,4 +1,5 @@
 import expresss from 'express';
+import { logger } from 'utilities/logger';
 import { CONFIG, configureDB, applyExpressMiddlewares, setCurrentDB } from './config';
 import rootRouter from './router';
 // globals
@@ -16,4 +17,4 @@ app.use(setCurrentDB);
 app.use('/', rootRouter);
 
 // listeners
-app.listen(PORT, () => console.log('server: SellerSpot POS Server Started at the PORT', PORT));
+app.listen(PORT, () => logger('express', `SellerSpot POS Server Started at the PORT ${PORT}`));

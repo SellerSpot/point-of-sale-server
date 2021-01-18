@@ -1,18 +1,19 @@
 import { RequestHandler, Request, Response } from 'express';
 import { TaxBracketModelTypes } from '../models';
 import Joi from 'joi';
-import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
-import { getTaxBracketModel } from '../utils/modelService';
+import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utilities';
+import { getTaxBracketModel } from '../utilities/modelService';
+import { IGetTaxBracket } from 'models/TaxBracket/TaxBracket.types';
 
 export const getTaxBrackets: RequestHandler = async (req: Request, res: Response) => {
     let response: TaxBracketModelTypes.IResponse;
     try {
         const TaxBracketModel = getTaxBracketModel();
-        const taxBracketData = await TaxBracketModel.find();
+        const taxBracketData: IGetTaxBracket[] = await TaxBracketModel.find();
         const compiledData: TaxBracketModelTypes.IGetTaxBracket[] = [];
         taxBracketData.map((taxBracket) => {
             compiledData.push({
-                _id: taxBracket.id,
+                _id: taxBracket._id,
                 name: taxBracket.name,
                 taxPercent: taxBracket.taxPercent,
             });
