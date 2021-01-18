@@ -2,15 +2,19 @@ import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
 import lodash from 'lodash';
 import { ProductModelTypes } from '../models';
-import { addProductRequestBodySchema, IPostCreateProduct } from '../models/Product/Product.types';
-import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
-import { getProductModel } from '../utils/modelService';
+import {
+    addProductRequestBodySchema,
+    IGetProduct,
+    IPostCreateProduct,
+} from '../models/Product/Product.types';
+import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utilities';
+import { getProductModel } from '../utilities/modelService';
 
 export const getProducts: RequestHandler = async (req: Request, res: Response) => {
     let response: ProductModelTypes.IResponse;
     try {
         const ProductModel = getProductModel();
-        const productData = await ProductModel.find()
+        const productData: IGetProduct[] = await ProductModel.find()
             .populate({ path: 'category' })
             .populate({ path: 'brand' })
             .populate({
@@ -20,7 +24,7 @@ export const getProducts: RequestHandler = async (req: Request, res: Response) =
         const compiledData: ProductModelTypes.IGetProduct[] = [];
         productData.map((product) => {
             compiledData.push({
-                _id: product.id,
+                _id: product._id,
                 brand: product.brand,
                 category: product.category,
                 gtinNumber: product.gtinNumber,

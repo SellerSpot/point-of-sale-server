@@ -1,5 +1,6 @@
 import { NextFunction, RequestHandler, Request, Response } from 'express';
 import mongoose from 'mongoose';
+import { logger } from 'utilities/logger';
 import { CONFIG } from '.';
 import * as models from '../models';
 
@@ -11,20 +12,22 @@ export const configureDB = (): void => {
         useCreateIndex: true,
     });
     global.dbConnection.on('error', (error) =>
-        console.info('database: Error Connecting to', CONFIG.BASE_DB_NAME, error.message),
+        logger('mongoose', `Error Connecting to ${CONFIG.BASE_DB_NAME}, ${error.message}`),
     );
-    global.dbConnection.once('open', () => console.info('database: Connected to', CONFIG.BASE_DB_NAME));
+    global.dbConnection.once('open', () =>
+        logger('mongoose', `Connected to ${CONFIG.BASE_DB_NAME}`),
+    );
     global.currentDb = global.dbConnection.useDb(CONFIG.BASE_DB_NAME);
-    console.info('database: Loaded All Monogoose Models', models.handshake);
+    if (models.handshake === true) logger('mongoose', `Loaded All Monogoose Models`);
 };
 
 export const setCurrentDB: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
     req.tenantId = CONFIG.BASE_DB_NAME;
     if (CONFIG.ENV === 'development') {
         global.currentDb = global.dbConnection.useDb(req.tenantId);
-        console.info('database: Connected to', req.tenantId);
+        logger('mongoose', `Connected to ${req.tenantId}`);
     } else {
-        console.info('database: Connected to', req.tenantId);
+        logger('mongoose', `Connected to ${req.tenantId}`);
     }
     next();
 };

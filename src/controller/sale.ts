@@ -1,15 +1,16 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
 import lodash from 'lodash';
+import { IGetSales } from 'models/Sale/Sale.types';
 import { SaleModelTypes } from '../models';
-import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
-import { getSaleModel } from '../utils/modelService';
+import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utilities';
+import { getSaleModel } from '../utilities/modelService';
 
 export const getSales: RequestHandler = async (req: Request, res: Response) => {
     let response: SaleModelTypes.IResponse;
     try {
         const SaleModel = getSaleModel();
-        const allSalesData = await SaleModel.find();
+        const allSalesData: IGetSales[] = await SaleModel.find();
         // variable to hold the compiled data to send as response
         const compiledData: SaleModelTypes.IGetSales[] = [];
         // push all data to array to send as response data

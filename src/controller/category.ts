@@ -1,19 +1,20 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
+import { IGetCategory } from 'models/Category/Category.types';
 import { CategoryModelTypes } from '../models';
-import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
-import { getCategoryModel } from '../utils/modelService';
+import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utilities';
+import { getCategoryModel } from '../utilities/modelService';
 
 export const getCategories: RequestHandler = async (req: Request, res: Response) => {
     let response: CategoryModelTypes.IResponse;
     try {
         const CategoryModel = getCategoryModel();
         // storing server data in seperate var to compile to required format
-        const categoryData = await CategoryModel.find();
+        const categoryData: IGetCategory[] = await CategoryModel.find();
         const compiledData: CategoryModelTypes.IGetCategory[] = [];
         categoryData.map((category) => {
             compiledData.push({
-                _id: category.id,
+                _id: category._id,
                 name: category.name,
             });
         });

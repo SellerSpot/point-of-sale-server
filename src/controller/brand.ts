@@ -1,14 +1,15 @@
 import { RequestHandler, Request, Response } from 'express';
 import Joi from 'joi';
+import { IGetBrands } from 'models/Brand/Brand.types';
 import { BrandModelTypes } from '../models';
-import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utils';
-import { getBrandModel } from '../utils/modelService';
+import { commonJoiSchemas, joiSchemaOptions, responseStatusCodes } from '../utilities';
+import { getBrandModel } from '../utilities/modelService';
 
 export const getBrands: RequestHandler = async (req: Request, res: Response) => {
     let response: BrandModelTypes.IResponse;
     try {
         const BrandModel = getBrandModel();
-        const brandData = await BrandModel.find();
+        const brandData: IGetBrands[] = await BrandModel.find();
         const compiledData: BrandModelTypes.IGetBrands[] = [];
         brandData.map((brand) => {
             compiledData.push({

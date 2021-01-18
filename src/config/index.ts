@@ -1,6 +1,6 @@
 // feature specifig config can have separtate configfile in this directory and export * should be made here for that paritucular config
-export * from './database-config';
-export * from './express-middlewares';
+export * from './databaseConfig';
+export * from './expressMiddlewares';
 
 export const CONFIG = {
     ENV: 'development', //development | production
