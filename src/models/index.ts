@@ -1,6 +1,4 @@
 // exports from models
-export * as BaseModel from './Base';
-
 export * as CategoryModel from './Category/Category';
 export * as CategoryModelTypes from './Category/Category.types';
 
