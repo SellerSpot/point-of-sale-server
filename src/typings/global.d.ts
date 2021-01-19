@@ -10,6 +10,7 @@ declare global {
             DATABASE_SERVER_URL: string;
             DATABASE_SERVER_QUERY: string;
             BASE_DB_NAME: string;
+            POS_BASE_DB_NAME: string;
             APP_SECRET: string;
             CLIENT_BASE_DOMAIN_FOR_APPS: string;
         }
