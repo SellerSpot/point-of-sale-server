@@ -3,9 +3,13 @@ export * from './databaseConfig';
 export * from './expressMiddlewares';
 
 export const CONFIG = {
-    ENV: 'development', //development | production
-    PORT: 8000,
-    DATABASE_SERVER_URL: 'mongodb://127.0.0.1:27017/',
-    BASE_DB_NAME: 'pos-base',
-    GET_DATABASE_CONNECTION_URL: (): string => CONFIG.DATABASE_SERVER_URL + CONFIG.BASE_DB_NAME,
+    ENV: process.env.ENV,
+    PORT: JSON.parse(process.env.PORT),
+    DATABASE_SERVER_URL: process.env.DATABASE_SERVER_URL,
+    DATABASE_SERVER_QUERY: process.env.DATABASE_SERVER_QUERY,
+    BASE_DB_NAME: process.env.BASE_DB_NAME,
+    GET_DATABASE_CONNECTION_URL: (): string =>
+        CONFIG.DATABASE_SERVER_URL + CONFIG.BASE_DB_NAME + CONFIG.DATABASE_SERVER_QUERY,
+    APP_SECRET: process.env.APP_SECRET,
+    CLIENT_BASE_DOMAIN_FOR_APPS: process.env.CLIENT_BASE_DOMAIN_FOR_APPS,
 };
