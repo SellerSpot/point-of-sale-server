@@ -4,6 +4,7 @@ import { joiSchemaOptions } from 'utilities';
 import { getBrandModel } from 'utilities/modelService';
 import {
     createBrandValidationSchema,
+    deleteBrandValidationSchema,
     getSingleBrandValidationSchema,
     updateBrandValidationSchema,
 } from './brand.validation';
@@ -29,18 +30,17 @@ export const getBrands = async (): Promise<pointOfSaleTypes.brandResponseTypes.I
 };
 
 /**
- *
- * @param id ID of data to be fetched from database
+ * Used to get a single brand from database
  */
 export const getSingleBrand = async (
     brandData: pointOfSaleTypes.brandRequestTypes.IGetSingleBrand,
 ): Promise<pointOfSaleTypes.brandResponseTypes.IGetBrand> => {
     try {
+        // getting instance of database modal
+        const BrandModel = getBrandModel(global.currentDb);
         // validating input data
-        const { error } = getSingleBrandValidationSchema.validate(brandData.id, joiSchemaOptions);
+        const { error } = getSingleBrandValidationSchema.validate(brandData, joiSchemaOptions);
         if (!error) {
-            // getting instance of database modal
-            const BrandModel = getBrandModel(global.currentDb);
             const requestedData = await BrandModel.findById(brandData.id);
             if (!lodash.isNull(requestedData)) {
                 return {
@@ -87,6 +87,7 @@ export const createBrand = async (
             const brandToAdd: pointOfSaleTypes.brandRequestTypes.ICreateBrand[] = await BrandModel.find(
                 { name: brandData.name },
             );
+
             if (brandToAdd.length === 0) {
                 return {
                     status: true,
@@ -193,6 +194,49 @@ export const updateBrand = async (
                         message: fieldError.message,
                     };
                 }),
+            };
+        }
+    } catch (e) {
+        return {
+            status: false,
+            statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+            error: e.message,
+        };
+    }
+};
+
+/**
+ * Used to delete a brand from database
+ */
+export const deleteBrand = async (
+    brandData: pointOfSaleTypes.brandRequestTypes.IDeleteBrand,
+): Promise<pointOfSaleTypes.brandResponseTypes.IDeleteBrand> => {
+    try {
+        // getting instance of database modal
+        const BrandModel = getBrandModel(global.currentDb);
+        // validating the request data
+        const { error } = deleteBrandValidationSchema.validate(brandData, joiSchemaOptions);
+        if (!error) {
+            // checking if the brand to delete exists in database
+            const existingBrand = await BrandModel.findById(brandData.id);
+            if (!lodash.isNull(existingBrand)) {
+                return {
+                    status: true,
+                    statusCode: STATUS_CODES.OK,
+                    data: await BrandModel.findByIdAndDelete(brandData.id),
+                };
+            } else {
+                return {
+                    status: false,
+                    statusCode: STATUS_CODES.NO_CONTENT,
+                    error: 'Requested data not found in database',
+                };
+            }
+        } else {
+            return {
+                status: false,
+                statusCode: STATUS_CODES.BAD_REQUEST,
+                error: 'Please verify request parameters',
             };
         }
     } catch (e) {
