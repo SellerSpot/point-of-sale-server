@@ -1,5 +1,5 @@
 export * as homeController from './home';
-export * as categoryController from './category';
+export * as categoryController from './category/category';
 export * as brandController from './Brand/brand';
 export * as stockUnitController from './stockUnit';
 export * as taxBracketController from './taxBracket';

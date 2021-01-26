@@ -8,7 +8,6 @@ interface IAuthorizeTenantRequest {
 
 interface ITokenPayload {
     name?: string;
-    _id?: string;
     email?: string;
 }
 
@@ -47,8 +46,8 @@ export const authorizeTenant = async (
             tenant: tenantSubDomain.tenant,
         }).populate('tenant', null, TenantModel);
 
-        const { _id, email, name } = <baseDbModels.TenantModel.ITenant>installedTenant.tenant;
-        const tokenPayload: ITokenPayload = { _id, email, name };
+        const { email, name } = <baseDbModels.TenantModel.ITenant>installedTenant.tenant;
+        const tokenPayload: ITokenPayload = { email, name };
 
         return Promise.resolve({
             status: true,
