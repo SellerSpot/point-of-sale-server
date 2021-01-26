@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { taxBracketController } from '../controller';
+import { taxBracketController } from '../controller/controller';
 
 const taxBracketRouter: Router = Router();
 

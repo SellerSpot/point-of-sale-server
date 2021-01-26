@@ -15,17 +15,17 @@ import {
 export const getBrands = async (): Promise<pointOfSaleTypes.brandResponseTypes.IGetBrand> => {
     try {
         const BrandModel = getBrandModel(global.currentDb);
-        return {
+        return Promise.resolve({
             status: true,
             statusCode: STATUS_CODES.OK,
             data: await BrandModel.find(),
-        };
-    } catch (e) {
-        return {
+        });
+    } catch (err) {
+        return Promise.reject({
             status: false,
             statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-            error: e.message,
-        };
+            error: err.message,
+        });
     }
 };
 
@@ -43,31 +43,27 @@ export const getSingleBrand = async (
         if (!error) {
             const requestedData = await BrandModel.findById(brandData.id);
             if (!lodash.isNull(requestedData)) {
-                return {
+                return Promise.resolve({
                     status: true,
                     statusCode: STATUS_CODES.OK,
                     data: requestedData,
-                };
+                });
             } else {
-                return {
+                throw {
                     status: false,
                     statusCode: STATUS_CODES.NO_CONTENT,
                     error: 'Requested data not found in database',
                 };
             }
         } else {
-            return {
+            throw {
                 status: false,
                 statusCode: STATUS_CODES.BAD_REQUEST,
                 error: 'Please verify request parameters',
             };
         }
-    } catch (e) {
-        return {
-            status: false,
-            statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-            error: e.message,
-        };
+    } catch (err) {
+        return Promise.reject(err);
     }
 };
 
@@ -89,13 +85,13 @@ export const createBrand = async (
             );
 
             if (brandToAdd.length === 0) {
-                return {
+                return Promise.resolve({
                     status: true,
                     statusCode: STATUS_CODES.CREATED,
                     data: await BrandModel.create(brandData),
-                };
+                });
             } else {
-                return {
+                throw {
                     status: false,
                     statusCode: STATUS_CODES.CONFLICT,
                     error: [
@@ -107,7 +103,7 @@ export const createBrand = async (
                 };
             }
         } else {
-            return {
+            throw {
                 status: false,
                 statusCode: STATUS_CODES.BAD_REQUEST,
                 error: error.details.map((fieldError) => {
@@ -119,12 +115,8 @@ export const createBrand = async (
                 }),
             };
         }
-    } catch (e) {
-        return {
-            status: false,
-            statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-            error: e.message,
-        };
+    } catch (err) {
+        return Promise.reject(err);
     }
 };
 
@@ -148,7 +140,7 @@ export const updateBrand = async (
                     name: updateData.brandData.name,
                 });
                 if (lodash.isNull(existingBrandName)) {
-                    return {
+                    return Promise.resolve({
                         status: true,
                         statusCode: STATUS_CODES.OK,
                         data: await BrandModel.findByIdAndUpdate(
@@ -158,9 +150,9 @@ export const updateBrand = async (
                                 new: true,
                             },
                         ),
-                    };
+                    });
                 } else {
-                    return {
+                    throw {
                         status: false,
                         statusCode: STATUS_CODES.CONFLICT,
                         error: [
@@ -172,7 +164,7 @@ export const updateBrand = async (
                     };
                 }
             } else {
-                return {
+                throw {
                     status: false,
                     statusCode: STATUS_CODES.NO_CONTENT,
                     error: [
@@ -184,7 +176,7 @@ export const updateBrand = async (
                 };
             }
         } else {
-            return {
+            throw {
                 status: false,
                 statusCode: STATUS_CODES.BAD_REQUEST,
                 error: error.details.map((fieldError) => {
@@ -196,12 +188,8 @@ export const updateBrand = async (
                 }),
             };
         }
-    } catch (e) {
-        return {
-            status: false,
-            statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-            error: e.message,
-        };
+    } catch (err) {
+        return Promise.reject(err);
     }
 };
 
@@ -220,30 +208,26 @@ export const deleteBrand = async (
             // checking if the brand to delete exists in database
             const existingBrand = await BrandModel.findById(brandData.id);
             if (!lodash.isNull(existingBrand)) {
-                return {
+                return Promise.resolve({
                     status: true,
                     statusCode: STATUS_CODES.OK,
                     data: await BrandModel.findByIdAndDelete(brandData.id),
-                };
+                });
             } else {
-                return {
+                throw {
                     status: false,
                     statusCode: STATUS_CODES.NO_CONTENT,
                     error: 'Requested data not found in database',
                 };
             }
         } else {
-            return {
+            throw {
                 status: false,
                 statusCode: STATUS_CODES.BAD_REQUEST,
                 error: 'Please verify request parameters',
             };
         }
-    } catch (e) {
-        return {
-            status: false,
-            statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-            error: e.message,
-        };
+    } catch (err) {
+        return Promise.reject(err);
     }
 };
