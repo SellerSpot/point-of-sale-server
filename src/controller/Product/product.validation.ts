@@ -13,6 +13,18 @@ export const getSingleProductValidationSchema = Joi.object({
  */
 export const createProductValidationSchema = Joi.object({
     name: Joi.string().required(),
+    category: Joi.string().required(),
+    brand: Joi.string().required(),
+    gtinNumber: Joi.string(),
+    mrpPrice: Joi.number(),
+    landingPrice: Joi.number(),
+    sellingPrice: Joi.number(),
+    stockInformation: Joi.object({
+        availableStock: Joi.number().required(),
+        stockUnit: Joi.number().required(),
+    }),
+    profitPercent: Joi.number(),
+    taxBracket: Joi.array().items(Joi.string()),
 });
 
 /**
