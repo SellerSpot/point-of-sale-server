@@ -1,6 +1,6 @@
 import expresss from 'express';
 import { logger } from 'utilities/logger';
-import { CONFIG, configureDB, applyExpressMiddlewares, setCurrentDB } from './config';
+import { CONFIG, configureDB, applyExpressMiddlewares, setCurrentDB } from './config/config';
 import rootRouter from './router';
 // globals
 const app: expresss.Application = expresss();
