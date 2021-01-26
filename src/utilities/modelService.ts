@@ -1,47 +1,38 @@
 import { Connection } from 'mongoose';
-import {
-    BrandModelTypes,
-    CategoryModelTypes,
-    ProductModelTypes,
-    SaleModelTypes,
-    StockUnitModelTypes,
-    TaxBracketModelTypes,
-} from '../models';
-
-import { EMODELS } from '../models/models.types';
+import { MONGOOSE_MODELS, tenantDbModels } from '@sellerspot/database-models';
 
 export const getBrandModel = (
-    currentDb: Connection = global.currentDb,
-): BrandModelTypes.IBrandModel => {
-    return currentDb.model(EMODELS.BRAND);
+    currentDb: Connection,
+): tenantDbModels.pointOfSaleModels.BrandModel.IBrandModel => {
+    return currentDb.model(MONGOOSE_MODELS.TENANT_DB.POINT_OF_SALE.BRAND);
 };
 
 export const getCategoryModel = (
-    currentDb: Connection = global.currentDb,
-): CategoryModelTypes.ICategoryModel => {
-    return currentDb.model(EMODELS.CATEGORY);
+    currentDb: Connection,
+): tenantDbModels.pointOfSaleModels.CategoryModel.ICategoryModel => {
+    return currentDb.model(MONGOOSE_MODELS.TENANT_DB.POINT_OF_SALE.CATEGORY);
 };
 
 export const getProductModel = (
-    currentDb: Connection = global.currentDb,
-): ProductModelTypes.IProductModel => {
-    return currentDb.model(EMODELS.PRODUCT);
+    currentDb: Connection,
+): tenantDbModels.pointOfSaleModels.ProductModel.IProductModel => {
+    return currentDb.model(MONGOOSE_MODELS.TENANT_DB.POINT_OF_SALE.PRODUCT);
 };
 
 export const getSaleModel = (
-    currentDb: Connection = global.currentDb,
-): SaleModelTypes.ISaleModel => {
-    return currentDb.model(EMODELS.SALE);
+    currentDb: Connection,
+): tenantDbModels.pointOfSaleModels.SaleModel.ISaleModel => {
+    return currentDb.model(MONGOOSE_MODELS.TENANT_DB.POINT_OF_SALE.SALE);
 };
 
 export const getStockUnitModel = (
-    currentDb: Connection = global.currentDb,
-): StockUnitModelTypes.IStockUnitModel => {
-    return currentDb.model(EMODELS.STOCKUNIT);
+    currentDb: Connection,
+): tenantDbModels.pointOfSaleModels.StockUnitModel.IStockUnitModel => {
+    return currentDb.model(MONGOOSE_MODELS.TENANT_DB.POINT_OF_SALE.STOCKUNIT);
 };
 
 export const getTaxBracketModel = (
-    currentDb: Connection = global.currentDb,
-): TaxBracketModelTypes.ITaxBracketModel => {
-    return currentDb.model(EMODELS.TAXBRACKET);
+    currentDb: Connection,
+): tenantDbModels.pointOfSaleModels.TaxBracketModel.ITaxBracketModel => {
+    return currentDb.model(MONGOOSE_MODELS.TENANT_DB.POINT_OF_SALE.TAXBRACKET);
 };
