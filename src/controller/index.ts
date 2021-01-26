@@ -1,7 +1,7 @@
-export * as home from './home';
-export * as category from './category';
-export * as brand from './brand';
-export * as stockUnit from './stockUnit';
-export * as taxBracket from './taxBracket';
-export * as product from './product';
-export * as sale from './sale';
+export * as homeController from './home';
+export * as categoryController from './category';
+export * as brandController from './brand';
+export * as stockUnitController from './stockUnit';
+export * as taxBracketController from './taxBracket';
+export * as productController from './product';
+export * as saleController from './sale';

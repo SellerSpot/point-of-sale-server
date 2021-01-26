@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { taxBracket } from '../controller';
+import { taxBracketController } from '../controller';
 
 const taxBracketRouter: Router = Router();
 
-taxBracketRouter.post('/', taxBracket.createTaxBracket);
-taxBracketRouter.get('/', taxBracket.getTaxBrackets);
-// taxBracketRouter.put('/', taxBracket.updateTaxBracket);
-taxBracketRouter.delete('/:taxBracketid', taxBracket.deleteTaxBracket);
+// taxBracketRouter.post('/', taxBracketController.createTaxBracket);
+// taxBracketRouter.get('/', taxBracketController.getTaxBrackets);
+// // taxBracketRouter.put('/', taxBracketController.updateTaxBracket);
+// taxBracketRouter.delete('/:taxBracketid', taxBracketController.deleteTaxBracket);
 
 export default taxBracketRouter;

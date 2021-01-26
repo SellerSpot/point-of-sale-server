@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { stockUnit } from '../controller';
+import { stockUnitController } from '../controller';
 
 const stockUnitRouter: Router = Router();
 
-stockUnitRouter.post('/', stockUnit.createStockUnit);
-stockUnitRouter.get('/', stockUnit.getStockUnits);
-// stockUnitRouter.put('/', stockUnit.updateStockUnit);
-stockUnitRouter.delete('/:stockunitid', stockUnit.deleteStockUnit);
+// stockUnitRouter.post('/', stockUnitController.createStockUnit);
+// stockUnitRouter.get('/', stockUnitController.getStockUnits);
+// // stockUnitRouter.put('/', stockUnitController.updateStockUnit);
+// stockUnitRouter.delete('/:stockunitid', stockUnitController.deleteStockUnit);
 
 export default stockUnitRouter;

@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { sale } from '../controller';
+import { saleController } from '../controller';
 
 const saleRouter: Router = Router();
 
-saleRouter.post('/', sale.createSale);
-saleRouter.get('/', sale.getSales);
-saleRouter.get('/:saleid', sale.getSingleSale);
-saleRouter.delete('/:saleid', sale.deleteSale);
+// saleRouter.post('/', saleController.createSale);
+// saleRouter.get('/', saleController.getSales);
+// saleRouter.get('/:saleid', saleController.getSingleSale);
+// saleRouter.delete('/:saleid', saleController.deleteSale);
 
 export default saleRouter;
