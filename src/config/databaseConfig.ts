@@ -2,7 +2,7 @@ import { NextFunction, RequestHandler, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { logger } from 'utilities/logger';
 import { CONFIG } from './config';
-import * as models from '../models';
+import * as models from '@sellerspot/database-models';
 import { DB_NAMES } from '@sellerspot/database-models';
 
 export const configureDB = (): void => {
@@ -15,13 +15,14 @@ export const configureDB = (): void => {
     global.dbConnection.on('error', (error) =>
         logger.mongoose(`Error Connecting to ${DB_NAMES.BASE_DB}, ${error.message}`),
     );
-    global.dbConnection.once('open', () => logger.mongoose(`Connected to ${DB_NAMES.BASE_DB}`));
+    global.dbConnection.once('open', () => {
+        logger.mongoose(`database: Connected to ${DB_NAMES.BASE_DB}`);
+    });
     global.currentDb = global.dbConnection.useDb(DB_NAMES.BASE_DB);
     if (models.handshake === true) logger.mongoose(`Loaded All Monogoose Models`);
 };
-
 export const setCurrentDB: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
-    req.tenantId = DB_NAMES.BASE_DB;
+    req.tenantId = models.DB_NAMES.BASE_DB;
     if (CONFIG.ENV === 'development') {
         global.currentDb = global.dbConnection.useDb(req.tenantId);
         logger.mongoose(`Connected to ${req.tenantId}`);

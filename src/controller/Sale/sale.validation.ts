@@ -1,4 +1,4 @@
-import { pointOfSaleModels } from '@sellerspot/database-models/dist/models/tenantDb';
+import { tenantDbModels } from '@sellerspot/database-models';
 import Joi from 'joi';
 import { commonJoiSchemas } from 'utilities';
 
@@ -13,7 +13,7 @@ export const getSingleSaleValidationSchema = Joi.object({
  * Validation for creating a sale in database
  */
 export const createSaleValidationSchema = Joi.object({
-    status: Joi.string().valid(pointOfSaleModels.SaleModel.ESaleStatus).required(),
+    status: Joi.string().valid(tenantDbModels.pointOfSaleModels.SaleModel.ESaleStatus).required(),
     products: Joi.array().items({
         _id: commonJoiSchemas.MONGODBID,
         product: Joi.string().required(),
