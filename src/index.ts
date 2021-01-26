@@ -1,6 +1,6 @@
 import expresss from 'express';
 import { logger } from 'utilities/logger';
-import { CONFIG, configureDB, applyExpressMiddlewares, setCurrentDB } from './config';
+import { CONFIG, configureDB, applyExpressMiddlewares, setCurrentDB } from './config/config';
 import rootRouter from './router';
 // globals
 const app: expresss.Application = expresss();
@@ -17,4 +17,4 @@ app.use(setCurrentDB);
 app.use('/', rootRouter);
 
 // listeners
-app.listen(PORT, () => logger('express', `SellerSpot POS Server Started at the PORT ${PORT}`));
+app.listen(PORT, () => logger.express(`SellerSpot POS Server Started at the PORT ${PORT}`));
