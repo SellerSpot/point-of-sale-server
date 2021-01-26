@@ -2,39 +2,45 @@ import chalk from 'chalk';
 
 type TLoggerTypes = 'common' | 'error' | 'warning' | 'express' | 'socketio' | 'mongoose';
 
-export const logger = (type: TLoggerTypes, message: unknown): void => {
-    let messageToPrint = '';
-    switch (type) {
-        case 'common':
-            messageToPrint = `${chalk.blue.bold(`${type.toUpperCase()}:`)} ${chalk.white(
-                JSON.stringify(message),
-            )}`;
-            break;
-        case 'error':
-            messageToPrint = `${chalk.red.bold(`${type.toUpperCase()}:`)} ${chalk.white(
-                JSON.stringify(message),
-            )}`;
-            break;
-        case 'express':
-            messageToPrint = `${chalk.green.bold(`${type.toUpperCase()}:`)} ${chalk.white(
-                JSON.stringify(message),
-            )}`;
-            break;
-        case 'mongoose':
-            messageToPrint = `${chalk.yellow.bold(`${type.toUpperCase()}:`)} ${chalk.white(
-                JSON.stringify(message),
-            )}`;
-            break;
-        case 'socketio':
-            messageToPrint = `${chalk.magenta.bold(`${type.toUpperCase()}:`)} ${chalk.white(
-                JSON.stringify(message),
-            )}`;
-            break;
-        case 'warning':
-            messageToPrint = `${chalk.bgYellow.black.bold(
-                ` ${type.toUpperCase()}: `,
-            )} ${chalk.white(JSON.stringify(message))}`;
-            break;
-    }
-    console.log(messageToPrint);
+const loggerBase = (message: string): void => {
+    console.log(message);
+};
+
+export const logger: { [k in TLoggerTypes]: (...messages: unknown[]) => void } = {
+    common: (...messages: unknown[]) =>
+        loggerBase(
+            `${chalk.blue.bold(`common:`)} ${chalk.white(
+                messages.map((message) => JSON.stringify(message)).join(' '),
+            )}`,
+        ),
+    error: (...messages: unknown[]) =>
+        loggerBase(
+            `${chalk.red.bold(`error:`)} ${chalk.white(
+                messages.map((message) => JSON.stringify(message)).join(' '),
+            )}`,
+        ),
+    express: (...messages: unknown[]) =>
+        loggerBase(
+            `${chalk.green.bold(`express:`)} ${chalk.white(
+                messages.map((message) => JSON.stringify(message)).join(' '),
+            )}`,
+        ),
+    mongoose: (...messages: unknown[]) =>
+        loggerBase(
+            `${chalk.yellow.bold(`mongoose:`)} ${chalk.white(
+                messages.map((message) => JSON.stringify(message)).join(' '),
+            )}`,
+        ),
+    socketio: (...messages: unknown[]) =>
+        loggerBase(
+            `${chalk.magenta.bold(`socketio:`)} ${chalk.white(
+                messages.map((message) => JSON.stringify(message)).join(' '),
+            )}`,
+        ),
+    warning: (...messages: unknown[]) =>
+        loggerBase(
+            `${chalk.bgYellow.black.bold(` warning:`)} ${chalk.white(
+                messages.map((message) => JSON.stringify(message)).join(' '),
+            )}`,
+        ),
 };

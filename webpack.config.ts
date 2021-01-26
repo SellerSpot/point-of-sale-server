@@ -57,7 +57,6 @@ const webpackConfiguration = (env: {
                 : new webpack.DefinePlugin({}),
         ],
         watch: !isProduction,
-        mode: isProduction ? 'production' : 'development',
     };
 };
 
