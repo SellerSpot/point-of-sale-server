@@ -1,18 +1,18 @@
 import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 import { brandController } from 'controller/controller';
 import { Router } from 'express';
-import lodash from 'lodash';
+import { isUndefined } from 'lodash';
 
 const brandRouter: Router = Router();
 
 // get all brands
 brandRouter.get('/', async (_, res) => {
-    let response: pointOfSaleTypes.brandResponseTypes.IGetBrand;
+    let response: pointOfSaleTypes.brandResponseTypes.IGetBrands;
     try {
         response = await brandController.getBrands();
     } catch (err) {
         // used to handle unexpected and uncaught errors
-        response = lodash.isUndefined(err.status)
+        response = isUndefined(err.status)
             ? {
                   status: false,
                   statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
@@ -30,7 +30,7 @@ brandRouter.get('/:id', async (req, res) => {
         response = await brandController.getSingleBrand({ id: req.params['id'] });
     } catch (err) {
         // used to handle unexpected and uncaught errors
-        response = lodash.isUndefined(err.status)
+        response = isUndefined(err.status)
             ? {
                   status: false,
                   statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
@@ -50,7 +50,7 @@ brandRouter.post('/', async (req, res) => {
         console.log(err);
 
         // used to handle unexpected and uncaught errors
-        response = lodash.isUndefined(err.status)
+        response = isUndefined(err.status)
             ? {
                   status: false,
                   statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
@@ -68,7 +68,7 @@ brandRouter.put('/', async (req, res) => {
         response = await brandController.updateBrand(req.body);
     } catch (err) {
         // used to handle unexpected and uncaught errors
-        response = lodash.isUndefined(err.status)
+        response = isUndefined(err.status)
             ? {
                   status: false,
                   statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
@@ -86,7 +86,7 @@ brandRouter.delete('/:id', async (req, res) => {
         response = await brandController.deleteBrand({ id: req.params['id'] });
     } catch (err) {
         // used to handle unexpected and uncaught errors
-        response = lodash.isUndefined(err.status)
+        response = isUndefined(err.status)
             ? {
                   status: false,
                   statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,

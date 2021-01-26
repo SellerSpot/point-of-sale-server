@@ -7,7 +7,7 @@ const categoryRouter: Router = Router();
 
 // get all categorys
 categoryRouter.get('/', async (_, res) => {
-    let response: pointOfSaleTypes.categoryResponseTypes.IGetCategory;
+    let response: pointOfSaleTypes.categoryResponseTypes.IGetCategories;
     try {
         response = await categoryController.getCategories();
     } catch (err) {

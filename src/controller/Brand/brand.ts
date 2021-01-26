@@ -12,7 +12,7 @@ import {
 /**
  * Used to get all brands from database
  */
-export const getBrands = async (): Promise<pointOfSaleTypes.brandResponseTypes.IGetBrand> => {
+export const getBrands = async (): Promise<pointOfSaleTypes.brandResponseTypes.IGetBrands> => {
     try {
         const BrandModel = getBrandModel(global.currentDb);
         return Promise.resolve({
@@ -97,7 +97,7 @@ export const createBrand = async (
                     error: [
                         {
                             name: 'name',
-                            message: 'A category with this name already exists in database',
+                            message: 'A brand with this name already exists in database',
                         },
                     ],
                 };
@@ -158,7 +158,7 @@ export const updateBrand = async (
                         error: [
                             {
                                 name: 'name',
-                                message: 'This category name is already present in database',
+                                message: 'This brand name is already present in database',
                             },
                         ],
                     };
@@ -170,7 +170,7 @@ export const updateBrand = async (
                     error: [
                         {
                             name: 'id',
-                            message: 'No category exists for the given ID',
+                            message: 'No brand exists for the given ID',
                         },
                     ],
                 };

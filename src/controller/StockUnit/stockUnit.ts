@@ -1,24 +1,24 @@
 import { pointOfSaleTypes, STATUS_CODES } from '@sellerspot/universal-types';
 import lodash from 'lodash';
 import { joiSchemaOptions } from 'utilities';
-import { getCategoryModel } from 'utilities/modelService';
+import { getStockUnitModel } from 'utilities/modelService';
 import {
-    createCategoryValidationSchema,
-    deleteCategoryValidationSchema,
-    getSingleCategoryValidationSchema,
-    updateCategoryValidationSchema,
-} from './category.validation';
+    createStockUnitValidationSchema,
+    deleteStockUnitValidationSchema,
+    getSingleStockUnitValidationSchema,
+    updateStockUnitValidationSchema,
+} from './stockUnit.validation';
 
 /**
- * Used to get all categorys from database
+ * Used to get all stockUnits from database
  */
-export const getCategories = async (): Promise<pointOfSaleTypes.categoryResponseTypes.IGetCategories> => {
+export const getStockUnits = async (): Promise<pointOfSaleTypes.stockUnitResponseTypes.IGetStockUnits> => {
     try {
-        const CategoryModel = getCategoryModel(global.currentDb);
+        const StockUnitModel = getStockUnitModel(global.currentDb);
         return Promise.resolve({
             status: true,
             statusCode: STATUS_CODES.OK,
-            data: await CategoryModel.find(),
+            data: await StockUnitModel.find(),
         });
     } catch (err) {
         return Promise.reject({
@@ -30,26 +30,26 @@ export const getCategories = async (): Promise<pointOfSaleTypes.categoryResponse
 };
 
 /**
- * Used to get a single category from database
+ * Used to get a single stockUnit from database
  */
-export const getSingleCategory = async (
-    categoryData: pointOfSaleTypes.categoryRequestTypes.IGetSingleCategory,
-): Promise<pointOfSaleTypes.categoryResponseTypes.IGetCategory> => {
+export const getSingleStockUnit = async (
+    stockUnitData: pointOfSaleTypes.stockUnitRequestTypes.IGetSingleStockUnit,
+): Promise<pointOfSaleTypes.stockUnitResponseTypes.IGetStockUnit> => {
     try {
         // getting instance of database modal
-        const CategoryModel = getCategoryModel(global.currentDb);
+        const StockUnitModel = getStockUnitModel(global.currentDb);
         // validating input data
-        const { error } = getSingleCategoryValidationSchema.validate(
-            categoryData,
+        const { error } = getSingleStockUnitValidationSchema.validate(
+            stockUnitData,
             joiSchemaOptions,
         );
         if (!error) {
-            const requestedData = await CategoryModel.findById(categoryData.id);
+            const requestedData = await StockUnitModel.findById(stockUnitData.id);
             if (!lodash.isNull(requestedData)) {
                 return Promise.resolve({
                     status: true,
                     statusCode: STATUS_CODES.OK,
-                    data: requestedData,
+                    data: await StockUnitModel.findById(stockUnitData.id),
                 });
             } else {
                 throw {
@@ -71,27 +71,27 @@ export const getSingleCategory = async (
 };
 
 /**
- * Used to create a new category in database
- * @param categoryData Data to be added to database
+ * Used to create a new stockUnit in database
+ * @param stockUnitData Data to be added to database
  */
-export const createCategory = async (
-    categoryData: pointOfSaleTypes.categoryRequestTypes.ICreateCategory,
-): Promise<pointOfSaleTypes.categoryResponseTypes.ICreateCategory> => {
+export const createStockUnit = async (
+    stockUnitData: pointOfSaleTypes.stockUnitRequestTypes.ICreateStockUnit,
+): Promise<pointOfSaleTypes.stockUnitResponseTypes.ICreateStockUnit> => {
     try {
         // validating input data
-        const { error } = createCategoryValidationSchema.validate(categoryData, joiSchemaOptions);
+        const { error } = createStockUnitValidationSchema.validate(stockUnitData, joiSchemaOptions);
         if (!error) {
             // getting instance of database modal
-            const CategoryModel = getCategoryModel(global.currentDb);
-            const categoryToAdd: pointOfSaleTypes.categoryRequestTypes.ICreateCategory[] = await CategoryModel.find(
-                { name: categoryData.name },
+            const StockUnitModel = getStockUnitModel(global.currentDb);
+            const stockUnitToAdd: pointOfSaleTypes.stockUnitRequestTypes.ICreateStockUnit[] = await StockUnitModel.find(
+                { name: stockUnitData.name },
             );
 
-            if (categoryToAdd.length === 0) {
+            if (stockUnitToAdd.length === 0) {
                 return Promise.resolve({
                     status: true,
                     statusCode: STATUS_CODES.CREATED,
-                    data: await CategoryModel.create(categoryData),
+                    data: await StockUnitModel.create(stockUnitData),
                 });
             } else {
                 throw {
@@ -100,7 +100,7 @@ export const createCategory = async (
                     error: [
                         {
                             name: 'name',
-                            message: 'A category with this name already exists in database',
+                            message: 'A stock unit with this name already exists in database',
                         },
                     ],
                 };
@@ -112,7 +112,7 @@ export const createCategory = async (
                 error: error.details.map((fieldError) => {
                     return {
                         name: fieldError.context
-                            .label as pointOfSaleTypes.categoryResponseTypes.fieldNames,
+                            .label as pointOfSaleTypes.stockUnitResponseTypes.fieldNames,
                         message: fieldError.message,
                     };
                 }),
@@ -124,31 +124,31 @@ export const createCategory = async (
 };
 
 /**
- * Used to update category data in database
+ * Used to update stockUnit data in database
  */
-export const updateCategory = async (
-    updateData: pointOfSaleTypes.categoryRequestTypes.IUpdateCategory,
-): Promise<pointOfSaleTypes.categoryResponseTypes.IUpdateCategory> => {
+export const updateStockUnit = async (
+    updateData: pointOfSaleTypes.stockUnitRequestTypes.IUpdateStockUnit,
+): Promise<pointOfSaleTypes.stockUnitResponseTypes.IUpdateStockUnit> => {
     try {
         // getting instance of database modal
-        const CategoryModel = getCategoryModel(global.currentDb);
+        const StockUnitModel = getStockUnitModel(global.currentDb);
         // validating request data
-        const { error } = updateCategoryValidationSchema.validate(updateData, joiSchemaOptions);
+        const { error } = updateStockUnitValidationSchema.validate(updateData, joiSchemaOptions);
         if (!error) {
-            // checking if a category with the given id exists in database
-            const existingCategory = await CategoryModel.findById(updateData.id);
-            if (!lodash.isNull(existingCategory)) {
-                // checking if a category with the same name already exists
-                const existingCategoryName = await CategoryModel.findOne({
-                    name: updateData.categoryData.name,
+            // checking if a stockUnit with the given id exists in database
+            const existingStockUnit = await StockUnitModel.findById(updateData.id);
+            if (!lodash.isNull(existingStockUnit)) {
+                // checking if a stockUnit with the same name already exists
+                const existingStockUnitName = await StockUnitModel.findOne({
+                    name: updateData.stockUnitData.name,
                 });
-                if (lodash.isNull(existingCategoryName)) {
+                if (lodash.isNull(existingStockUnitName)) {
                     return Promise.resolve({
                         status: true,
                         statusCode: STATUS_CODES.OK,
-                        data: await CategoryModel.findByIdAndUpdate(
+                        data: await StockUnitModel.findByIdAndUpdate(
                             updateData.id,
-                            updateData.categoryData,
+                            updateData.stockUnitData,
                             {
                                 new: true,
                             },
@@ -161,7 +161,7 @@ export const updateCategory = async (
                         error: [
                             {
                                 name: 'name',
-                                message: 'This category name is already present in database',
+                                message: 'This stock unit name is already present in database',
                             },
                         ],
                     };
@@ -173,7 +173,7 @@ export const updateCategory = async (
                     error: [
                         {
                             name: 'id',
-                            message: 'No category exists for the given ID',
+                            message: 'No stock units exists for the given ID',
                         },
                     ],
                 };
@@ -185,7 +185,7 @@ export const updateCategory = async (
                 error: error.details.map((fieldError) => {
                     return {
                         name: fieldError.context
-                            .label as pointOfSaleTypes.categoryResponseTypes.fieldNames,
+                            .label as pointOfSaleTypes.stockUnitResponseTypes.fieldNames,
                         message: fieldError.message,
                     };
                 }),
@@ -197,24 +197,24 @@ export const updateCategory = async (
 };
 
 /**
- * Used to delete a category from database
+ * Used to delete a stockUnit from database
  */
-export const deleteCategory = async (
-    categoryData: pointOfSaleTypes.categoryRequestTypes.IDeleteCategory,
-): Promise<pointOfSaleTypes.categoryResponseTypes.IDeleteCategory> => {
+export const deleteStockUnit = async (
+    stockUnitData: pointOfSaleTypes.stockUnitRequestTypes.IDeleteStockUnit,
+): Promise<pointOfSaleTypes.stockUnitResponseTypes.IDeleteStockUnit> => {
     try {
         // getting instance of database modal
-        const CategoryModel = getCategoryModel(global.currentDb);
+        const StockUnitModel = getStockUnitModel(global.currentDb);
         // validating the request data
-        const { error } = deleteCategoryValidationSchema.validate(categoryData, joiSchemaOptions);
+        const { error } = deleteStockUnitValidationSchema.validate(stockUnitData, joiSchemaOptions);
         if (!error) {
-            // checking if the category to delete exists in database
-            const existingCategory = await CategoryModel.findById(categoryData.id);
-            if (!lodash.isNull(existingCategory)) {
+            // checking if the stockUnit to delete exists in database
+            const existingStockUnit = await StockUnitModel.findById(stockUnitData.id);
+            if (!lodash.isNull(existingStockUnit)) {
                 return Promise.resolve({
                     status: true,
                     statusCode: STATUS_CODES.OK,
-                    data: await CategoryModel.findByIdAndDelete(categoryData.id),
+                    data: await StockUnitModel.findByIdAndDelete(stockUnitData.id),
                 });
             } else {
                 throw {
