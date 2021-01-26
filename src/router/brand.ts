@@ -1,17 +1,19 @@
+import { pointOfSaleTypes } from '@sellerspot/universal-types';
 import { brandController } from 'controller';
 import { Router } from 'express';
 
 const brandRouter: Router = Router();
 
-// brandRouter.post('/', brand.createBrand);
-brandRouter.get('/', async (req, res) => {
-    const getBrandsData = await brandController.getBrands();
-    res.send(getBrandsData);
-});
-brandRouter.get('/:id', async (req, res) => {
-    const getBrandData = await brandController.getSingleBrand(req.params['id']);
-    res.send(getBrandData);
-});
+// get all brands
+brandRouter.get('/', async (_, res) => res.send(await brandController.getBrands()));
+// get single brand
+brandRouter.get('/:id', async (req, res) =>
+    res.send(await brandController.getSingleBrand({ id: req.params['id'] })),
+);
+// to create a new brand
+brandRouter.post('/', async (req, res) => res.send(await brandController.createBrand(req.body)));
+// to update an existing brand
+brandRouter.put('/', async (req, res) => res.send(await brandController.updateBrand(req.body)));
 // brandRouter.put('/', brand.updateBrand);
 // brandRouter.delete('/:brandid', brand.deleteBrand);
 
