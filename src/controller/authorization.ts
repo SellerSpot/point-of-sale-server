@@ -6,10 +6,16 @@ interface IAuthorizeTenantRequest {
     domainName: string;
 }
 
+interface ITokenPayload {
+    name?: string;
+    _id?: string;
+    email?: string;
+}
+
 interface IAuthorizeTenantResponse {
     status: boolean;
     statusCode: number;
-    data?: { tenantAppToken: string; name: string; _id: string };
+    data?: ITokenPayload & { tenantAppToken: string };
     error?: unknown;
 }
 
@@ -42,15 +48,14 @@ export const authorizeTenant = async (
         }).populate('tenant', null, TenantModel);
 
         const { _id, email, name } = <baseDbModels.TenantModel.ITenant>installedTenant.tenant;
+        const tokenPayload: ITokenPayload = { _id, email, name };
 
         return Promise.resolve({
             status: true,
             statusCode: 200,
             data: {
-                _id,
-                name,
-                email,
-                tenantAppToken: jwt.sign({ _id, email, name }, CONFIG.APP_SECRET, {
+                ...tokenPayload,
+                tenantAppToken: jwt.sign(tokenPayload, CONFIG.APP_SECRET, {
                     expiresIn: '2 days', // check zeit/ms
                 }),
             },
@@ -65,4 +70,41 @@ export const authorizeTenant = async (
         });
     }
     return;
+};
+
+interface IVerifyTokenResponse {
+    status: boolean;
+    statusCode: number;
+    data?: ITokenPayload;
+    error?: unknown;
+}
+
+export const verifyToken = async (token: string): Promise<IVerifyTokenResponse> => {
+    try {
+        if (!token) {
+            throw 'tokenNotFound';
+        }
+        const response: IVerifyTokenResponse = await new Promise((resolve, reject) =>
+            jwt.verify(token, CONFIG.APP_SECRET, (err, decoded: ITokenPayload) => {
+                if (err) {
+                    reject('tokenExpired');
+                }
+                // on verificaiton success
+                resolve({
+                    status: true,
+                    statusCode: 200,
+                    data: decoded,
+                } as IVerifyTokenResponse);
+            }),
+        );
+        return Promise.resolve(response);
+    } catch (error) {
+        return Promise.reject({
+            status: false,
+            statusCode: 400,
+            error: {
+                tokenVerificationFailure: JSON.stringify(error.message ?? error),
+            },
+        });
+    }
 };

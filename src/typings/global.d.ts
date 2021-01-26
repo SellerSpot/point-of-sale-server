@@ -18,6 +18,12 @@ declare global {
             currentDb: typeof connection;
         }
     }
+
+    namespace Express {
+        interface Request {
+            tenantId?: string;
+        }
+    }
 }
 
 // convert it into a module by adding an empty export statement.
