@@ -86,7 +86,6 @@ export const createStockUnit = async (
             const stockUnitToAdd: pointOfSaleTypes.stockUnitRequestTypes.ICreateStockUnit[] = await StockUnitModel.find(
                 { name: stockUnitData.name },
             );
-
             if (stockUnitToAdd.length === 0) {
                 return Promise.resolve({
                     status: true,
