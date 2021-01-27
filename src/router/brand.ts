@@ -2,11 +2,12 @@ import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 import { brandController } from 'controller/controller';
 import { Router } from 'express';
 import { isUndefined } from 'lodash';
+import { SUB_ROUTES } from 'utilities/globalData';
 
 const brandRouter: Router = Router();
 
 // get all brands
-brandRouter.get('/', async (_, res) => {
+brandRouter.post(SUB_ROUTES.BRAND.GET_ALL_BRANDS, async (_, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.IGetBrands;
     try {
         response = await brandController.getBrands();
@@ -24,10 +25,10 @@ brandRouter.get('/', async (_, res) => {
     }
 });
 // get single brand
-brandRouter.get('/:id', async (req, res) => {
+brandRouter.post(SUB_ROUTES.BRAND.GET_BRAND, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.IGetBrand;
     try {
-        response = await brandController.getSingleBrand({ id: req.params['id'] });
+        response = await brandController.getSingleBrand({ id: req.body['id'] });
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(err.status)
@@ -42,7 +43,7 @@ brandRouter.get('/:id', async (req, res) => {
     }
 });
 // to create a new brand
-brandRouter.post('/', async (req, res) => {
+brandRouter.post(SUB_ROUTES.BRAND.CREATE_BRAND, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.ICreateBrand;
     try {
         response = await brandController.createBrand(req.body);
@@ -62,7 +63,7 @@ brandRouter.post('/', async (req, res) => {
     }
 });
 // to update an existing brand
-brandRouter.put('/', async (req, res) => {
+brandRouter.post(SUB_ROUTES.BRAND.UPDATE_BRAND, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.IUpdateBrand;
     try {
         response = await brandController.updateBrand(req.body);
@@ -80,10 +81,10 @@ brandRouter.put('/', async (req, res) => {
     }
 });
 // to delete an existing brand
-brandRouter.delete('/:id', async (req, res) => {
+brandRouter.post(SUB_ROUTES.BRAND.DELETE_BRAND, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.IDeleteBrand;
     try {
-        response = await brandController.deleteBrand({ id: req.params['id'] });
+        response = await brandController.deleteBrand({ id: req.body['id'] });
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(err.status)
