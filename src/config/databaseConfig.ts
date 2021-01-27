@@ -1,4 +1,3 @@
-import { NextFunction, RequestHandler, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { logger } from 'utilities/logger';
 import { CONFIG } from './config';
@@ -20,14 +19,4 @@ export const configureDB = (): void => {
     });
     global.currentDb = global.dbConnection.useDb(DB_NAMES.BASE_DB);
     if (models.handshake === true) logger.mongoose(`Loaded All Monogoose Models`);
-};
-export const setCurrentDB: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
-    req.tenantId = models.DB_NAMES.BASE_DB;
-    if (CONFIG.ENV === 'development') {
-        global.currentDb = global.dbConnection.useDb(req.tenantId);
-        logger.mongoose(`Connected to ${req.tenantId}`);
-    } else {
-        logger.mongoose(`Connected to ${req.tenantId}`);
-    }
-    next();
 };

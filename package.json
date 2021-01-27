@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/SellerSpot/point-of-sale-server#readme",
   "devDependencies": {
-    "@sellerspot/universal-types": "^1.0.0",
+    "@sellerspot/universal-types": "^1.1.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/chalk": "^2.2.0",
     "@types/express": "^4.17.9",

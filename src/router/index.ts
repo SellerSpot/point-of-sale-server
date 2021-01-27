@@ -6,9 +6,11 @@ import productRouter from './product';
 import saleRouter from './sale';
 import stockUnitRouter from './stockUnit';
 import taxBracketRouter from './taxBracket';
+import authorizationRouter from './authorization';
 
 const rootRouter: Router = Router();
 
+rootRouter.use('/authorize', authorizationRouter);
 rootRouter.use('/category', categoryRouter);
 rootRouter.use('/brand', brandRouter);
 rootRouter.use('/stockunit', stockUnitRouter);
