@@ -1,14 +1,24 @@
 import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
-import { brandController } from 'controller/controller';
+import { getToken } from 'controller/authorization';
+import { authorizationController, brandController } from 'controller/controller';
 import { Router } from 'express';
 import { isUndefined } from 'lodash';
+import { logger } from 'utilities/logger';
 
 const brandRouter: Router = Router();
 
 // get all brands
-brandRouter.get('/', async (_, res) => {
+brandRouter.get('/', async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.IGetBrands;
     try {
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+        if (tokenPayload.status) {
+            // you could access all tenant info from tokenPayload.data
+            logger.common(tokenPayload.data._id); // tenant id (use this id to query from with database you wantto)
+        } else {
+            throw 'Invalid token!';
+        }
         response = await brandController.getBrands();
     } catch (err) {
         // used to handle unexpected and uncaught errors

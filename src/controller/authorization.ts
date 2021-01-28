@@ -11,41 +11,55 @@ export const authorizeTenant = async (
 ): Promise<pointOfSaleTypes.authResponseTypes.IAuthorizeTenantResponse> => {
     try {
         if (!data.domainName) throw 'Invalid Data';
-        // check subdomain exists on basedb subdomain models
-        const baseDb = global.currentDb.useDb(DB_NAMES.BASE_DB);
-        // tenant model here for population purpose
-        const TenantModel: baseDbModels.TenantModel.ITenantModel = baseDb.model(
-            MONGOOSE_MODELS.BASE_DB.TENANT,
-        );
-        const SubDomainModel: baseDbModels.SubDomainModel.ISubDomainModel = baseDb.model(
-            MONGOOSE_MODELS.BASE_DB.SUB_DOMAIN,
-        );
-        const tenantSubDomain = await SubDomainModel.findOne({
-            domainName: data.domainName,
-        });
-        if (!tenantSubDomain) throw 'Invalid Tenant';
 
-        // check app installed on pos db
-        const posDb = global.currentDb.useDb(DB_NAMES.POINT_OF_SALE_DB);
-        const InstalledTenantModel: appDbModels.InstalledTenantModel.IInstalledTenantModel = posDb.model(
-            MONGOOSE_MODELS.APP_DB.INSTALLED_TENANT,
-        );
-        const installedTenant = await InstalledTenantModel.findOne({
-            tenant: tenantSubDomain.tenant,
-        }).populate('tenant', null, TenantModel);
+        const tokenPayload: pointOfSaleTypes.authResponseTypes.ITokenPayload = {
+            email: 'developer@gmail.com',
+            name: 'Developer',
+            _id: 'developer_id',
+        };
 
-        const { email, name, _id } = <baseDbModels.TenantModel.ITenant>installedTenant.tenant;
-        const tokenPayload: pointOfSaleTypes.authResponseTypes.ITokenPayload = { email, name, _id };
+        if (data.domainName !== 'localhost') {
+            // check subdomain exists on basedb subdomain models
+            const baseDb = global.currentDb.useDb(DB_NAMES.BASE_DB);
+            // tenant model here for population purpose
+            const TenantModel: baseDbModels.TenantModel.ITenantModel = baseDb.model(
+                MONGOOSE_MODELS.BASE_DB.TENANT,
+            );
+            const SubDomainModel: baseDbModels.SubDomainModel.ISubDomainModel = baseDb.model(
+                MONGOOSE_MODELS.BASE_DB.SUB_DOMAIN,
+            );
+            const tenantSubDomain = await SubDomainModel.findOne({
+                domainName: data.domainName,
+            });
+            if (!tenantSubDomain) throw 'Invalid Tenant';
+
+            // check app installed on pos db
+            const posDb = global.currentDb.useDb(DB_NAMES.POINT_OF_SALE_DB);
+            const InstalledTenantModel: appDbModels.InstalledTenantModel.IInstalledTenantModel = posDb.model(
+                MONGOOSE_MODELS.APP_DB.INSTALLED_TENANT,
+            );
+            const installedTenant = await InstalledTenantModel.findOne({
+                tenant: tenantSubDomain.tenant,
+            }).populate('tenant', null, TenantModel);
+
+            const tenantDetails = <baseDbModels.TenantModel.ITenant>installedTenant.tenant;
+            tokenPayload._id = tenantDetails._id;
+            tokenPayload.email = tenantDetails.email;
+            tokenPayload.name = tenantDetails.name;
+            // auth will be handled in  separate block
+        }
+
+        const responseData: pointOfSaleTypes.authResponseTypes.IAuthorizeTenantResponse['data'] = {
+            ...tokenPayload,
+            token: jwt.sign(tokenPayload, CONFIG.APP_SECRET, {
+                expiresIn: '2 days', // check zeit/ms
+            }),
+        };
 
         return Promise.resolve({
             status: true,
             statusCode: STATUS_CODES.OK,
-            data: {
-                ...tokenPayload,
-                tenantAppToken: jwt.sign(tokenPayload, CONFIG.APP_SECRET, {
-                    expiresIn: '2 days', // check zeit/ms
-                }),
-            },
+            data: responseData,
         });
     } catch (error) {
         return Promise.reject(<pointOfSaleTypes.authResponseTypes.IAuthorizeTenantResponse>{

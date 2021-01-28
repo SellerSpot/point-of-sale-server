@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { logger } from 'utilities/logger';
 import { authorizationController } from '../controller/controller';
 
 const authorizationRouter: Router = Router();
