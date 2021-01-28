@@ -6,7 +6,7 @@ import { isUndefined } from 'lodash';
 const stockUnitRouter: Router = Router();
 
 // get all stockUnits
-stockUnitRouter.get('/', async (_, res) => {
+stockUnitRouter.post(pointOfSaleTypes.ROUTES.STOCKUNIT_GET_ALL_STOCKUNITS, async (_, res) => {
     let response: pointOfSaleTypes.stockUnitResponseTypes.IGetStockUnits;
     try {
         response = await stockUnitController.getStockUnits();
@@ -24,10 +24,10 @@ stockUnitRouter.get('/', async (_, res) => {
     }
 });
 // get single stockUnit
-stockUnitRouter.get('/:id', async (req, res) => {
+stockUnitRouter.post(pointOfSaleTypes.ROUTES.STOCKUNIT_GET_STOCKUNIT, async (req, res) => {
     let response: pointOfSaleTypes.stockUnitResponseTypes.IGetStockUnit;
     try {
-        response = await stockUnitController.getSingleStockUnit({ id: req.params['id'] });
+        response = await stockUnitController.getSingleStockUnit(req.body);
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(err.status)
@@ -42,7 +42,7 @@ stockUnitRouter.get('/:id', async (req, res) => {
     }
 });
 // to create a new stockUnit
-stockUnitRouter.post('/', async (req, res) => {
+stockUnitRouter.post(pointOfSaleTypes.ROUTES.STOCKUNIT_CREATE_STOCKUNIT, async (req, res) => {
     let response: pointOfSaleTypes.stockUnitResponseTypes.ICreateStockUnit;
     try {
         response = await stockUnitController.createStockUnit(req.body);
@@ -62,7 +62,7 @@ stockUnitRouter.post('/', async (req, res) => {
     }
 });
 // to update an existing stockUnit
-stockUnitRouter.put('/', async (req, res) => {
+stockUnitRouter.put(pointOfSaleTypes.ROUTES.STOCKUNIT_UPDATE_STOCKUNIT, async (req, res) => {
     let response: pointOfSaleTypes.stockUnitResponseTypes.IUpdateStockUnit;
     try {
         response = await stockUnitController.updateStockUnit(req.body);
@@ -80,10 +80,10 @@ stockUnitRouter.put('/', async (req, res) => {
     }
 });
 // to delete an existing stockUnit
-stockUnitRouter.delete('/:id', async (req, res) => {
+stockUnitRouter.delete(pointOfSaleTypes.ROUTES.STOCKUNIT_DELETE_STOCKUNIT, async (req, res) => {
     let response: pointOfSaleTypes.stockUnitResponseTypes.IDeleteStockUnit;
     try {
-        response = await stockUnitController.deleteStockUnit({ id: req.params['id'] });
+        response = await stockUnitController.deleteStockUnit(req.body);
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(err.status)
