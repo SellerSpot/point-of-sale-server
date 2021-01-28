@@ -1,0 +1,1 @@
+wt -M nt -d ..\point-of-sale-server ; sp -V -d ..\point-of-sale-app ; sp -V -d ..\database-models ; sp -H -d ..\universal-types ; sp -H -d ..\universal-components
