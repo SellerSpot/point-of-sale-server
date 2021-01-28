@@ -6,7 +6,7 @@ import { isUndefined } from 'lodash';
 const saleRouter: Router = Router();
 
 // get all sales
-saleRouter.get('/', async (_, res) => {
+saleRouter.post(pointOfSaleTypes.ROUTES.SALE_GET_ALL_SALES, async (_, res) => {
     let response: pointOfSaleTypes.saleResponseTypes.IGetSales;
     try {
         response = await saleController.getSales();
@@ -24,10 +24,10 @@ saleRouter.get('/', async (_, res) => {
     }
 });
 // get single sale
-saleRouter.get('/:id', async (req, res) => {
+saleRouter.post(pointOfSaleTypes.ROUTES.SALE_GET_SALE, async (req, res) => {
     let response: pointOfSaleTypes.saleResponseTypes.IGetSale;
     try {
-        response = await saleController.getSingleSale({ id: req.params['id'] });
+        response = await saleController.getSingleSale(req.body);
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(err.status)
@@ -42,7 +42,7 @@ saleRouter.get('/:id', async (req, res) => {
     }
 });
 // to create a new sale
-saleRouter.post('/', async (req, res) => {
+saleRouter.post(pointOfSaleTypes.ROUTES.SALE_CREATE_SALE, async (req, res) => {
     let response: pointOfSaleTypes.saleResponseTypes.ICreateSale;
     try {
         response = await saleController.createSale(req.body);
@@ -62,7 +62,7 @@ saleRouter.post('/', async (req, res) => {
     }
 });
 // to update an existing sale
-saleRouter.put('/', async (req, res) => {
+saleRouter.put(pointOfSaleTypes.ROUTES.SALE_UPDATE_SALE, async (req, res) => {
     let response: pointOfSaleTypes.saleResponseTypes.IUpdateSale;
     try {
         response = await saleController.updateSale(req.body);
@@ -80,10 +80,10 @@ saleRouter.put('/', async (req, res) => {
     }
 });
 // to delete an existing sale
-saleRouter.delete('/:id', async (req, res) => {
+saleRouter.delete(pointOfSaleTypes.ROUTES.SALE_DELETE_SALE, async (req, res) => {
     let response: pointOfSaleTypes.saleResponseTypes.IDeleteSale;
     try {
-        response = await saleController.deleteSale({ id: req.params['id'] });
+        response = await saleController.deleteSale(req.body);
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(err.status)
