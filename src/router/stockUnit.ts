@@ -62,7 +62,7 @@ stockUnitRouter.post(pointOfSaleTypes.ROUTES.STOCKUNIT_CREATE_STOCKUNIT, async (
     }
 });
 // to update an existing stockUnit
-stockUnitRouter.put(pointOfSaleTypes.ROUTES.STOCKUNIT_UPDATE_STOCKUNIT, async (req, res) => {
+stockUnitRouter.post(pointOfSaleTypes.ROUTES.STOCKUNIT_UPDATE_STOCKUNIT, async (req, res) => {
     let response: pointOfSaleTypes.stockUnitResponseTypes.IUpdateStockUnit;
     try {
         response = await stockUnitController.updateStockUnit(req.body);
@@ -80,7 +80,7 @@ stockUnitRouter.put(pointOfSaleTypes.ROUTES.STOCKUNIT_UPDATE_STOCKUNIT, async (r
     }
 });
 // to delete an existing stockUnit
-stockUnitRouter.delete(pointOfSaleTypes.ROUTES.STOCKUNIT_DELETE_STOCKUNIT, async (req, res) => {
+stockUnitRouter.post(pointOfSaleTypes.ROUTES.STOCKUNIT_DELETE_STOCKUNIT, async (req, res) => {
     let response: pointOfSaleTypes.stockUnitResponseTypes.IDeleteStockUnit;
     try {
         response = await stockUnitController.deleteStockUnit(req.body);

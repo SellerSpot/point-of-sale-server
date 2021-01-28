@@ -6,7 +6,7 @@ import { isUndefined } from 'lodash';
 const taxBracketRouter: Router = Router();
 
 // get all taxBrackets
-taxBracketRouter.get('/', async (_, res) => {
+taxBracketRouter.post(pointOfSaleTypes.ROUTES.TAXBRACKET_GET_ALL_TAXBRACKETS, async (_, res) => {
     let response: pointOfSaleTypes.taxBracketResponseTypes.IGetTaxBrackets;
     try {
         response = await taxBracketController.getTaxBrackets();
@@ -24,10 +24,10 @@ taxBracketRouter.get('/', async (_, res) => {
     }
 });
 // get single taxBracket
-taxBracketRouter.get('/:id', async (req, res) => {
+taxBracketRouter.post(pointOfSaleTypes.ROUTES.TAXBRACKET_GET_TAXBRACKET, async (req, res) => {
     let response: pointOfSaleTypes.taxBracketResponseTypes.IGetTaxBracket;
     try {
-        response = await taxBracketController.getSingleTaxBracket({ id: req.params['id'] });
+        response = await taxBracketController.getSingleTaxBracket(req.body);
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(err.status)
@@ -42,7 +42,7 @@ taxBracketRouter.get('/:id', async (req, res) => {
     }
 });
 // to create a new taxBracket
-taxBracketRouter.post('/', async (req, res) => {
+taxBracketRouter.post(pointOfSaleTypes.ROUTES.TAXBRACKET_CREATE_TAXBRACKET, async (req, res) => {
     let response: pointOfSaleTypes.taxBracketResponseTypes.ICreateTaxBracket;
     try {
         response = await taxBracketController.createTaxBracket(req.body);
@@ -62,7 +62,7 @@ taxBracketRouter.post('/', async (req, res) => {
     }
 });
 // to update an existing taxBracket
-taxBracketRouter.put('/', async (req, res) => {
+taxBracketRouter.post(pointOfSaleTypes.ROUTES.TAXBRACKET_UPDATE_TAXBRACKET, async (req, res) => {
     let response: pointOfSaleTypes.taxBracketResponseTypes.IUpdateTaxBracket;
     try {
         response = await taxBracketController.updateTaxBracket(req.body);
@@ -80,10 +80,10 @@ taxBracketRouter.put('/', async (req, res) => {
     }
 });
 // to delete an existing taxBracket
-taxBracketRouter.delete('/:id', async (req, res) => {
+taxBracketRouter.post(pointOfSaleTypes.ROUTES.TAXBRACKET_DELETE_TAXBRACKET, async (req, res) => {
     let response: pointOfSaleTypes.taxBracketResponseTypes.IDeleteTaxBracket;
     try {
-        response = await taxBracketController.deleteTaxBracket({ id: req.params['id'] });
+        response = await taxBracketController.deleteTaxBracket(req.body);
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(err.status)

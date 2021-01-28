@@ -62,7 +62,7 @@ saleRouter.post(pointOfSaleTypes.ROUTES.SALE_CREATE_SALE, async (req, res) => {
     }
 });
 // to update an existing sale
-saleRouter.put(pointOfSaleTypes.ROUTES.SALE_UPDATE_SALE, async (req, res) => {
+saleRouter.post(pointOfSaleTypes.ROUTES.SALE_UPDATE_SALE, async (req, res) => {
     let response: pointOfSaleTypes.saleResponseTypes.IUpdateSale;
     try {
         response = await saleController.updateSale(req.body);
@@ -80,7 +80,7 @@ saleRouter.put(pointOfSaleTypes.ROUTES.SALE_UPDATE_SALE, async (req, res) => {
     }
 });
 // to delete an existing sale
-saleRouter.delete(pointOfSaleTypes.ROUTES.SALE_DELETE_SALE, async (req, res) => {
+saleRouter.post(pointOfSaleTypes.ROUTES.SALE_DELETE_SALE, async (req, res) => {
     let response: pointOfSaleTypes.saleResponseTypes.IDeleteSale;
     try {
         response = await saleController.deleteSale(req.body);
