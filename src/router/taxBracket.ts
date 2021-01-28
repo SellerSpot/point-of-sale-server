@@ -7,7 +7,7 @@ const taxBracketRouter: Router = Router();
 
 // get all taxBrackets
 taxBracketRouter.post(
-    `${pointOfSaleTypes.ROUTES.TAXBRACKET_GET_ALL_TAXBRACKETS}`,
+    `/${pointOfSaleTypes.ROUTES.TAXBRACKET_GET_ALL_TAXBRACKETS}`,
     async (_, res) => {
         let response: pointOfSaleTypes.taxBracketResponseTypes.IGetTaxBrackets;
         try {
@@ -27,7 +27,7 @@ taxBracketRouter.post(
     },
 );
 // get single taxBracket
-taxBracketRouter.post(`${pointOfSaleTypes.ROUTES.TAXBRACKET_GET_TAXBRACKET}`, async (req, res) => {
+taxBracketRouter.post(`/${pointOfSaleTypes.ROUTES.TAXBRACKET_GET_TAXBRACKET}`, async (req, res) => {
     let response: pointOfSaleTypes.taxBracketResponseTypes.IGetTaxBracket;
     try {
         response = await taxBracketController.getSingleTaxBracket(req.body);
@@ -46,7 +46,7 @@ taxBracketRouter.post(`${pointOfSaleTypes.ROUTES.TAXBRACKET_GET_TAXBRACKET}`, as
 });
 // to create a new taxBracket
 taxBracketRouter.post(
-    `${pointOfSaleTypes.ROUTES.TAXBRACKET_CREATE_TAXBRACKET}`,
+    `/${pointOfSaleTypes.ROUTES.TAXBRACKET_CREATE_TAXBRACKET}`,
     async (req, res) => {
         let response: pointOfSaleTypes.taxBracketResponseTypes.ICreateTaxBracket;
         try {
@@ -69,7 +69,7 @@ taxBracketRouter.post(
 );
 // to update an existing taxBracket
 taxBracketRouter.post(
-    `${pointOfSaleTypes.ROUTES.TAXBRACKET_UPDATE_TAXBRACKET}`,
+    `/${pointOfSaleTypes.ROUTES.TAXBRACKET_UPDATE_TAXBRACKET}`,
     async (req, res) => {
         let response: pointOfSaleTypes.taxBracketResponseTypes.IUpdateTaxBracket;
         try {
@@ -90,7 +90,7 @@ taxBracketRouter.post(
 );
 // to delete an existing taxBracket
 taxBracketRouter.post(
-    `${pointOfSaleTypes.ROUTES.TAXBRACKET_DELETE_TAXBRACKET}`,
+    `/${pointOfSaleTypes.ROUTES.TAXBRACKET_DELETE_TAXBRACKET}`,
     async (req, res) => {
         let response: pointOfSaleTypes.taxBracketResponseTypes.IDeleteTaxBracket;
         try {

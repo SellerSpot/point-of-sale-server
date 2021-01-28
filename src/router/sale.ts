@@ -6,7 +6,7 @@ import { isUndefined } from 'lodash';
 const saleRouter: Router = Router();
 
 // get all sales
-saleRouter.post(`${pointOfSaleTypes.ROUTES.SALE_GET_ALL_SALES}`, async (_, res) => {
+saleRouter.post(`/${pointOfSaleTypes.ROUTES.SALE_GET_ALL_SALES}`, async (_, res) => {
     let response: pointOfSaleTypes.saleResponseTypes.IGetSales;
     try {
         response = await saleController.getSales();
@@ -24,7 +24,7 @@ saleRouter.post(`${pointOfSaleTypes.ROUTES.SALE_GET_ALL_SALES}`, async (_, res) 
     }
 });
 // get single sale
-saleRouter.post(`${pointOfSaleTypes.ROUTES.SALE_GET_SALE}`, async (req, res) => {
+saleRouter.post(`/${pointOfSaleTypes.ROUTES.SALE_GET_SALE}`, async (req, res) => {
     let response: pointOfSaleTypes.saleResponseTypes.IGetSale;
     try {
         response = await saleController.getSingleSale(req.body);
@@ -42,7 +42,7 @@ saleRouter.post(`${pointOfSaleTypes.ROUTES.SALE_GET_SALE}`, async (req, res) => 
     }
 });
 // to create a new sale
-saleRouter.post(`${pointOfSaleTypes.ROUTES.SALE_CREATE_SALE}`, async (req, res) => {
+saleRouter.post(`/${pointOfSaleTypes.ROUTES.SALE_CREATE_SALE}`, async (req, res) => {
     let response: pointOfSaleTypes.saleResponseTypes.ICreateSale;
     try {
         response = await saleController.createSale(req.body);
@@ -62,7 +62,7 @@ saleRouter.post(`${pointOfSaleTypes.ROUTES.SALE_CREATE_SALE}`, async (req, res) 
     }
 });
 // to update an existing sale
-saleRouter.post(`${pointOfSaleTypes.ROUTES.SALE_UPDATE_SALE}`, async (req, res) => {
+saleRouter.post(`/${pointOfSaleTypes.ROUTES.SALE_UPDATE_SALE}`, async (req, res) => {
     let response: pointOfSaleTypes.saleResponseTypes.IUpdateSale;
     try {
         response = await saleController.updateSale(req.body);
@@ -80,7 +80,7 @@ saleRouter.post(`${pointOfSaleTypes.ROUTES.SALE_UPDATE_SALE}`, async (req, res) 
     }
 });
 // to delete an existing sale
-saleRouter.post(`${pointOfSaleTypes.ROUTES.SALE_DELETE_SALE}`, async (req, res) => {
+saleRouter.post(`/${pointOfSaleTypes.ROUTES.SALE_DELETE_SALE}`, async (req, res) => {
     let response: pointOfSaleTypes.saleResponseTypes.IDeleteSale;
     try {
         response = await saleController.deleteSale(req.body);

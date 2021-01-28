@@ -6,7 +6,7 @@ import { isUndefined } from 'lodash';
 const stockUnitRouter: Router = Router();
 
 // get all stockUnits
-stockUnitRouter.post(`${pointOfSaleTypes.ROUTES.STOCKUNIT_GET_ALL_STOCKUNITS}`, async (_, res) => {
+stockUnitRouter.post(`/${pointOfSaleTypes.ROUTES.STOCKUNIT_GET_ALL_STOCKUNITS}`, async (_, res) => {
     let response: pointOfSaleTypes.stockUnitResponseTypes.IGetStockUnits;
     try {
         response = await stockUnitController.getStockUnits();
@@ -24,7 +24,7 @@ stockUnitRouter.post(`${pointOfSaleTypes.ROUTES.STOCKUNIT_GET_ALL_STOCKUNITS}`, 
     }
 });
 // get single stockUnit
-stockUnitRouter.post(`${pointOfSaleTypes.ROUTES.STOCKUNIT_GET_STOCKUNIT}`, async (req, res) => {
+stockUnitRouter.post(`/${pointOfSaleTypes.ROUTES.STOCKUNIT_GET_STOCKUNIT}`, async (req, res) => {
     let response: pointOfSaleTypes.stockUnitResponseTypes.IGetStockUnit;
     try {
         response = await stockUnitController.getSingleStockUnit(req.body);
@@ -42,7 +42,7 @@ stockUnitRouter.post(`${pointOfSaleTypes.ROUTES.STOCKUNIT_GET_STOCKUNIT}`, async
     }
 });
 // to create a new stockUnit
-stockUnitRouter.post(`${pointOfSaleTypes.ROUTES.STOCKUNIT_CREATE_STOCKUNIT}`, async (req, res) => {
+stockUnitRouter.post(`/${pointOfSaleTypes.ROUTES.STOCKUNIT_CREATE_STOCKUNIT}`, async (req, res) => {
     let response: pointOfSaleTypes.stockUnitResponseTypes.ICreateStockUnit;
     try {
         response = await stockUnitController.createStockUnit(req.body);
@@ -62,7 +62,7 @@ stockUnitRouter.post(`${pointOfSaleTypes.ROUTES.STOCKUNIT_CREATE_STOCKUNIT}`, as
     }
 });
 // to update an existing stockUnit
-stockUnitRouter.post(`${pointOfSaleTypes.ROUTES.STOCKUNIT_UPDATE_STOCKUNIT}`, async (req, res) => {
+stockUnitRouter.post(`/${pointOfSaleTypes.ROUTES.STOCKUNIT_UPDATE_STOCKUNIT}`, async (req, res) => {
     let response: pointOfSaleTypes.stockUnitResponseTypes.IUpdateStockUnit;
     try {
         response = await stockUnitController.updateStockUnit(req.body);
@@ -80,7 +80,7 @@ stockUnitRouter.post(`${pointOfSaleTypes.ROUTES.STOCKUNIT_UPDATE_STOCKUNIT}`, as
     }
 });
 // to delete an existing stockUnit
-stockUnitRouter.post(`${pointOfSaleTypes.ROUTES.STOCKUNIT_DELETE_STOCKUNIT}`, async (req, res) => {
+stockUnitRouter.post(`/${pointOfSaleTypes.ROUTES.STOCKUNIT_DELETE_STOCKUNIT}`, async (req, res) => {
     let response: pointOfSaleTypes.stockUnitResponseTypes.IDeleteStockUnit;
     try {
         response = await stockUnitController.deleteStockUnit(req.body);

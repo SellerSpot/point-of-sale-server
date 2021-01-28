@@ -6,7 +6,7 @@ import { isUndefined } from 'lodash';
 const productRouter: Router = Router();
 
 // get all products
-productRouter.post(`${pointOfSaleTypes.ROUTES.PRODUCT_GET_ALL_PRODUCTS}`, async (_, res) => {
+productRouter.post(`/${pointOfSaleTypes.ROUTES.PRODUCT_GET_ALL_PRODUCTS}`, async (_, res) => {
     let response: pointOfSaleTypes.productResponseTypes.IGetProducts;
     try {
         response = await productController.getProducts();
@@ -24,7 +24,7 @@ productRouter.post(`${pointOfSaleTypes.ROUTES.PRODUCT_GET_ALL_PRODUCTS}`, async 
     }
 });
 // get single product
-productRouter.post(`${pointOfSaleTypes.ROUTES.PRODUCT_GET_PRODUCT}`, async (req, res) => {
+productRouter.post(`/${pointOfSaleTypes.ROUTES.PRODUCT_GET_PRODUCT}`, async (req, res) => {
     let response: pointOfSaleTypes.productResponseTypes.IGetProduct;
     try {
         response = await productController.getSingleProduct(req.body);
@@ -42,7 +42,7 @@ productRouter.post(`${pointOfSaleTypes.ROUTES.PRODUCT_GET_PRODUCT}`, async (req,
     }
 });
 // to create a new product
-productRouter.post(`${pointOfSaleTypes.ROUTES.PRODUCT_CREATE_PRODUCT}`, async (req, res) => {
+productRouter.post(`/${pointOfSaleTypes.ROUTES.PRODUCT_CREATE_PRODUCT}`, async (req, res) => {
     let response: pointOfSaleTypes.productResponseTypes.ICreateProduct;
     try {
         response = await productController.createProduct(req.body);
@@ -62,7 +62,7 @@ productRouter.post(`${pointOfSaleTypes.ROUTES.PRODUCT_CREATE_PRODUCT}`, async (r
     }
 });
 // to update an existing product
-productRouter.post(`${pointOfSaleTypes.ROUTES.PRODUCT_UPDATE_PRODUCT}`, async (req, res) => {
+productRouter.post(`/${pointOfSaleTypes.ROUTES.PRODUCT_UPDATE_PRODUCT}`, async (req, res) => {
     let response: pointOfSaleTypes.productResponseTypes.IUpdateProduct;
     try {
         response = await productController.updateProduct(req.body);
@@ -80,7 +80,7 @@ productRouter.post(`${pointOfSaleTypes.ROUTES.PRODUCT_UPDATE_PRODUCT}`, async (r
     }
 });
 // to delete an existing product
-productRouter.post(`${pointOfSaleTypes.ROUTES.PRODUCT_DELETE_PRODUCT}`, async (req, res) => {
+productRouter.post(`/${pointOfSaleTypes.ROUTES.PRODUCT_DELETE_PRODUCT}`, async (req, res) => {
     let response: pointOfSaleTypes.productResponseTypes.IDeleteProduct;
     try {
         response = await productController.deleteProduct({ id: req.params['id'] });
