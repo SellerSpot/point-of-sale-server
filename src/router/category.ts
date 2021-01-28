@@ -6,7 +6,7 @@ import lodash from 'lodash';
 const categoryRouter: Router = Router();
 
 // get all categories
-categoryRouter.post(pointOfSaleTypes.ROUTES.CATEGORY_GET_ALL_CATEGORIES, async (_, res) => {
+categoryRouter.post(`${pointOfSaleTypes.ROUTES.CATEGORY_GET_ALL_CATEGORIES}`, async (_, res) => {
     let response: pointOfSaleTypes.categoryResponseTypes.IGetAllCategories;
     try {
         response = await categoryController.getCategories();
@@ -24,7 +24,7 @@ categoryRouter.post(pointOfSaleTypes.ROUTES.CATEGORY_GET_ALL_CATEGORIES, async (
     }
 });
 // get single category
-categoryRouter.post(pointOfSaleTypes.ROUTES.CATEGORY_GET_CATEGORY, async (req, res) => {
+categoryRouter.post(`${pointOfSaleTypes.ROUTES.CATEGORY_GET_CATEGORY}`, async (req, res) => {
     let response: pointOfSaleTypes.categoryResponseTypes.IGetCategory;
     try {
         response = await categoryController.getSingleCategory(req.body);
@@ -42,7 +42,7 @@ categoryRouter.post(pointOfSaleTypes.ROUTES.CATEGORY_GET_CATEGORY, async (req, r
     }
 });
 // to create a new category
-categoryRouter.post(pointOfSaleTypes.ROUTES.CATEGORY_CREATE_CATEGORY, async (req, res) => {
+categoryRouter.post(`${pointOfSaleTypes.ROUTES.CATEGORY_CREATE_CATEGORY}`, async (req, res) => {
     let response: pointOfSaleTypes.categoryResponseTypes.ICreateCategory;
     try {
         response = await categoryController.createCategory(req.body);
@@ -62,7 +62,7 @@ categoryRouter.post(pointOfSaleTypes.ROUTES.CATEGORY_CREATE_CATEGORY, async (req
     }
 });
 // to update an existing category
-categoryRouter.post(pointOfSaleTypes.ROUTES.CATEGORY_UPDATE_CATEGORY, async (req, res) => {
+categoryRouter.post(`${pointOfSaleTypes.ROUTES.CATEGORY_UPDATE_CATEGORY}`, async (req, res) => {
     let response: pointOfSaleTypes.categoryResponseTypes.IUpdateCategory;
     try {
         response = await categoryController.updateCategory(req.body);
@@ -80,7 +80,7 @@ categoryRouter.post(pointOfSaleTypes.ROUTES.CATEGORY_UPDATE_CATEGORY, async (req
     }
 });
 // to delete an existing category
-categoryRouter.post(pointOfSaleTypes.ROUTES.CATEGORY_DELETE_CATEGORY, async (req, res) => {
+categoryRouter.post(`${pointOfSaleTypes.ROUTES.CATEGORY_DELETE_CATEGORY}`, async (req, res) => {
     let response: pointOfSaleTypes.categoryResponseTypes.IDeleteCategory;
     try {
         response = await categoryController.deleteCategory(req.body);
