@@ -12,7 +12,7 @@ import {
 /**
  * Used to get all categorys from database
  */
-export const getCategories = async (): Promise<pointOfSaleTypes.categoryResponseTypes.IGetCategories> => {
+export const getCategories = async (): Promise<pointOfSaleTypes.categoryResponseTypes.IGetAllCategories> => {
     try {
         const CategoryModel = getCategoryModel(global.currentDb);
         return Promise.resolve({

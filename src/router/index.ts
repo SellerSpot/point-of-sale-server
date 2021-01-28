@@ -7,17 +7,17 @@ import saleRouter from './sale';
 import stockUnitRouter from './stockUnit';
 import taxBracketRouter from './taxBracket';
 import authorizationRouter from './authorization';
-import { MAJOR_ROUTES } from 'utilities/globalData';
+import { pointOfSaleTypes } from '@sellerspot/universal-types';
 
 const rootRouter: Router = Router();
 
-rootRouter.use(MAJOR_ROUTES.AUTHORIZE, authorizationRouter);
-rootRouter.use(MAJOR_ROUTES.CATEGORY, categoryRouter);
-rootRouter.use(MAJOR_ROUTES.BRAND, brandRouter);
-rootRouter.use(MAJOR_ROUTES.STOCK_UNIT, stockUnitRouter);
-rootRouter.use(MAJOR_ROUTES.TAX_BRACKET, taxBracketRouter);
-rootRouter.use(MAJOR_ROUTES.PROUDCT, productRouter);
-rootRouter.use(MAJOR_ROUTES.SALE, saleRouter);
-rootRouter.use(MAJOR_ROUTES.HOME, homeRouter);
+rootRouter.use(pointOfSaleTypes.ROUTES.AUTHORIZE, authorizationRouter);
+rootRouter.use(pointOfSaleTypes.ROUTES.CATEGORY, categoryRouter);
+rootRouter.use(pointOfSaleTypes.ROUTES.BRAND, brandRouter);
+rootRouter.use(pointOfSaleTypes.ROUTES.STOCK_UNIT, stockUnitRouter);
+rootRouter.use(pointOfSaleTypes.ROUTES.TAX_BRACKET, taxBracketRouter);
+rootRouter.use(pointOfSaleTypes.ROUTES.PROUDCT, productRouter);
+rootRouter.use(pointOfSaleTypes.ROUTES.SALE, saleRouter);
+rootRouter.use(homeRouter);
 
 export default rootRouter;

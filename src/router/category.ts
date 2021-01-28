@@ -5,9 +5,9 @@ import lodash from 'lodash';
 
 const categoryRouter: Router = Router();
 
-// get all categorys
-categoryRouter.get('/', async (_, res) => {
-    let response: pointOfSaleTypes.categoryResponseTypes.IGetCategories;
+// get all categories
+categoryRouter.post(pointOfSaleTypes.ROUTES.CATEGORY_GET_ALL_CATEGORIES, async (_, res) => {
+    let response: pointOfSaleTypes.categoryResponseTypes.IGetAllCategories;
     try {
         response = await categoryController.getCategories();
     } catch (err) {
@@ -24,10 +24,10 @@ categoryRouter.get('/', async (_, res) => {
     }
 });
 // get single category
-categoryRouter.get('/:id', async (req, res) => {
+categoryRouter.post(pointOfSaleTypes.ROUTES.CATEGORY_GET_CATEGORY, async (req, res) => {
     let response: pointOfSaleTypes.categoryResponseTypes.IGetCategory;
     try {
-        response = await categoryController.getSingleCategory({ id: req.params['id'] });
+        response = await categoryController.getSingleCategory(req.body);
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = lodash.isUndefined(err.status)
@@ -42,7 +42,7 @@ categoryRouter.get('/:id', async (req, res) => {
     }
 });
 // to create a new category
-categoryRouter.post('/', async (req, res) => {
+categoryRouter.post(pointOfSaleTypes.ROUTES.CATEGORY_CREATE_CATEGORY, async (req, res) => {
     let response: pointOfSaleTypes.categoryResponseTypes.ICreateCategory;
     try {
         response = await categoryController.createCategory(req.body);
@@ -62,7 +62,7 @@ categoryRouter.post('/', async (req, res) => {
     }
 });
 // to update an existing category
-categoryRouter.put('/', async (req, res) => {
+categoryRouter.post(pointOfSaleTypes.ROUTES.CATEGORY_UPDATE_CATEGORY, async (req, res) => {
     let response: pointOfSaleTypes.categoryResponseTypes.IUpdateCategory;
     try {
         response = await categoryController.updateCategory(req.body);
@@ -80,10 +80,10 @@ categoryRouter.put('/', async (req, res) => {
     }
 });
 // to delete an existing category
-categoryRouter.delete('/:id', async (req, res) => {
+categoryRouter.post(pointOfSaleTypes.ROUTES.CATEGORY_DELETE_CATEGORY, async (req, res) => {
     let response: pointOfSaleTypes.categoryResponseTypes.IDeleteCategory;
     try {
-        response = await categoryController.deleteCategory({ id: req.params['id'] });
+        response = await categoryController.deleteCategory(req.body);
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = lodash.isUndefined(err.status)

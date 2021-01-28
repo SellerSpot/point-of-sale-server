@@ -12,7 +12,7 @@ import {
 /**
  * Used to get all brands from database
  */
-export const getBrands = async (): Promise<pointOfSaleTypes.brandResponseTypes.IGetBrands> => {
+export const getAllBrands = async (): Promise<pointOfSaleTypes.brandResponseTypes.IGetAllBrands> => {
     try {
         const BrandModel = getBrandModel(global.currentDb);
         return Promise.resolve({
