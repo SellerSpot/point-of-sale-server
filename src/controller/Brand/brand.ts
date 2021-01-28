@@ -12,9 +12,12 @@ import {
 /**
  * Used to get all brands from database
  */
-export const getAllBrands = async (): Promise<pointOfSaleTypes.brandResponseTypes.IGetAllBrands> => {
+export const getAllBrands = async (
+    tenantId: string,
+): Promise<pointOfSaleTypes.brandResponseTypes.IGetAllBrands> => {
     try {
-        const BrandModel = getBrandModel(global.currentDb);
+        const tenantDb = global.currentDb.useDb(tenantId);
+        const BrandModel = getBrandModel(tenantDb);
         return Promise.resolve({
             status: true,
             statusCode: STATUS_CODES.OK,

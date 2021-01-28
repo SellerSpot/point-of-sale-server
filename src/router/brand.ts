@@ -1,15 +1,29 @@
 import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
-import { brandController } from 'controller/controller';
+import { getToken } from 'controller/authorization/authorization';
+import { authorizationController, brandController } from 'controller/controller';
 import { Router } from 'express';
 import { isUndefined } from 'lodash';
+import { logger } from 'utilities/logger';
 
 const brandRouter: Router = Router();
 
 // get all brands
-brandRouter.post(pointOfSaleTypes.ROUTES.BRAND_GET_ALL_BRANDS, async (_, res) => {
+brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_GET_ALL_BRANDS}`, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.IGetAllBrands;
     try {
-        response = await brandController.getAllBrands();
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+        if (tokenPayload.status) {
+            // you could access all tenant info from tokenPayload.data
+            logger.common(tokenPayload.data._id); // tenant id (use this id to query from with database you wantto)
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Invalid user token',
+            };
+        }
+        response = await brandController.getAllBrands(tokenPayload.data._id);
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(err.status)
@@ -24,7 +38,7 @@ brandRouter.post(pointOfSaleTypes.ROUTES.BRAND_GET_ALL_BRANDS, async (_, res) =>
     }
 });
 // get single brand
-brandRouter.post(pointOfSaleTypes.ROUTES.BRAND_GET_BRAND, async (req, res) => {
+brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_GET_BRAND}`, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.IGetBrand;
     try {
         response = await brandController.getSingleBrand(req.body);
@@ -42,7 +56,7 @@ brandRouter.post(pointOfSaleTypes.ROUTES.BRAND_GET_BRAND, async (req, res) => {
     }
 });
 // to create a new brand
-brandRouter.post(pointOfSaleTypes.ROUTES.BRAND_CREATE_BRAND, async (req, res) => {
+brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_CREATE_BRAND}`, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.ICreateBrand;
     try {
         response = await brandController.createBrand(req.body);
@@ -62,7 +76,7 @@ brandRouter.post(pointOfSaleTypes.ROUTES.BRAND_CREATE_BRAND, async (req, res) =>
     }
 });
 // to update an existing brand
-brandRouter.post(pointOfSaleTypes.ROUTES.BRAND_UPDATE_BRAND, async (req, res) => {
+brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_UPDATE_BRAND}`, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.IUpdateBrand;
     try {
         response = await brandController.updateBrand(req.body);
@@ -80,7 +94,7 @@ brandRouter.post(pointOfSaleTypes.ROUTES.BRAND_UPDATE_BRAND, async (req, res) =>
     }
 });
 // to delete an existing brand
-brandRouter.post(pointOfSaleTypes.ROUTES.BRAND_DELETE_BRAND, async (req, res) => {
+brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_DELETE_BRAND}`, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.IDeleteBrand;
     try {
         response = await brandController.deleteBrand(req.body);
