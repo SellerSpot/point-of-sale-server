@@ -1,17 +1,29 @@
-import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
-import { taxBracketController } from 'controller/controller';
+import { getToken } from 'controller/authorization/authorization';
+import { authorizationController, taxBracketController } from 'controller/controller';
 import { Router } from 'express';
 import { isUndefined } from 'lodash';
+import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 
 const taxBracketRouter: Router = Router();
 
 // get all taxBrackets
 taxBracketRouter.post(
     `/${pointOfSaleTypes.ROUTES.TAXBRACKET_GET_ALL_TAXBRACKETS}`,
-    async (_, res) => {
+    async (req, res) => {
         let response: pointOfSaleTypes.taxBracketResponseTypes.IGetTaxBrackets;
         try {
-            response = await taxBracketController.getTaxBrackets();
+            // use verification token like this
+            const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+            if (tokenPayload.status) {
+                response = await taxBracketController.getTaxBrackets(tokenPayload.data._id);
+            } else {
+                throw {
+                    status: false,
+                    statusCode: STATUS_CODES.UNAUTHORIZED,
+                    error: 'Please verify authentication parameters',
+                };
+            }
         } catch (err) {
             // used to handle unexpected and uncaught errors
             response = isUndefined(err.status)
@@ -30,7 +42,21 @@ taxBracketRouter.post(
 taxBracketRouter.post(`/${pointOfSaleTypes.ROUTES.TAXBRACKET_GET_TAXBRACKET}`, async (req, res) => {
     let response: pointOfSaleTypes.taxBracketResponseTypes.IGetTaxBracket;
     try {
-        response = await taxBracketController.getSingleTaxBracket(req.body);
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+        if (tokenPayload.status) {
+            response = await taxBracketController.getSingleTaxBracket(
+                req.body,
+                tokenPayload.data._id,
+            );
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(err.status)
@@ -50,7 +76,21 @@ taxBracketRouter.post(
     async (req, res) => {
         let response: pointOfSaleTypes.taxBracketResponseTypes.ICreateTaxBracket;
         try {
-            response = await taxBracketController.createTaxBracket(req.body);
+            // use verification token like this
+            const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+            if (tokenPayload.status) {
+                response = await taxBracketController.createTaxBracket(
+                    req.body,
+                    tokenPayload.data._id,
+                );
+            } else {
+                throw {
+                    status: false,
+                    statusCode: STATUS_CODES.UNAUTHORIZED,
+                    error: 'Please verify authentication parameters',
+                };
+            }
         } catch (err) {
             console.log(err);
 
@@ -73,7 +113,21 @@ taxBracketRouter.post(
     async (req, res) => {
         let response: pointOfSaleTypes.taxBracketResponseTypes.IUpdateTaxBracket;
         try {
-            response = await taxBracketController.updateTaxBracket(req.body);
+            // use verification token like this
+            const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+            if (tokenPayload.status) {
+                response = await taxBracketController.updateTaxBracket(
+                    req.body,
+                    tokenPayload.data._id,
+                );
+            } else {
+                throw {
+                    status: false,
+                    statusCode: STATUS_CODES.UNAUTHORIZED,
+                    error: 'Please verify authentication parameters',
+                };
+            }
         } catch (err) {
             // used to handle unexpected and uncaught errors
             response = isUndefined(err.status)
@@ -94,7 +148,21 @@ taxBracketRouter.post(
     async (req, res) => {
         let response: pointOfSaleTypes.taxBracketResponseTypes.IDeleteTaxBracket;
         try {
-            response = await taxBracketController.deleteTaxBracket(req.body);
+            // use verification token like this
+            const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+            if (tokenPayload.status) {
+                response = await taxBracketController.deleteTaxBracket(
+                    req.body,
+                    tokenPayload.data._id,
+                );
+            } else {
+                throw {
+                    status: false,
+                    statusCode: STATUS_CODES.UNAUTHORIZED,
+                    error: 'Please verify authentication parameters',
+                };
+            }
         } catch (err) {
             // used to handle unexpected and uncaught errors
             response = isUndefined(err.status)
