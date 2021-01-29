@@ -13,9 +13,12 @@ import {
 /**
  * Used to get all products from database
  */
-export const getProducts = async (): Promise<pointOfSaleTypes.productResponseTypes.IGetProducts> => {
+export const getProducts = async (
+    tenantId: string,
+): Promise<pointOfSaleTypes.productResponseTypes.IGetProducts> => {
     try {
-        const ProductModel = getProductModel(global.currentDb);
+        const tenantDb = global.currentDb.useDb(tenantId);
+        const ProductModel = getProductModel(tenantDb);
         return Promise.resolve({
             status: true,
             statusCode: STATUS_CODES.OK,
@@ -35,10 +38,12 @@ export const getProducts = async (): Promise<pointOfSaleTypes.productResponseTyp
  */
 export const getSingleProduct = async (
     productData: pointOfSaleTypes.productRequestTypes.IGetSingleProduct,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.productResponseTypes.IGetProduct> => {
     try {
         // getting instance of database modal
-        const ProductModel = getProductModel(global.currentDb);
+        const tenantDb = global.currentDb.useDb(tenantId);
+        const ProductModel = getProductModel(tenantDb);
         // validating input data
         const { error } = getSingleProductValidationSchema.validate(productData, joiSchemaOptions);
         if (!error) {
@@ -74,13 +79,15 @@ export const getSingleProduct = async (
  */
 export const createProduct = async (
     productData: pointOfSaleTypes.productRequestTypes.ICreateProduct,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.productResponseTypes.ICreateProduct> => {
     try {
         // validating input data
         const { error } = createProductValidationSchema.validate(productData, joiSchemaOptions);
         if (!error) {
             // getting instance of database modal
-            const ProductModel = getProductModel(global.currentDb);
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const ProductModel = getProductModel(tenantDb);
             const productToAdd: pointOfSaleTypes.productRequestTypes.ICreateProduct[] = await ProductModel.find(
                 { name: productData.name },
             );
@@ -126,10 +133,12 @@ export const createProduct = async (
  */
 export const updateProduct = async (
     updateData: pointOfSaleTypes.productRequestTypes.IUpdateProduct,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.productResponseTypes.IUpdateProduct> => {
     try {
         // getting instance of database modal
-        const ProductModel = getProductModel(global.currentDb);
+        const tenantDb = global.currentDb.useDb(tenantId);
+        const ProductModel = getProductModel(tenantDb);
         // validating request data
         const { error } = updateProductValidationSchema.validate(updateData, joiSchemaOptions);
         if (!error) {
@@ -199,10 +208,12 @@ export const updateProduct = async (
  */
 export const deleteProduct = async (
     productData: pointOfSaleTypes.productRequestTypes.IDeleteProduct,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.productResponseTypes.IDeleteProduct> => {
     try {
         // getting instance of database modal
-        const ProductModel = getProductModel(global.currentDb);
+        const tenantDb = global.currentDb.useDb(tenantId);
+        const ProductModel = getProductModel(tenantDb);
         // validating the request data
         const { error } = deleteProductValidationSchema.validate(productData, joiSchemaOptions);
         if (!error) {
@@ -238,10 +249,12 @@ export const deleteProduct = async (
  */
 export const searchProducts = async (
     data: pointOfSaleTypes.productRequestTypes.ISearchProduct,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.productResponseTypes.ISearchProduct> => {
     try {
         // getting instance of database modal
-        const ProductModel = getProductModel(global.currentDb);
+        const tenantDb = global.currentDb.useDb(tenantId);
+        const ProductModel = getProductModel(tenantDb);
         // validating the request data
         const { error } = searchProductValidationSchema.validate(data, joiSchemaOptions);
         if (!error) {
