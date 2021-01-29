@@ -1,7 +1,7 @@
-import { pointOfSaleTypes, STATUS_CODES } from '@sellerspot/universal-types';
 import lodash from 'lodash';
 import { joiSchemaOptions } from 'utilities';
 import { getStockUnitModel } from 'utilities/modelService';
+import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 import {
     createStockUnitValidationSchema,
     deleteStockUnitValidationSchema,
@@ -12,9 +12,12 @@ import {
 /**
  * Used to get all stockUnits from database
  */
-export const getStockUnits = async (): Promise<pointOfSaleTypes.stockUnitResponseTypes.IGetStockUnits> => {
+export const getStockUnits = async (
+    tenantId: string,
+): Promise<pointOfSaleTypes.stockUnitResponseTypes.IGetStockUnits> => {
     try {
-        const StockUnitModel = getStockUnitModel(global.currentDb);
+        const tenantDb = global.currentDb.useDb(tenantId);
+        const StockUnitModel = getStockUnitModel(tenantDb);
         return Promise.resolve({
             status: true,
             statusCode: STATUS_CODES.OK,
@@ -34,16 +37,16 @@ export const getStockUnits = async (): Promise<pointOfSaleTypes.stockUnitRespons
  */
 export const getSingleStockUnit = async (
     stockUnitData: pointOfSaleTypes.stockUnitRequestTypes.IGetSingleStockUnit,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.stockUnitResponseTypes.IGetStockUnit> => {
     try {
-        // getting instance of database modal
-        const StockUnitModel = getStockUnitModel(global.currentDb);
-        // validating input data
         const { error } = getSingleStockUnitValidationSchema.validate(
             stockUnitData,
             joiSchemaOptions,
         );
         if (!error) {
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const StockUnitModel = getStockUnitModel(tenantDb);
             const requestedData = await StockUnitModel.findById(stockUnitData.id);
             if (!lodash.isNull(requestedData)) {
                 return Promise.resolve({
@@ -76,13 +79,15 @@ export const getSingleStockUnit = async (
  */
 export const createStockUnit = async (
     stockUnitData: pointOfSaleTypes.stockUnitRequestTypes.ICreateStockUnit,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.stockUnitResponseTypes.ICreateStockUnit> => {
     try {
         // validating input data
         const { error } = createStockUnitValidationSchema.validate(stockUnitData, joiSchemaOptions);
         if (!error) {
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const StockUnitModel = getStockUnitModel(tenantDb);
             // getting instance of database modal
-            const StockUnitModel = getStockUnitModel(global.currentDb);
             const stockUnitToAdd: pointOfSaleTypes.stockUnitRequestTypes.ICreateStockUnit[] = await StockUnitModel.find(
                 { name: stockUnitData.name },
             );
@@ -127,13 +132,13 @@ export const createStockUnit = async (
  */
 export const updateStockUnit = async (
     updateData: pointOfSaleTypes.stockUnitRequestTypes.IUpdateStockUnit,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.stockUnitResponseTypes.IUpdateStockUnit> => {
     try {
-        // getting instance of database modal
-        const StockUnitModel = getStockUnitModel(global.currentDb);
-        // validating request data
         const { error } = updateStockUnitValidationSchema.validate(updateData, joiSchemaOptions);
         if (!error) {
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const StockUnitModel = getStockUnitModel(tenantDb);
             // checking if a stockUnit with the given id exists in database
             const existingStockUnit = await StockUnitModel.findById(updateData.id);
             if (!lodash.isNull(existingStockUnit)) {
@@ -200,13 +205,13 @@ export const updateStockUnit = async (
  */
 export const deleteStockUnit = async (
     stockUnitData: pointOfSaleTypes.stockUnitRequestTypes.IDeleteStockUnit,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.stockUnitResponseTypes.IDeleteStockUnit> => {
     try {
-        // getting instance of database modal
-        const StockUnitModel = getStockUnitModel(global.currentDb);
-        // validating the request data
         const { error } = deleteStockUnitValidationSchema.validate(stockUnitData, joiSchemaOptions);
         if (!error) {
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const StockUnitModel = getStockUnitModel(tenantDb);
             // checking if the stockUnit to delete exists in database
             const existingStockUnit = await StockUnitModel.findById(stockUnitData.id);
             if (!lodash.isNull(existingStockUnit)) {
