@@ -39,7 +39,18 @@ brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_GET_ALL_BRANDS}`, async (req,
 brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_GET_BRAND}`, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.IGetBrand;
     try {
-        response = await brandController.getSingleBrand(req.body);
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+        if (tokenPayload.status) {
+            response = await brandController.getSingleBrand(req.body);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
     } catch (error) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(error.status)
@@ -57,7 +68,18 @@ brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_GET_BRAND}`, async (req, res)
 brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_CREATE_BRAND}`, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.ICreateBrand;
     try {
-        response = await brandController.createBrand(req.body);
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+        if (tokenPayload.status) {
+            response = await brandController.createBrand(req.body);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
     } catch (error) {
         console.log(error);
 
@@ -77,7 +99,18 @@ brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_CREATE_BRAND}`, async (req, r
 brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_UPDATE_BRAND}`, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.IUpdateBrand;
     try {
-        response = await brandController.updateBrand(req.body);
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+        if (tokenPayload.status) {
+            response = await brandController.updateBrand(req.body);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
     } catch (error) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(error.status)
@@ -95,7 +128,18 @@ brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_UPDATE_BRAND}`, async (req, r
 brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_DELETE_BRAND}`, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.IDeleteBrand;
     try {
-        response = await brandController.deleteBrand(req.body);
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+        if (tokenPayload.status) {
+            response = await brandController.deleteBrand(req.body);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
     } catch (error) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(error.status)
