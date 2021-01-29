@@ -1,15 +1,18 @@
-import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
-import { categoryController } from 'controller/controller';
+import { getToken } from 'controller/authorization/authorization';
+import { authorizationController, categoryController } from 'controller/controller';
 import { Router } from 'express';
 import lodash from 'lodash';
+import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 
 const categoryRouter: Router = Router();
 
 // get all categories
-categoryRouter.post(`/${pointOfSaleTypes.ROUTES.CATEGORY_GET_ALL_CATEGORIES}`, async (_, res) => {
+categoryRouter.post(`/${pointOfSaleTypes.ROUTES.CATEGORY_GET_ALL_CATEGORIES}`, async (req, res) => {
     let response: pointOfSaleTypes.categoryResponseTypes.IGetAllCategories;
     try {
-        response = await categoryController.getCategories();
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+        response = await categoryController.getCategories(tokenPayload.data._id);
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = lodash.isUndefined(err.status)
@@ -27,7 +30,9 @@ categoryRouter.post(`/${pointOfSaleTypes.ROUTES.CATEGORY_GET_ALL_CATEGORIES}`, a
 categoryRouter.post(`/${pointOfSaleTypes.ROUTES.CATEGORY_GET_CATEGORY}`, async (req, res) => {
     let response: pointOfSaleTypes.categoryResponseTypes.IGetCategory;
     try {
-        response = await categoryController.getSingleCategory(req.body);
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+        response = await categoryController.getSingleCategory(req.body, tokenPayload.data._id);
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = lodash.isUndefined(err.status)
@@ -45,7 +50,9 @@ categoryRouter.post(`/${pointOfSaleTypes.ROUTES.CATEGORY_GET_CATEGORY}`, async (
 categoryRouter.post(`/${pointOfSaleTypes.ROUTES.CATEGORY_CREATE_CATEGORY}`, async (req, res) => {
     let response: pointOfSaleTypes.categoryResponseTypes.ICreateCategory;
     try {
-        response = await categoryController.createCategory(req.body);
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+        response = await categoryController.createCategory(req.body, tokenPayload.data._id);
     } catch (err) {
         console.log(err);
 
@@ -65,7 +72,9 @@ categoryRouter.post(`/${pointOfSaleTypes.ROUTES.CATEGORY_CREATE_CATEGORY}`, asyn
 categoryRouter.post(`/${pointOfSaleTypes.ROUTES.CATEGORY_UPDATE_CATEGORY}`, async (req, res) => {
     let response: pointOfSaleTypes.categoryResponseTypes.IUpdateCategory;
     try {
-        response = await categoryController.updateCategory(req.body);
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+        response = await categoryController.updateCategory(req.body, tokenPayload.data._id);
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = lodash.isUndefined(err.status)
@@ -83,7 +92,9 @@ categoryRouter.post(`/${pointOfSaleTypes.ROUTES.CATEGORY_UPDATE_CATEGORY}`, asyn
 categoryRouter.post(`/${pointOfSaleTypes.ROUTES.CATEGORY_DELETE_CATEGORY}`, async (req, res) => {
     let response: pointOfSaleTypes.categoryResponseTypes.IDeleteCategory;
     try {
-        response = await categoryController.deleteCategory(req.body);
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+        response = await categoryController.deleteCategory(req.body, tokenPayload.data._id);
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = lodash.isUndefined(err.status)
