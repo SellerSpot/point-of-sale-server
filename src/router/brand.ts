@@ -43,7 +43,7 @@ brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_GET_BRAND}`, async (req, res)
         const tokenPayload = await authorizationController.verifyToken(getToken(req));
 
         if (tokenPayload.status) {
-            response = await brandController.getSingleBrand(req.body);
+            response = await brandController.getSingleBrand(req.body, tokenPayload.data._id);
         } else {
             throw {
                 status: false,
@@ -72,7 +72,7 @@ brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_CREATE_BRAND}`, async (req, r
         const tokenPayload = await authorizationController.verifyToken(getToken(req));
 
         if (tokenPayload.status) {
-            response = await brandController.createBrand(req.body);
+            response = await brandController.createBrand(req.body, tokenPayload.data._id);
         } else {
             throw {
                 status: false,
@@ -103,7 +103,7 @@ brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_UPDATE_BRAND}`, async (req, r
         const tokenPayload = await authorizationController.verifyToken(getToken(req));
 
         if (tokenPayload.status) {
-            response = await brandController.updateBrand(req.body);
+            response = await brandController.updateBrand(req.body, tokenPayload.data._id);
         } else {
             throw {
                 status: false,
@@ -132,7 +132,7 @@ brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_DELETE_BRAND}`, async (req, r
         const tokenPayload = await authorizationController.verifyToken(getToken(req));
 
         if (tokenPayload.status) {
-            response = await brandController.deleteBrand(req.body);
+            response = await brandController.deleteBrand(req.body, tokenPayload.data._id);
         } else {
             throw {
                 status: false,

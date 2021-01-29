@@ -37,13 +37,14 @@ export const getAllBrands = async (
  */
 export const getSingleBrand = async (
     brandData: pointOfSaleTypes.brandRequestTypes.IGetSingleBrand,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.brandResponseTypes.IGetBrand> => {
     try {
-        // getting instance of database modal
-        const BrandModel = getBrandModel(global.currentDb);
         // validating input data
         const { error } = getSingleBrandValidationSchema.validate(brandData, joiSchemaOptions);
         if (!error) {
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const BrandModel = getBrandModel(tenantDb);
             const requestedData = await BrandModel.findById(brandData.id);
             if (!lodash.isNull(requestedData)) {
                 return Promise.resolve({
@@ -76,13 +77,14 @@ export const getSingleBrand = async (
  */
 export const createBrand = async (
     brandData: pointOfSaleTypes.brandRequestTypes.ICreateBrand,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.brandResponseTypes.ICreateBrand> => {
     try {
         // validating input data
         const { error } = createBrandValidationSchema.validate(brandData, joiSchemaOptions);
         if (!error) {
-            // getting instance of database modal
-            const BrandModel = getBrandModel(global.currentDb);
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const BrandModel = getBrandModel(tenantDb);
             const brandToAdd: pointOfSaleTypes.brandRequestTypes.ICreateBrand[] = await BrandModel.find(
                 { name: brandData.name },
             );
@@ -128,13 +130,14 @@ export const createBrand = async (
  */
 export const updateBrand = async (
     updateData: pointOfSaleTypes.brandRequestTypes.IUpdateBrand,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.brandResponseTypes.IUpdateBrand> => {
     try {
-        // getting instance of database modal
-        const BrandModel = getBrandModel(global.currentDb);
         // validating request data
         const { error } = updateBrandValidationSchema.validate(updateData, joiSchemaOptions);
         if (!error) {
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const BrandModel = getBrandModel(tenantDb);
             // checking if a brand with the given id exists in database
             const existingBrand = await BrandModel.findById(updateData.id);
             if (!lodash.isNull(existingBrand)) {
@@ -201,13 +204,14 @@ export const updateBrand = async (
  */
 export const deleteBrand = async (
     brandData: pointOfSaleTypes.brandRequestTypes.IDeleteBrand,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.brandResponseTypes.IDeleteBrand> => {
     try {
-        // getting instance of database modal
-        const BrandModel = getBrandModel(global.currentDb);
         // validating the request data
         const { error } = deleteBrandValidationSchema.validate(brandData, joiSchemaOptions);
         if (!error) {
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const BrandModel = getBrandModel(tenantDb);
             // checking if the brand to delete exists in database
             const existingBrand = await BrandModel.findById(brandData.id);
             if (!lodash.isNull(existingBrand)) {
