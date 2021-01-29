@@ -1,7 +1,7 @@
-import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 import { productController } from 'controller/controller';
 import { Router } from 'express';
 import { isUndefined } from 'lodash';
+import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 
 const productRouter: Router = Router();
 
@@ -83,7 +83,25 @@ productRouter.post(`/${pointOfSaleTypes.ROUTES.PRODUCT_UPDATE_PRODUCT}`, async (
 productRouter.post(`/${pointOfSaleTypes.ROUTES.PRODUCT_DELETE_PRODUCT}`, async (req, res) => {
     let response: pointOfSaleTypes.productResponseTypes.IDeleteProduct;
     try {
-        response = await productController.deleteProduct({ id: req.params['id'] });
+        response = await productController.deleteProduct(req.body);
+    } catch (err) {
+        // used to handle unexpected and uncaught errors
+        response = isUndefined(err.status)
+            ? {
+                  status: false,
+                  statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+                  error: err.message,
+              }
+            : err;
+    } finally {
+        res.send(response);
+    }
+});
+// to search for a product
+productRouter.post(`/${pointOfSaleTypes.ROUTES.PRODUCT_SEARCH_PRODUCT}`, async (req, res) => {
+    let response: pointOfSaleTypes.productResponseTypes.ISearchProduct;
+    try {
+        response = await productController.searchProducts(req.body);
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(err.status)

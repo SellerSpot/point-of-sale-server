@@ -1,11 +1,12 @@
-import { pointOfSaleTypes, STATUS_CODES } from '@sellerspot/universal-types';
-import lodash from 'lodash';
+import lodash, { isNull } from 'lodash';
 import { joiSchemaOptions } from 'utilities';
 import { getProductModel } from 'utilities/modelService';
+import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 import {
     createProductValidationSchema,
     deleteProductValidationSchema,
     getSingleProductValidationSchema,
+    searchProductValidationSchema,
     updateProductValidationSchema,
 } from './product.validation';
 
@@ -20,11 +21,11 @@ export const getProducts = async (): Promise<pointOfSaleTypes.productResponseTyp
             statusCode: STATUS_CODES.OK,
             data: await ProductModel.find(),
         });
-    } catch (err) {
+    } catch (error) {
         return Promise.reject({
             status: false,
             statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-            error: err.message,
+            error: error.message,
         });
     }
 };
@@ -62,8 +63,8 @@ export const getSingleProduct = async (
                 error: 'Please verify request parameters',
             };
         }
-    } catch (err) {
-        return Promise.reject(err);
+    } catch (error) {
+        return Promise.reject(error);
     }
 };
 
@@ -115,8 +116,8 @@ export const createProduct = async (
                 }),
             };
         }
-    } catch (err) {
-        return Promise.reject(err);
+    } catch (error) {
+        return Promise.reject(error);
     }
 };
 
@@ -188,8 +189,8 @@ export const updateProduct = async (
                 }),
             };
         }
-    } catch (err) {
-        return Promise.reject(err);
+    } catch (error) {
+        return Promise.reject(error);
     }
 };
 
@@ -227,7 +228,60 @@ export const deleteProduct = async (
                 error: 'Please verify request parameters',
             };
         }
-    } catch (err) {
-        return Promise.reject(err);
+    } catch (error) {
+        return Promise.reject(error);
     }
+};
+
+/**
+ * Used to search for products with query string
+ */
+export const searchProducts = async (
+    data: pointOfSaleTypes.productRequestTypes.ISearchProduct,
+): Promise<pointOfSaleTypes.productResponseTypes.ISearchProduct> => {
+    try {
+        // getting instance of database modal
+        const ProductModel = getProductModel(global.currentDb);
+        // validating the request data
+        const { error } = searchProductValidationSchema.validate(data, joiSchemaOptions);
+        if (!error) {
+            // searching for the query matching the barcode
+            let existingProduct = await ProductModel.find({
+                gtinNumber: data.query,
+            });
+            if (existingProduct.length > 0) {
+                return Promise.resolve({
+                    status: true,
+                    statusCode: STATUS_CODES.OK,
+                    data: {
+                        queryType: 'barcode',
+                        results: existingProduct,
+                    },
+                });
+            } else {
+                existingProduct = await ProductModel.find({
+                    name: new RegExp('^' + data.query, 'gi'),
+                });
+                if (existingProduct.length > 0) {
+                    return Promise.resolve({
+                        status: true,
+                        statusCode: STATUS_CODES.OK,
+                        data: {
+                            queryType: 'name',
+                            results: existingProduct,
+                        },
+                    });
+                } else {
+                    throw {
+                        status: false,
+                        statusCode: STATUS_CODES.NO_CONTENT,
+                        data: null,
+                    };
+                }
+            }
+        }
+    } catch (error) {
+        return Promise.reject(error);
+    }
+    return null;
 };
