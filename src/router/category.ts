@@ -12,7 +12,15 @@ categoryRouter.post(`/${pointOfSaleTypes.ROUTES.CATEGORY_GET_ALL_CATEGORIES}`, a
     try {
         // use verification token like this
         const tokenPayload = await authorizationController.verifyToken(getToken(req));
-        response = await categoryController.getCategories(tokenPayload.data._id);
+        if (tokenPayload.status) {
+            response = await categoryController.getCategories(tokenPayload.data._id);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = lodash.isUndefined(err.status)
@@ -32,7 +40,15 @@ categoryRouter.post(`/${pointOfSaleTypes.ROUTES.CATEGORY_GET_CATEGORY}`, async (
     try {
         // use verification token like this
         const tokenPayload = await authorizationController.verifyToken(getToken(req));
-        response = await categoryController.getSingleCategory(req.body, tokenPayload.data._id);
+        if (tokenPayload.status) {
+            response = await categoryController.getSingleCategory(req.body, tokenPayload.data._id);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = lodash.isUndefined(err.status)
@@ -52,7 +68,15 @@ categoryRouter.post(`/${pointOfSaleTypes.ROUTES.CATEGORY_CREATE_CATEGORY}`, asyn
     try {
         // use verification token like this
         const tokenPayload = await authorizationController.verifyToken(getToken(req));
-        response = await categoryController.createCategory(req.body, tokenPayload.data._id);
+        if (tokenPayload.status) {
+            response = await categoryController.createCategory(req.body, tokenPayload.data._id);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
     } catch (err) {
         console.log(err);
 
@@ -74,7 +98,15 @@ categoryRouter.post(`/${pointOfSaleTypes.ROUTES.CATEGORY_UPDATE_CATEGORY}`, asyn
     try {
         // use verification token like this
         const tokenPayload = await authorizationController.verifyToken(getToken(req));
-        response = await categoryController.updateCategory(req.body, tokenPayload.data._id);
+        if (tokenPayload.status) {
+            response = await categoryController.updateCategory(req.body, tokenPayload.data._id);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = lodash.isUndefined(err.status)
@@ -94,7 +126,15 @@ categoryRouter.post(`/${pointOfSaleTypes.ROUTES.CATEGORY_DELETE_CATEGORY}`, asyn
     try {
         // use verification token like this
         const tokenPayload = await authorizationController.verifyToken(getToken(req));
-        response = await categoryController.deleteCategory(req.body, tokenPayload.data._id);
+        if (tokenPayload.status) {
+            response = await categoryController.deleteCategory(req.body, tokenPayload.data._id);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = lodash.isUndefined(err.status)
