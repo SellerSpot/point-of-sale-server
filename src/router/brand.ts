@@ -14,7 +14,7 @@ brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_GET_ALL_BRANDS}`, async (req,
         const tokenPayload = await authorizationController.verifyToken(getToken(req));
 
         if (tokenPayload.status) {
-            response = await brandController.getAllBrands(tokenPayload.data._id);
+            response = await brandController.getBrands(tokenPayload.data._id);
         } else {
             throw {
                 status: false,

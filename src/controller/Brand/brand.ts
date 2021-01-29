@@ -12,7 +12,7 @@ import {
 /**
  * Used to get all brands from database
  */
-export const getAllBrands = async (
+export const getBrands = async (
     tenantId: string,
 ): Promise<pointOfSaleTypes.brandResponseTypes.IGetAllBrands> => {
     try {
