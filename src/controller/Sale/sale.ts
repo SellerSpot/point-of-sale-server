@@ -1,7 +1,7 @@
-import { pointOfSaleTypes, STATUS_CODES } from '@sellerspot/universal-types';
 import lodash from 'lodash';
 import { joiSchemaOptions } from 'utilities';
 import { getSaleModel } from 'utilities/modelService';
+import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 import {
     createSaleValidationSchema,
     deleteSaleValidationSchema,
@@ -12,9 +12,12 @@ import {
 /**
  * Used to get all sales from database
  */
-export const getSales = async (): Promise<pointOfSaleTypes.saleResponseTypes.IGetSales> => {
+export const getSales = async (
+    tenantId: string,
+): Promise<pointOfSaleTypes.saleResponseTypes.IGetSales> => {
     try {
-        const SaleModel = getSaleModel(global.currentDb);
+        const tenantDb = global.currentDb.useDb(tenantId);
+        const SaleModel = getSaleModel(tenantDb);
         return Promise.resolve({
             status: true,
             statusCode: STATUS_CODES.OK,
@@ -34,13 +37,14 @@ export const getSales = async (): Promise<pointOfSaleTypes.saleResponseTypes.IGe
  */
 export const getSingleSale = async (
     saleData: pointOfSaleTypes.saleRequestTypes.IGetSingleSale,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.saleResponseTypes.IGetSale> => {
     try {
-        // getting instance of database modal
-        const SaleModel = getSaleModel(global.currentDb);
         // validating input data
         const { error } = getSingleSaleValidationSchema.validate(saleData, joiSchemaOptions);
         if (!error) {
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const SaleModel = getSaleModel(tenantDb);
             const requestedData = await SaleModel.findById(saleData.id);
             if (!lodash.isNull(requestedData)) {
                 return Promise.resolve({
@@ -73,13 +77,13 @@ export const getSingleSale = async (
  */
 export const createSale = async (
     saleData: pointOfSaleTypes.saleRequestTypes.ICreateSale,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.saleResponseTypes.ICreateSale> => {
     try {
-        // validating input data
         const { error } = createSaleValidationSchema.validate(saleData, joiSchemaOptions);
         if (!error) {
-            // getting instance of database modal
-            const SaleModel = getSaleModel(global.currentDb);
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const SaleModel = getSaleModel(tenantDb);
             return Promise.resolve({
                 status: true,
                 statusCode: STATUS_CODES.CREATED,
@@ -108,13 +112,14 @@ export const createSale = async (
  */
 export const updateSale = async (
     updateData: pointOfSaleTypes.saleRequestTypes.IUpdateSale,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.saleResponseTypes.IUpdateSale> => {
     try {
-        // getting instance of database modal
-        const SaleModel = getSaleModel(global.currentDb);
         // validating request data
         const { error } = updateSaleValidationSchema.validate(updateData, joiSchemaOptions);
         if (!error) {
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const SaleModel = getSaleModel(tenantDb);
             // checking if a sale with the given id exists in database
             const existingSale = await SaleModel.findById(updateData.id);
             if (!lodash.isNull(existingSale)) {
@@ -160,13 +165,15 @@ export const updateSale = async (
  */
 export const deleteSale = async (
     saleData: pointOfSaleTypes.saleRequestTypes.IDeleteSale,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.saleResponseTypes.IDeleteSale> => {
     try {
-        // getting instance of database modal
-        const SaleModel = getSaleModel(global.currentDb);
         // validating the request data
         const { error } = deleteSaleValidationSchema.validate(saleData, joiSchemaOptions);
         if (!error) {
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const SaleModel = getSaleModel(tenantDb);
+
             // checking if the sale to delete exists in database
             const existingSale = await SaleModel.findById(saleData.id);
             if (!lodash.isNull(existingSale)) {
