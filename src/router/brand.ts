@@ -1,9 +1,8 @@
-import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 import { getToken } from 'controller/authorization/authorization';
 import { authorizationController, brandController } from 'controller/controller';
 import { Router } from 'express';
 import { isUndefined } from 'lodash';
-import { logger } from 'utilities/logger';
+import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 
 const brandRouter: Router = Router();
 
@@ -13,26 +12,25 @@ brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_GET_ALL_BRANDS}`, async (req,
     try {
         // use verification token like this
         const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
         if (tokenPayload.status) {
-            // you could access all tenant info from tokenPayload.data
-            logger.common(tokenPayload.data._id); // tenant id (use this id to query from with database you wantto)
+            response = await brandController.getAllBrands(tokenPayload.data._id);
         } else {
             throw {
                 status: false,
                 statusCode: STATUS_CODES.UNAUTHORIZED,
-                error: 'Invalid user token',
+                error: 'Please verify authentication parameters',
             };
         }
-        response = await brandController.getAllBrands(tokenPayload.data._id);
-    } catch (err) {
+    } catch (error) {
         // used to handle unexpected and uncaught errors
-        response = isUndefined(err.status)
+        response = isUndefined(error.status)
             ? {
                   status: false,
                   statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-                  error: err.message,
+                  error: error.message,
               }
-            : err;
+            : error;
     } finally {
         res.send(response);
     }
@@ -42,15 +40,15 @@ brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_GET_BRAND}`, async (req, res)
     let response: pointOfSaleTypes.brandResponseTypes.IGetBrand;
     try {
         response = await brandController.getSingleBrand(req.body);
-    } catch (err) {
+    } catch (error) {
         // used to handle unexpected and uncaught errors
-        response = isUndefined(err.status)
+        response = isUndefined(error.status)
             ? {
                   status: false,
                   statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-                  error: err.message,
+                  error: error.message,
               }
-            : err;
+            : error;
     } finally {
         res.send(response);
     }
@@ -60,17 +58,17 @@ brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_CREATE_BRAND}`, async (req, r
     let response: pointOfSaleTypes.brandResponseTypes.ICreateBrand;
     try {
         response = await brandController.createBrand(req.body);
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
 
         // used to handle unexpected and uncaught errors
-        response = isUndefined(err.status)
+        response = isUndefined(error.status)
             ? {
                   status: false,
                   statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-                  error: err.message,
+                  error: error.message,
               }
-            : err;
+            : error;
     } finally {
         res.send(response);
     }
@@ -80,15 +78,15 @@ brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_UPDATE_BRAND}`, async (req, r
     let response: pointOfSaleTypes.brandResponseTypes.IUpdateBrand;
     try {
         response = await brandController.updateBrand(req.body);
-    } catch (err) {
+    } catch (error) {
         // used to handle unexpected and uncaught errors
-        response = isUndefined(err.status)
+        response = isUndefined(error.status)
             ? {
                   status: false,
                   statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-                  error: err.message,
+                  error: error.message,
               }
-            : err;
+            : error;
     } finally {
         res.send(response);
     }
@@ -98,15 +96,15 @@ brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_DELETE_BRAND}`, async (req, r
     let response: pointOfSaleTypes.brandResponseTypes.IDeleteBrand;
     try {
         response = await brandController.deleteBrand(req.body);
-    } catch (err) {
+    } catch (error) {
         // used to handle unexpected and uncaught errors
-        response = isUndefined(err.status)
+        response = isUndefined(error.status)
             ? {
                   status: false,
                   statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-                  error: err.message,
+                  error: error.message,
               }
-            : err;
+            : error;
     } finally {
         res.send(response);
     }

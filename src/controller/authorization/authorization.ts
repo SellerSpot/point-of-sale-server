@@ -5,7 +5,10 @@ import { Request } from 'express';
 import jwt from 'jsonwebtoken';
 import { Socket } from 'socket.io';
 import { joiSchemaOptions } from 'utilities';
-import { authorizeTenantValidationSchema } from './authorization.validation';
+import {
+    authorizeTenantValidationSchema,
+    verifyTokenValidationSchema,
+} from './authorization.validation';
 
 export const authorizeTenant = async (
     data: pointOfSaleTypes.authRequestTypes.IAuthorizeTenantRequest,
@@ -83,29 +86,35 @@ export const verifyToken = async (
     token: string,
 ): Promise<pointOfSaleTypes.authResponseTypes.IVerifyTokenResponse> => {
     try {
-        if (!token) {
-            throw 'tokenNotFound';
+        const { error } = verifyTokenValidationSchema.validate(token, joiSchemaOptions);
+        if (!error) {
+            const response: pointOfSaleTypes.authResponseTypes.IVerifyTokenResponse = await new Promise(
+                (resolve, reject) =>
+                    jwt.verify(
+                        token,
+                        CONFIG.APP_SECRET,
+                        (err, decoded: pointOfSaleTypes.authResponseTypes.ITokenPayload) => {
+                            if (err) {
+                                reject('tokenExpired');
+                            }
+                            const tokenResponse: pointOfSaleTypes.authResponseTypes.IVerifyTokenResponse = {
+                                status: true,
+                                statusCode: STATUS_CODES.OK,
+                                data: decoded,
+                            };
+                            // on verificaiton success
+                            resolve(tokenResponse);
+                        },
+                    ),
+            );
+            return Promise.resolve(response);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.BAD_REQUEST,
+                error: 'Please verify authentication parameters',
+            };
         }
-        const response: pointOfSaleTypes.authResponseTypes.IVerifyTokenResponse = await new Promise(
-            (resolve, reject) =>
-                jwt.verify(
-                    token,
-                    CONFIG.APP_SECRET,
-                    (err, decoded: pointOfSaleTypes.authResponseTypes.ITokenPayload) => {
-                        if (err) {
-                            reject('tokenExpired');
-                        }
-                        const tokenResponse: pointOfSaleTypes.authResponseTypes.IVerifyTokenResponse = {
-                            status: true,
-                            statusCode: STATUS_CODES.OK,
-                            data: decoded,
-                        };
-                        // on verificaiton success
-                        resolve(tokenResponse);
-                    },
-                ),
-        );
-        return Promise.resolve(response);
     } catch (error) {
         return Promise.reject(error);
     }

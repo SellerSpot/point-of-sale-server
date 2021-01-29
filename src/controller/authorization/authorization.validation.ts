@@ -6,3 +6,8 @@ import Joi from 'joi';
 export const authorizeTenantValidationSchema = Joi.object({
     domainName: Joi.string().required(),
 });
+
+/**
+ * Validation for verify token
+ */
+export const verifyTokenValidationSchema = Joi.string().required();

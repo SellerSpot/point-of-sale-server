@@ -1,7 +1,7 @@
-import { pointOfSaleTypes, STATUS_CODES } from '@sellerspot/universal-types';
 import lodash from 'lodash';
 import { joiSchemaOptions } from 'utilities';
 import { getBrandModel } from 'utilities/modelService';
+import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 import {
     createBrandValidationSchema,
     deleteBrandValidationSchema,
