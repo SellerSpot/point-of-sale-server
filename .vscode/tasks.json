@@ -1,0 +1,56 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "npm_link_universal-types",
+            "type": "shell",
+            "command": "[ -d '../universal-types/dist' ] && [ -d './node_modules/@sellerspot/universal-types' ] && npm link ../universal-types/",
+            "group": "none",
+            "presentation": {
+                "group": "npm_link",
+                "focus": true,
+                "reveal": "always",
+                "panel": "new",
+                "showReuseMessage": false
+            },
+            "runOptions": {
+                "runOn": "default"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "npm_link_database-models",
+            "type": "shell",
+            "command": "[ -d '../database-models/dist' ] && [ -d './node_modules/@sellerspot/database-models' ] && npm link ../database-models/",
+            "presentation": {
+                "group": "npm_link",
+                "focus": true,
+                "reveal": "always",
+                "panel": "new",
+                "showReuseMessage": false
+            },
+            "runOptions": {
+                "runOn": "default"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "npm_link_all",
+            "type": "shell",
+            "command": "",
+            "group": "none",
+            "presentation": {
+                "focus": true,
+                "group": "npm_link",
+                "reveal": "silent",
+                "panel": "new",
+                "showReuseMessage": false
+            },
+            "dependsOn": ["npm_link_universal-types", "npm_link_database-models"],
+            "runOptions": {
+                "runOn": "default"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
