@@ -1,108 +1,153 @@
-import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
-import { getToken } from 'controller/authorization';
+import { getToken } from 'controller/authorization/authorization';
 import { authorizationController, brandController } from 'controller/controller';
 import { Router } from 'express';
 import { isUndefined } from 'lodash';
-import { logger } from 'utilities/logger';
+import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 
 const brandRouter: Router = Router();
 
 // get all brands
-brandRouter.get('/', async (req, res) => {
-    let response: pointOfSaleTypes.brandResponseTypes.IGetBrands;
+brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_GET_ALL_BRANDS}`, async (req, res) => {
+    let response: pointOfSaleTypes.brandResponseTypes.IGetAllBrands;
     try {
         // use verification token like this
         const tokenPayload = await authorizationController.verifyToken(getToken(req));
         if (tokenPayload.status) {
-            // you could access all tenant info from tokenPayload.data
-            logger.common(tokenPayload.data._id); // tenant id (use this id to query from with database you wantto)
+            response = await brandController.getBrands(tokenPayload.data._id);
         } else {
-            throw 'Invalid token!';
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
         }
-        response = await brandController.getBrands();
-    } catch (err) {
+    } catch (error) {
         // used to handle unexpected and uncaught errors
-        response = isUndefined(err.status)
+        response = isUndefined(error.status)
             ? {
                   status: false,
                   statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-                  error: err.message,
+                  error: error.message,
               }
-            : err;
+            : error;
     } finally {
         res.send(response);
     }
 });
 // get single brand
-brandRouter.get('/:id', async (req, res) => {
+brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_GET_BRAND}`, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.IGetBrand;
     try {
-        response = await brandController.getSingleBrand({ id: req.params['id'] });
-    } catch (err) {
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+        if (tokenPayload.status) {
+            response = await brandController.getSingleBrand(req.body, tokenPayload.data._id);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
+    } catch (error) {
         // used to handle unexpected and uncaught errors
-        response = isUndefined(err.status)
+        response = isUndefined(error.status)
             ? {
                   status: false,
                   statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-                  error: err.message,
+                  error: error.message,
               }
-            : err;
+            : error;
     } finally {
         res.send(response);
     }
 });
 // to create a new brand
-brandRouter.post('/', async (req, res) => {
+brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_CREATE_BRAND}`, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.ICreateBrand;
     try {
-        response = await brandController.createBrand(req.body);
-    } catch (err) {
-        console.log(err);
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+        if (tokenPayload.status) {
+            response = await brandController.createBrand(req.body, tokenPayload.data._id);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
+    } catch (error) {
+        console.log(error);
 
         // used to handle unexpected and uncaught errors
-        response = isUndefined(err.status)
+        response = isUndefined(error.status)
             ? {
                   status: false,
                   statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-                  error: err.message,
+                  error: error.message,
               }
-            : err;
+            : error;
     } finally {
         res.send(response);
     }
 });
 // to update an existing brand
-brandRouter.put('/', async (req, res) => {
+brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_UPDATE_BRAND}`, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.IUpdateBrand;
     try {
-        response = await brandController.updateBrand(req.body);
-    } catch (err) {
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+        if (tokenPayload.status) {
+            response = await brandController.updateBrand(req.body, tokenPayload.data._id);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
+    } catch (error) {
         // used to handle unexpected and uncaught errors
-        response = isUndefined(err.status)
+        response = isUndefined(error.status)
             ? {
                   status: false,
                   statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-                  error: err.message,
+                  error: error.message,
               }
-            : err;
+            : error;
     } finally {
         res.send(response);
     }
 });
 // to delete an existing brand
-brandRouter.delete('/:id', async (req, res) => {
+brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_DELETE_BRAND}`, async (req, res) => {
     let response: pointOfSaleTypes.brandResponseTypes.IDeleteBrand;
     try {
-        response = await brandController.deleteBrand({ id: req.params['id'] });
-    } catch (err) {
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+        if (tokenPayload.status) {
+            response = await brandController.deleteBrand(req.body, tokenPayload.data._id);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
+    } catch (error) {
         // used to handle unexpected and uncaught errors
-        response = isUndefined(err.status)
+        response = isUndefined(error.status)
             ? {
                   status: false,
                   statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-                  error: err.message,
+                  error: error.message,
               }
-            : err;
+            : error;
     } finally {
         res.send(response);
     }

@@ -5,4 +5,4 @@ export * as stockUnitController from './StockUnit/stockUnit';
 export * as taxBracketController from './TaxBracket/taxBracket';
 export * as productController from './Product/product';
 export * as saleController from './Sale/sale';
-export * as authorizationController from './authorization';
+export * as authorizationController from './authorization/authorization';

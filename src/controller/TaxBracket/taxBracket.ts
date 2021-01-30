@@ -1,7 +1,7 @@
-import { pointOfSaleTypes, STATUS_CODES } from '@sellerspot/universal-types';
 import lodash from 'lodash';
 import { joiSchemaOptions } from 'utilities';
 import { getTaxBracketModel } from 'utilities/modelService';
+import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 import {
     createTaxBracketValidationSchema,
     deleteTaxBracketValidationSchema,
@@ -12,9 +12,12 @@ import {
 /**
  * Used to get all taxBrackets from database
  */
-export const getTaxBrackets = async (): Promise<pointOfSaleTypes.taxBracketResponseTypes.IGetTaxBrackets> => {
+export const getTaxBrackets = async (
+    tenantId: string,
+): Promise<pointOfSaleTypes.taxBracketResponseTypes.IGetTaxBrackets> => {
     try {
-        const TaxBracketModel = getTaxBracketModel(global.currentDb);
+        const tenantDb = global.currentDb.useDb(tenantId);
+        const TaxBracketModel = getTaxBracketModel(tenantDb);
         return Promise.resolve({
             status: true,
             statusCode: STATUS_CODES.OK,
@@ -34,16 +37,17 @@ export const getTaxBrackets = async (): Promise<pointOfSaleTypes.taxBracketRespo
  */
 export const getSingleTaxBracket = async (
     taxBracketData: pointOfSaleTypes.taxBracketRequestTypes.IGetSingleTaxBracket,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.taxBracketResponseTypes.IGetTaxBracket> => {
     try {
-        // getting instance of database modal
-        const TaxBracketModel = getTaxBracketModel(global.currentDb);
         // validating input data
         const { error } = getSingleTaxBracketValidationSchema.validate(
             taxBracketData,
             joiSchemaOptions,
         );
         if (!error) {
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const TaxBracketModel = getTaxBracketModel(tenantDb);
             const requestedData = await TaxBracketModel.findById(taxBracketData.id);
             if (!lodash.isNull(requestedData)) {
                 return Promise.resolve({
@@ -76,6 +80,7 @@ export const getSingleTaxBracket = async (
  */
 export const createTaxBracket = async (
     taxBracketData: pointOfSaleTypes.taxBracketRequestTypes.ICreateTaxBracket,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.taxBracketResponseTypes.ICreateTaxBracket> => {
     try {
         // validating input data
@@ -84,8 +89,8 @@ export const createTaxBracket = async (
             joiSchemaOptions,
         );
         if (!error) {
-            // getting instance of database modal
-            const TaxBracketModel = getTaxBracketModel(global.currentDb);
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const TaxBracketModel = getTaxBracketModel(tenantDb);
             const taxBracketToAdd: pointOfSaleTypes.taxBracketRequestTypes.ICreateTaxBracket[] = await TaxBracketModel.find(
                 { name: taxBracketData.name },
             );
@@ -131,13 +136,14 @@ export const createTaxBracket = async (
  */
 export const updateTaxBracket = async (
     updateData: pointOfSaleTypes.taxBracketRequestTypes.IUpdateTaxBracket,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.taxBracketResponseTypes.IUpdateTaxBracket> => {
     try {
-        // getting instance of database modal
-        const TaxBracketModel = getTaxBracketModel(global.currentDb);
         // validating request data
         const { error } = updateTaxBracketValidationSchema.validate(updateData, joiSchemaOptions);
         if (!error) {
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const TaxBracketModel = getTaxBracketModel(tenantDb);
             // checking if a taxBracket with the given id exists in database
             const existingTaxBracket = await TaxBracketModel.findById(updateData.id);
             if (!lodash.isNull(existingTaxBracket)) {
@@ -204,16 +210,17 @@ export const updateTaxBracket = async (
  */
 export const deleteTaxBracket = async (
     taxBracketData: pointOfSaleTypes.taxBracketRequestTypes.IDeleteTaxBracket,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.taxBracketResponseTypes.IDeleteTaxBracket> => {
     try {
-        // getting instance of database modal
-        const TaxBracketModel = getTaxBracketModel(global.currentDb);
         // validating the request data
         const { error } = deleteTaxBracketValidationSchema.validate(
             taxBracketData,
             joiSchemaOptions,
         );
         if (!error) {
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const TaxBracketModel = getTaxBracketModel(tenantDb);
             // checking if the taxBracket to delete exists in database
             const existingTaxBracket = await TaxBracketModel.findById(taxBracketData.id);
             if (!lodash.isNull(existingTaxBracket)) {

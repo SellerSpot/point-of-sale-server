@@ -21,7 +21,7 @@ export const createProductValidationSchema = Joi.object({
     sellingPrice: Joi.number(),
     stockInformation: Joi.object({
         availableStock: Joi.number().required(),
-        stockUnit: Joi.number().required(),
+        stockUnit: Joi.string().required(),
     }),
     profitPercent: Joi.number(),
     taxBracket: Joi.array().items(Joi.string()),
@@ -40,4 +40,11 @@ export const updateProductValidationSchema = Joi.object({
  */
 export const deleteProductValidationSchema = Joi.object({
     id: commonJoiSchemas.MONGODBID.required(),
+});
+
+/**
+ * Validation for search for a product in database
+ */
+export const searchProductValidationSchema = Joi.object({
+    query: Joi.string().required(),
 });

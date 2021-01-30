@@ -1,33 +1,62 @@
-import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
-import { stockUnitController } from 'controller/controller';
+import { getToken } from 'controller/authorization/authorization';
+import { authorizationController, stockUnitController } from 'controller/controller';
 import { Router } from 'express';
 import { isUndefined } from 'lodash';
+import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 
 const stockUnitRouter: Router = Router();
 
 // get all stockUnits
-stockUnitRouter.get('/', async (_, res) => {
-    let response: pointOfSaleTypes.stockUnitResponseTypes.IGetStockUnits;
-    try {
-        response = await stockUnitController.getStockUnits();
-    } catch (err) {
-        // used to handle unexpected and uncaught errors
-        response = isUndefined(err.status)
-            ? {
-                  status: false,
-                  statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-                  error: err.message,
-              }
-            : err;
-    } finally {
-        res.send(response);
-    }
-});
+stockUnitRouter.post(
+    `/${pointOfSaleTypes.ROUTES.STOCKUNIT_GET_ALL_STOCKUNITS}`,
+    async (req, res) => {
+        let response: pointOfSaleTypes.stockUnitResponseTypes.IGetStockUnits;
+        try {
+            // use verification token like this
+            const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+            if (tokenPayload.status) {
+                response = await stockUnitController.getStockUnits(tokenPayload.data._id);
+            } else {
+                throw {
+                    status: false,
+                    statusCode: STATUS_CODES.UNAUTHORIZED,
+                    error: 'Please verify authentication parameters',
+                };
+            }
+        } catch (err) {
+            // used to handle unexpected and uncaught errors
+            response = isUndefined(err.status)
+                ? {
+                      status: false,
+                      statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+                      error: err.message,
+                  }
+                : err;
+        } finally {
+            res.send(response);
+        }
+    },
+);
 // get single stockUnit
-stockUnitRouter.get('/:id', async (req, res) => {
+stockUnitRouter.post(`/${pointOfSaleTypes.ROUTES.STOCKUNIT_GET_STOCKUNIT}`, async (req, res) => {
     let response: pointOfSaleTypes.stockUnitResponseTypes.IGetStockUnit;
     try {
-        response = await stockUnitController.getSingleStockUnit({ id: req.params['id'] });
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+        if (tokenPayload.status) {
+            response = await stockUnitController.getSingleStockUnit(
+                req.body,
+                tokenPayload.data._id,
+            );
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(err.status)
@@ -42,10 +71,21 @@ stockUnitRouter.get('/:id', async (req, res) => {
     }
 });
 // to create a new stockUnit
-stockUnitRouter.post('/', async (req, res) => {
+stockUnitRouter.post(`/${pointOfSaleTypes.ROUTES.STOCKUNIT_CREATE_STOCKUNIT}`, async (req, res) => {
     let response: pointOfSaleTypes.stockUnitResponseTypes.ICreateStockUnit;
     try {
-        response = await stockUnitController.createStockUnit(req.body);
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+        if (tokenPayload.status) {
+            response = await stockUnitController.createStockUnit(req.body, tokenPayload.data._id);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
     } catch (err) {
         console.log(err);
 
@@ -62,10 +102,21 @@ stockUnitRouter.post('/', async (req, res) => {
     }
 });
 // to update an existing stockUnit
-stockUnitRouter.put('/', async (req, res) => {
+stockUnitRouter.post(`/${pointOfSaleTypes.ROUTES.STOCKUNIT_UPDATE_STOCKUNIT}`, async (req, res) => {
     let response: pointOfSaleTypes.stockUnitResponseTypes.IUpdateStockUnit;
     try {
-        response = await stockUnitController.updateStockUnit(req.body);
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+        if (tokenPayload.status) {
+            response = await stockUnitController.updateStockUnit(req.body, tokenPayload.data._id);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(err.status)
@@ -80,10 +131,21 @@ stockUnitRouter.put('/', async (req, res) => {
     }
 });
 // to delete an existing stockUnit
-stockUnitRouter.delete('/:id', async (req, res) => {
+stockUnitRouter.post(`/${pointOfSaleTypes.ROUTES.STOCKUNIT_DELETE_STOCKUNIT}`, async (req, res) => {
     let response: pointOfSaleTypes.stockUnitResponseTypes.IDeleteStockUnit;
     try {
-        response = await stockUnitController.deleteStockUnit({ id: req.params['id'] });
+        // use verification token like this
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+
+        if (tokenPayload.status) {
+            response = await stockUnitController.deleteStockUnit(req.body, tokenPayload.data._id);
+        } else {
+            throw {
+                status: false,
+                statusCode: STATUS_CODES.UNAUTHORIZED,
+                error: 'Please verify authentication parameters',
+            };
+        }
     } catch (err) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(err.status)

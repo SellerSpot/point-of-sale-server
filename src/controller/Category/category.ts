@@ -1,7 +1,7 @@
-import { pointOfSaleTypes, STATUS_CODES } from '@sellerspot/universal-types';
 import lodash from 'lodash';
 import { joiSchemaOptions } from 'utilities';
 import { getCategoryModel } from 'utilities/modelService';
+import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 import {
     createCategoryValidationSchema,
     deleteCategoryValidationSchema,
@@ -12,9 +12,12 @@ import {
 /**
  * Used to get all categorys from database
  */
-export const getCategories = async (): Promise<pointOfSaleTypes.categoryResponseTypes.IGetCategories> => {
+export const getCategories = async (
+    tenantId: string,
+): Promise<pointOfSaleTypes.categoryResponseTypes.IGetAllCategories> => {
     try {
-        const CategoryModel = getCategoryModel(global.currentDb);
+        const tenantDb = global.currentDb.useDb(tenantId);
+        const CategoryModel = getCategoryModel(tenantDb);
         return Promise.resolve({
             status: true,
             statusCode: STATUS_CODES.OK,
@@ -34,16 +37,17 @@ export const getCategories = async (): Promise<pointOfSaleTypes.categoryResponse
  */
 export const getSingleCategory = async (
     categoryData: pointOfSaleTypes.categoryRequestTypes.IGetSingleCategory,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.categoryResponseTypes.IGetCategory> => {
     try {
-        // getting instance of database modal
-        const CategoryModel = getCategoryModel(global.currentDb);
         // validating input data
         const { error } = getSingleCategoryValidationSchema.validate(
             categoryData,
             joiSchemaOptions,
         );
         if (!error) {
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const CategoryModel = getCategoryModel(tenantDb);
             const requestedData = await CategoryModel.findById(categoryData.id);
             if (!lodash.isNull(requestedData)) {
                 return Promise.resolve({
@@ -76,13 +80,14 @@ export const getSingleCategory = async (
  */
 export const createCategory = async (
     categoryData: pointOfSaleTypes.categoryRequestTypes.ICreateCategory,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.categoryResponseTypes.ICreateCategory> => {
     try {
         // validating input data
         const { error } = createCategoryValidationSchema.validate(categoryData, joiSchemaOptions);
         if (!error) {
-            // getting instance of database modal
-            const CategoryModel = getCategoryModel(global.currentDb);
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const CategoryModel = getCategoryModel(tenantDb);
             const categoryToAdd: pointOfSaleTypes.categoryRequestTypes.ICreateCategory[] = await CategoryModel.find(
                 { name: categoryData.name },
             );
@@ -128,13 +133,14 @@ export const createCategory = async (
  */
 export const updateCategory = async (
     updateData: pointOfSaleTypes.categoryRequestTypes.IUpdateCategory,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.categoryResponseTypes.IUpdateCategory> => {
     try {
-        // getting instance of database modal
-        const CategoryModel = getCategoryModel(global.currentDb);
         // validating request data
         const { error } = updateCategoryValidationSchema.validate(updateData, joiSchemaOptions);
         if (!error) {
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const CategoryModel = getCategoryModel(tenantDb);
             // checking if a category with the given id exists in database
             const existingCategory = await CategoryModel.findById(updateData.id);
             if (!lodash.isNull(existingCategory)) {
@@ -201,13 +207,14 @@ export const updateCategory = async (
  */
 export const deleteCategory = async (
     categoryData: pointOfSaleTypes.categoryRequestTypes.IDeleteCategory,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.categoryResponseTypes.IDeleteCategory> => {
     try {
-        // getting instance of database modal
-        const CategoryModel = getCategoryModel(global.currentDb);
         // validating the request data
         const { error } = deleteCategoryValidationSchema.validate(categoryData, joiSchemaOptions);
         if (!error) {
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const CategoryModel = getCategoryModel(tenantDb);
             // checking if the category to delete exists in database
             const existingCategory = await CategoryModel.findById(categoryData.id);
             if (!lodash.isNull(existingCategory)) {

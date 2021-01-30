@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-type TLoggerTypes = 'common' | 'error' | 'warning' | 'express' | 'socketio' | 'mongoose';
+type TLoggerTypes = 'common' | 'error' | 'warning' | 'express' | 'socketio' | 'mongoose' | 'debug';
 
 const loggerBase = (message: string): void => {
     console.log(message);
@@ -39,7 +39,13 @@ export const logger: { [k in TLoggerTypes]: (...messages: unknown[]) => void } =
         ),
     warning: (...messages: unknown[]) =>
         loggerBase(
-            `${chalk.bgYellow.black.bold(` warning:`)} ${chalk.white(
+            `${chalk.bgYellow.black.bold(`warning:`)} ${chalk.white(
+                messages.map((message) => JSON.stringify(message)).join(' '),
+            )}`,
+        ),
+    debug: (...messages: unknown[]) =>
+        loggerBase(
+            `${chalk.bgBlue.white.bold(`debug:`)} ${chalk.white(
                 messages.map((message) => JSON.stringify(message)).join(' '),
             )}`,
         ),

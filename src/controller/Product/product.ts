@@ -1,30 +1,43 @@
-import { pointOfSaleTypes, STATUS_CODES } from '@sellerspot/universal-types';
-import lodash from 'lodash';
+import lodash, { isNull } from 'lodash';
 import { joiSchemaOptions } from 'utilities';
 import { getProductModel } from 'utilities/modelService';
+import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 import {
     createProductValidationSchema,
     deleteProductValidationSchema,
     getSingleProductValidationSchema,
+    searchProductValidationSchema,
     updateProductValidationSchema,
 } from './product.validation';
 
 /**
  * Used to get all products from database
  */
-export const getProducts = async (): Promise<pointOfSaleTypes.productResponseTypes.IGetProducts> => {
+export const getProducts = async (
+    tenantId: string,
+): Promise<pointOfSaleTypes.productResponseTypes.IGetProducts> => {
     try {
-        const ProductModel = getProductModel(global.currentDb);
+        const tenantDb = global.currentDb.useDb(tenantId);
+        const ProductModel = getProductModel(tenantDb);
         return Promise.resolve({
             status: true,
             statusCode: STATUS_CODES.OK,
-            data: await ProductModel.find(),
+            data: await ProductModel.find()
+                .populate('brand')
+                .populate('category')
+                .populate({
+                    path: 'stockInformation',
+                    populate: {
+                        path: 'stockUnit',
+                    },
+                })
+                .populate('taxBracket'),
         });
-    } catch (err) {
+    } catch (error) {
         return Promise.reject({
             status: false,
             statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
-            error: err.message,
+            error: error.message,
         });
     }
 };
@@ -34,14 +47,25 @@ export const getProducts = async (): Promise<pointOfSaleTypes.productResponseTyp
  */
 export const getSingleProduct = async (
     productData: pointOfSaleTypes.productRequestTypes.IGetSingleProduct,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.productResponseTypes.IGetProduct> => {
     try {
         // getting instance of database modal
-        const ProductModel = getProductModel(global.currentDb);
+        const tenantDb = global.currentDb.useDb(tenantId);
+        const ProductModel = getProductModel(tenantDb);
         // validating input data
         const { error } = getSingleProductValidationSchema.validate(productData, joiSchemaOptions);
         if (!error) {
-            const requestedData = await ProductModel.findById(productData.id);
+            const requestedData = await ProductModel.findById(productData.id)
+                .populate('brand')
+                .populate('category')
+                .populate({
+                    path: 'stockInformation',
+                    populate: {
+                        path: 'stockUnit',
+                    },
+                })
+                .populate('taxBracket');
             if (!lodash.isNull(requestedData)) {
                 return Promise.resolve({
                     status: true,
@@ -62,8 +86,8 @@ export const getSingleProduct = async (
                 error: 'Please verify request parameters',
             };
         }
-    } catch (err) {
-        return Promise.reject(err);
+    } catch (error) {
+        return Promise.reject(error);
     }
 };
 
@@ -73,13 +97,15 @@ export const getSingleProduct = async (
  */
 export const createProduct = async (
     productData: pointOfSaleTypes.productRequestTypes.ICreateProduct,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.productResponseTypes.ICreateProduct> => {
     try {
         // validating input data
         const { error } = createProductValidationSchema.validate(productData, joiSchemaOptions);
         if (!error) {
             // getting instance of database modal
-            const ProductModel = getProductModel(global.currentDb);
+            const tenantDb = global.currentDb.useDb(tenantId);
+            const ProductModel = getProductModel(tenantDb);
             const productToAdd: pointOfSaleTypes.productRequestTypes.ICreateProduct[] = await ProductModel.find(
                 { name: productData.name },
             );
@@ -115,8 +141,8 @@ export const createProduct = async (
                 }),
             };
         }
-    } catch (err) {
-        return Promise.reject(err);
+    } catch (error) {
+        return Promise.reject(error);
     }
 };
 
@@ -125,10 +151,12 @@ export const createProduct = async (
  */
 export const updateProduct = async (
     updateData: pointOfSaleTypes.productRequestTypes.IUpdateProduct,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.productResponseTypes.IUpdateProduct> => {
     try {
         // getting instance of database modal
-        const ProductModel = getProductModel(global.currentDb);
+        const tenantDb = global.currentDb.useDb(tenantId);
+        const ProductModel = getProductModel(tenantDb);
         // validating request data
         const { error } = updateProductValidationSchema.validate(updateData, joiSchemaOptions);
         if (!error) {
@@ -188,8 +216,8 @@ export const updateProduct = async (
                 }),
             };
         }
-    } catch (err) {
-        return Promise.reject(err);
+    } catch (error) {
+        return Promise.reject(error);
     }
 };
 
@@ -198,10 +226,12 @@ export const updateProduct = async (
  */
 export const deleteProduct = async (
     productData: pointOfSaleTypes.productRequestTypes.IDeleteProduct,
+    tenantId: string,
 ): Promise<pointOfSaleTypes.productResponseTypes.IDeleteProduct> => {
     try {
         // getting instance of database modal
-        const ProductModel = getProductModel(global.currentDb);
+        const tenantDb = global.currentDb.useDb(tenantId);
+        const ProductModel = getProductModel(tenantDb);
         // validating the request data
         const { error } = deleteProductValidationSchema.validate(productData, joiSchemaOptions);
         if (!error) {
@@ -227,7 +257,80 @@ export const deleteProduct = async (
                 error: 'Please verify request parameters',
             };
         }
-    } catch (err) {
-        return Promise.reject(err);
+    } catch (error) {
+        return Promise.reject(error);
     }
+};
+
+/**
+ * Used to search for products with query string
+ */
+export const searchProducts = async (
+    data: pointOfSaleTypes.productRequestTypes.ISearchProduct,
+    tenantId: string,
+): Promise<pointOfSaleTypes.productResponseTypes.ISearchProduct> => {
+    try {
+        // getting instance of database modal
+        const tenantDb = global.currentDb.useDb(tenantId);
+        const ProductModel = getProductModel(tenantDb);
+        // validating the request data
+        const { error } = searchProductValidationSchema.validate(data, joiSchemaOptions);
+        if (!error) {
+            // searching for the query matching the barcode
+            let existingProduct = await ProductModel.find({
+                gtinNumber: data.query,
+            })
+                .populate('brand')
+                .populate('category')
+                .populate({
+                    path: 'stockInformation',
+                    populate: {
+                        path: 'stockUnit',
+                    },
+                })
+                .populate('taxBracket');
+            if (existingProduct.length > 0) {
+                return Promise.resolve({
+                    status: true,
+                    statusCode: STATUS_CODES.OK,
+                    data: {
+                        queryType: 'barcode',
+                        results: existingProduct,
+                    },
+                });
+            } else {
+                existingProduct = await ProductModel.find({
+                    name: new RegExp('^' + data.query, 'gi'),
+                })
+                    .populate('brand')
+                    .populate('category')
+                    .populate({
+                        path: 'stockInformation',
+                        populate: {
+                            path: 'stockUnit',
+                        },
+                    })
+                    .populate('taxBracket');
+                if (existingProduct.length > 0) {
+                    return Promise.resolve({
+                        status: true,
+                        statusCode: STATUS_CODES.OK,
+                        data: {
+                            queryType: 'name',
+                            results: existingProduct,
+                        },
+                    });
+                } else {
+                    throw {
+                        status: false,
+                        statusCode: STATUS_CODES.NO_CONTENT,
+                        data: null,
+                    };
+                }
+            }
+        }
+    } catch (error) {
+        return Promise.reject(error);
+    }
+    return null;
 };
