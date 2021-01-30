@@ -12,7 +12,6 @@ brandRouter.post(`/${pointOfSaleTypes.ROUTES.BRAND_GET_ALL_BRANDS}`, async (req,
     try {
         // use verification token like this
         const tokenPayload = await authorizationController.verifyToken(getToken(req));
-
         if (tokenPayload.status) {
             response = await brandController.getBrands(tokenPayload.data._id);
         } else {

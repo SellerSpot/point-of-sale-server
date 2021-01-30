@@ -22,7 +22,16 @@ export const getProducts = async (
         return Promise.resolve({
             status: true,
             statusCode: STATUS_CODES.OK,
-            data: await ProductModel.find(),
+            data: await ProductModel.find()
+                .populate('brand')
+                .populate('category')
+                .populate({
+                    path: 'stockInformation',
+                    populate: {
+                        path: 'stockUnit',
+                    },
+                })
+                .populate('taxBracket'),
         });
     } catch (error) {
         return Promise.reject({
@@ -47,7 +56,16 @@ export const getSingleProduct = async (
         // validating input data
         const { error } = getSingleProductValidationSchema.validate(productData, joiSchemaOptions);
         if (!error) {
-            const requestedData = await ProductModel.findById(productData.id);
+            const requestedData = await ProductModel.findById(productData.id)
+                .populate('brand')
+                .populate('category')
+                .populate({
+                    path: 'stockInformation',
+                    populate: {
+                        path: 'stockUnit',
+                    },
+                })
+                .populate('taxBracket');
             if (!lodash.isNull(requestedData)) {
                 return Promise.resolve({
                     status: true,
@@ -261,7 +279,16 @@ export const searchProducts = async (
             // searching for the query matching the barcode
             let existingProduct = await ProductModel.find({
                 gtinNumber: data.query,
-            });
+            })
+                .populate('brand')
+                .populate('category')
+                .populate({
+                    path: 'stockInformation',
+                    populate: {
+                        path: 'stockUnit',
+                    },
+                })
+                .populate('taxBracket');
             if (existingProduct.length > 0) {
                 return Promise.resolve({
                     status: true,
@@ -274,7 +301,16 @@ export const searchProducts = async (
             } else {
                 existingProduct = await ProductModel.find({
                     name: new RegExp('^' + data.query, 'gi'),
-                });
+                })
+                    .populate('brand')
+                    .populate('category')
+                    .populate({
+                        path: 'stockInformation',
+                        populate: {
+                            path: 'stockUnit',
+                        },
+                    })
+                    .populate('taxBracket');
                 if (existingProduct.length > 0) {
                     return Promise.resolve({
                         status: true,
