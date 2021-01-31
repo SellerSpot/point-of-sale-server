@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/SellerSpot/point-of-sale-server#readme",
   "devDependencies": {
-    "@sellerspot/universal-types": "^1.2.1",
+    "@sellerspot/universal-types": "^1.4.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/express": "^4.17.9",
     "@types/jsonwebtoken": "^8.5.0",
@@ -54,7 +54,7 @@
     "webpack-shell-plugin-next": "^2.0.8"
   },
   "dependencies": {
-    "@sellerspot/database-models": "^1.4.1",
+    "@sellerspot/database-models": "^1.6.0",
     "bcryptjs": "^2.4.3",
     "chalk": "^4.1.0",
     "cors": "^2.8.5",
