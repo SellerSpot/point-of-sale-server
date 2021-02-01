@@ -19,10 +19,9 @@ export const getProducts = async (
     try {
         const tenantDb = global.currentDb.useDb(tenantId);
         const ProductModel = getProductModel(tenantDb);
-        return Promise.resolve({
-            status: true,
-            statusCode: STATUS_CODES.OK,
-            data: await ProductModel.find()
+        const data = <pointOfSaleTypes.productResponseTypes.IGetProducts['data']>(
+            // change types on tenantDb model (database-models), populated values should have optional types eg:- catergory: string | ICategory (remove comment after fixing that)
+            (<unknown>await ProductModel.find()
                 .populate('brand')
                 .populate('category')
                 .populate({
@@ -31,7 +30,12 @@ export const getProducts = async (
                         path: 'stockUnit',
                     },
                 })
-                .populate('taxBracket'),
+                .populate('taxBracket'))
+        );
+        return Promise.resolve({
+            status: true,
+            statusCode: STATUS_CODES.OK,
+            data,
         });
     } catch (error) {
         return Promise.reject({
@@ -56,16 +60,18 @@ export const getSingleProduct = async (
         // validating input data
         const { error } = getSingleProductValidationSchema.validate(productData, joiSchemaOptions);
         if (!error) {
-            const requestedData = await ProductModel.findById(productData.id)
-                .populate('brand')
-                .populate('category')
-                .populate({
-                    path: 'stockInformation',
-                    populate: {
-                        path: 'stockUnit',
-                    },
-                })
-                .populate('taxBracket');
+            const requestedData = <pointOfSaleTypes.productResponseTypes.IGetProduct['data']>(
+                (<unknown>await ProductModel.findById(productData.id)
+                    .populate('brand')
+                    .populate('category')
+                    .populate({
+                        path: 'stockInformation',
+                        populate: {
+                            path: 'stockUnit',
+                        },
+                    })
+                    .populate('taxBracket'))
+            );
             if (!lodash.isNull(requestedData)) {
                 return Promise.resolve({
                     status: true,
@@ -106,15 +112,15 @@ export const createProduct = async (
             // getting instance of database modal
             const tenantDb = global.currentDb.useDb(tenantId);
             const ProductModel = getProductModel(tenantDb);
-            const productToAdd: pointOfSaleTypes.productRequestTypes.ICreateProduct[] = await ProductModel.find(
-                { name: productData.name },
-            );
-
+            const productToAdd = await ProductModel.find({ name: productData.name });
+            const data = <pointOfSaleTypes.productResponseTypes.ICreateProduct['data']>(
+                (<unknown>await ProductModel.create(<never>productData))
+            ); // fix this @RohitRajP
             if (productToAdd.length === 0) {
                 return Promise.resolve({
                     status: true,
                     statusCode: STATUS_CODES.CREATED,
-                    data: await ProductModel.create(productData),
+                    data,
                 });
             } else {
                 throw {
@@ -167,17 +173,20 @@ export const updateProduct = async (
                 const existingProductName = await ProductModel.findOne({
                     name: updateData.productData.name,
                 });
+                const data = <pointOfSaleTypes.productResponseTypes.IUpdateProduct['data']>(
+                    (<unknown>await ProductModel.findByIdAndUpdate(
+                        updateData.id,
+                        <unknown>updateData.productData, // fix this @RohitRajP
+                        {
+                            new: true,
+                        },
+                    ))
+                );
                 if (lodash.isNull(existingProductName)) {
                     return Promise.resolve({
                         status: true,
                         statusCode: STATUS_CODES.OK,
-                        data: await ProductModel.findByIdAndUpdate(
-                            updateData.id,
-                            updateData.productData,
-                            {
-                                new: true,
-                            },
-                        ),
+                        data,
                     });
                 } else {
                     throw {
@@ -238,10 +247,13 @@ export const deleteProduct = async (
             // checking if the product to delete exists in database
             const existingProduct = await ProductModel.findById(productData.id);
             if (!lodash.isNull(existingProduct)) {
+                const data = <
+                    pointOfSaleTypes.productResponseTypes.IDeleteProduct['data'] // fix @RohitRajP
+                >(<unknown>await ProductModel.findByIdAndDelete(productData.id));
                 return Promise.resolve({
                     status: true,
                     statusCode: STATUS_CODES.OK,
-                    data: await ProductModel.findByIdAndDelete(productData.id),
+                    data,
                 });
             } else {
                 throw {
@@ -290,13 +302,16 @@ export const searchProducts = async (
                 })
                 .populate('taxBracket');
             if (existingProduct.length > 0) {
+                const data = <pointOfSaleTypes.productResponseTypes.ISearchProduct['data']>(<
+                    unknown
+                >{
+                    queryType: 'barcode',
+                    results: existingProduct,
+                });
                 return Promise.resolve({
                     status: true,
                     statusCode: STATUS_CODES.OK,
-                    data: {
-                        queryType: 'barcode',
-                        results: existingProduct,
-                    },
+                    data,
                 });
             } else {
                 existingProduct = await ProductModel.find({
@@ -312,13 +327,17 @@ export const searchProducts = async (
                     })
                     .populate('taxBracket');
                 if (existingProduct.length > 0) {
+                    const data = <pointOfSaleTypes.productResponseTypes.ISearchProduct['data']>(<
+                        // fix @RohitRajP
+                        unknown
+                    >{
+                        queryType: 'name',
+                        results: existingProduct,
+                    });
                     return Promise.resolve({
                         status: true,
                         statusCode: STATUS_CODES.OK,
-                        data: {
-                            queryType: 'name',
-                            results: existingProduct,
-                        },
+                        data,
                     });
                 } else {
                     throw {
