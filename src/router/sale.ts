@@ -8,7 +8,7 @@ const saleRouter: Router = Router();
 
 // get all sales
 saleRouter.post(`/${pointOfSaleTypes.ROUTES.SALE_GET_ALL_SALES}`, async (req, res) => {
-    let response: pointOfSaleTypes.saleResponseTypes.IGetSales;
+    let response: pointOfSaleTypes.saleResponseTypes.IGetAllSales;
     try {
         // use verification token like this
         const tokenPayload = await authorizationController.verifyToken(getToken(req));

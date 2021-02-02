@@ -15,7 +15,7 @@ import {
  */
 export const getProducts = async (
     tenantId: string,
-): Promise<pointOfSaleTypes.productResponseTypes.IGetProducts> => {
+): Promise<pointOfSaleTypes.productResponseTypes.IGetAllProducts> => {
     try {
         const tenantDb = global.currentDb.useDb(tenantId);
         const ProductModel = getProductModel(tenantDb);

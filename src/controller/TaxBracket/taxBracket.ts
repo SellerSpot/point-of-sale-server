@@ -14,7 +14,7 @@ import {
  */
 export const getTaxBrackets = async (
     tenantId: string,
-): Promise<pointOfSaleTypes.taxBracketResponseTypes.IGetTaxBrackets> => {
+): Promise<pointOfSaleTypes.taxBracketResponseTypes.IGetAllTaxBrackets> => {
     try {
         const tenantDb = global.currentDb.useDb(tenantId);
         const TaxBracketModel = getTaxBracketModel(tenantDb);

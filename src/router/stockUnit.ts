@@ -10,7 +10,7 @@ const stockUnitRouter: Router = Router();
 stockUnitRouter.post(
     `/${pointOfSaleTypes.ROUTES.STOCKUNIT_GET_ALL_STOCKUNITS}`,
     async (req, res) => {
-        let response: pointOfSaleTypes.stockUnitResponseTypes.IGetStockUnits;
+        let response: pointOfSaleTypes.stockUnitResponseTypes.IGetAllStockUnits;
         try {
             // use verification token like this
             const tokenPayload = await authorizationController.verifyToken(getToken(req));
