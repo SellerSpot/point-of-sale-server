@@ -19,7 +19,7 @@ export const getProducts = async (
     try {
         const tenantDb = global.currentDb.useDb(tenantId);
         const ProductModel = getProductModel(tenantDb);
-        const data = <pointOfSaleTypes.productResponseTypes.IGetProducts['data']>(
+        const data = <pointOfSaleTypes.productResponseTypes.IGetAllProducts['data']>(
             // change types on tenantDb model (database-models), populated values should have optional types eg:- catergory: string | ICategory (remove comment after fixing that)
             (<unknown>await ProductModel.find()
                 .populate('brand')
