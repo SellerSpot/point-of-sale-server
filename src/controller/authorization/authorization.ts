@@ -11,7 +11,6 @@ import {
     authorizeTenantValidationSchema,
     verifyTokenValidationSchema,
 } from './authorization.validation';
-import { logger } from 'utilities/logger';
 
 /**
  * authorize tenant - by giving back token including the tenant verification payload (except auth payload - that will be sent using authenticateUser controller)
@@ -56,6 +55,13 @@ export const authorizeTenant = async (
                 const installedTenant = await InstalledTenantModel.findOne({
                     tenant: tenantSubDomain.tenant,
                 }).populate('tenant', null, TenantModel);
+
+                if (!installedTenant)
+                    throw <pointOfSaleTypes.authResponseTypes.IAuthorizeTenantResponse>{
+                        status: false,
+                        statusCode: STATUS_CODES.NOT_FOUND,
+                        error: 'Tenant not found in installed app.',
+                    };
 
                 const tenantDetails = <baseDbModels.TenantModel.ITenant>installedTenant.tenant;
                 tokenPayload._id = tenantDetails._id;
