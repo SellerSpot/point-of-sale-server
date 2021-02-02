@@ -12,11 +12,11 @@ export const configureDB = (): void => {
         useCreateIndex: true,
     });
     global.dbConnection.on('error', (error) =>
-        logger.mongoose(`Error Connecting to ${DB_NAMES.BASE_DB}, ${error.message}`),
+        logger.mongoose(`Error Connecting to ${DB_NAMES.POINT_OF_SALE_DB}, ${error.message}`),
     );
     global.dbConnection.once('open', () => {
-        logger.mongoose(`database: Connected to ${DB_NAMES.BASE_DB}`);
+        logger.mongoose(`database: Connected to ${DB_NAMES.POINT_OF_SALE_DB}`);
     });
-    global.currentDb = global.dbConnection.useDb(DB_NAMES.BASE_DB);
+    global.currentDb = global.dbConnection.useDb(DB_NAMES.POINT_OF_SALE_DB);
     if (models.handshake === true) logger.mongoose(`Loaded All Monogoose Models`);
 };

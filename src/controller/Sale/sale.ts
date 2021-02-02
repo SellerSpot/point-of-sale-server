@@ -18,10 +18,11 @@ export const getSales = async (
     try {
         const tenantDb = global.currentDb.useDb(tenantId);
         const SaleModel = getSaleModel(tenantDb);
+        const data = <pointOfSaleTypes.saleResponseTypes.IGetSales['data']>await SaleModel.find();
         return Promise.resolve({
             status: true,
             statusCode: STATUS_CODES.OK,
-            data: await SaleModel.find(),
+            data,
         });
     } catch (err) {
         return Promise.reject({
@@ -45,7 +46,9 @@ export const getSingleSale = async (
         if (!error) {
             const tenantDb = global.currentDb.useDb(tenantId);
             const SaleModel = getSaleModel(tenantDb);
-            const requestedData = await SaleModel.findById(saleData.id);
+            const requestedData = <pointOfSaleTypes.saleResponseTypes.IGetSale['data']>(
+                await SaleModel.findById(saleData.id)
+            );
             if (!lodash.isNull(requestedData)) {
                 return Promise.resolve({
                     status: true,
@@ -84,10 +87,13 @@ export const createSale = async (
         if (!error) {
             const tenantDb = global.currentDb.useDb(tenantId);
             const SaleModel = getSaleModel(tenantDb);
+            const data = <pointOfSaleTypes.saleResponseTypes.ICreateSale['data']>(
+                await SaleModel.create(saleData)
+            );
             return Promise.resolve({
                 status: true,
                 statusCode: STATUS_CODES.CREATED,
-                data: await SaleModel.create(saleData),
+                data,
             });
         } else {
             throw {
@@ -123,12 +129,15 @@ export const updateSale = async (
             // checking if a sale with the given id exists in database
             const existingSale = await SaleModel.findById(updateData.id);
             if (!lodash.isNull(existingSale)) {
+                const data = <pointOfSaleTypes.saleResponseTypes.IUpdateSale['data']>(
+                    await SaleModel.findByIdAndUpdate(updateData.id, updateData.saleData, {
+                        new: true,
+                    })
+                );
                 return Promise.resolve({
                     status: true,
                     statusCode: STATUS_CODES.OK,
-                    data: await SaleModel.findByIdAndUpdate(updateData.id, updateData.saleData, {
-                        new: true,
-                    }),
+                    data,
                 });
             } else {
                 throw {
@@ -176,11 +185,14 @@ export const deleteSale = async (
 
             // checking if the sale to delete exists in database
             const existingSale = await SaleModel.findById(saleData.id);
+            const data = <pointOfSaleTypes.saleResponseTypes.IDeleteSale['data']>(
+                await SaleModel.findByIdAndDelete(saleData.id)
+            );
             if (!lodash.isNull(existingSale)) {
                 return Promise.resolve({
                     status: true,
                     statusCode: STATUS_CODES.OK,
-                    data: await SaleModel.findByIdAndDelete(saleData.id),
+                    data,
                 });
             } else {
                 throw {

@@ -1,13 +1,12 @@
 {
     "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "npm_link_universal-types",
+    "tasks": [{
+            "label": "npm-link-universal-types",
             "type": "shell",
-            "command": "[ -d '../universal-types/dist' ] && [ -d './node_modules/@sellerspot/universal-types' ] && npm link ../universal-types/",
+            "command": "npm link ../universal-types/",
             "group": "none",
             "presentation": {
-                "group": "npm_link",
+                "group": "npm-link",
                 "focus": true,
                 "reveal": "always",
                 "panel": "new",
@@ -19,11 +18,11 @@
             "problemMatcher": []
         },
         {
-            "label": "npm_link_database-models",
+            "label": "npm-link-database-models",
             "type": "shell",
-            "command": "[ -d '../database-models/dist' ] && [ -d './node_modules/@sellerspot/database-models' ] && npm link ../database-models/",
+            "command": "npm link ../database-models/",
             "presentation": {
-                "group": "npm_link",
+                "group": "npm-link",
                 "focus": true,
                 "reveal": "always",
                 "panel": "new",
@@ -35,18 +34,36 @@
             "problemMatcher": []
         },
         {
-            "label": "npm_link_all",
+            "label": "npm-link-all",
             "type": "shell",
             "command": "",
             "group": "none",
             "presentation": {
                 "focus": true,
-                "group": "npm_link",
+                "group": "npm-link",
                 "reveal": "silent",
                 "panel": "new",
                 "showReuseMessage": false
             },
-            "dependsOn": ["npm_link_universal-types", "npm_link_database-models"],
+            "dependsOn": ["npm-link-universal-types", "npm-link-database-models"],
+            "runOptions": {
+                "runOn": "default"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "open-terminal",
+            "type": "shell",
+            "command": "start ./terminal.bat",
+            "group": "none",
+            "presentation": {
+                "focus": false,
+                "reveal": "never",
+                "panel": "new",
+                "clear": true,
+                "showReuseMessage": false,
+                "revealProblems": "never"
+            },
             "runOptions": {
                 "runOn": "default"
             },
