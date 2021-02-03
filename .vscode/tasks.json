@@ -1,56 +1,6 @@
 {
     "version": "2.0.0",
-    "tasks": [{
-            "label": "npm-link-universal-types",
-            "type": "shell",
-            "command": "npm link ../universal-types/",
-            "group": "none",
-            "presentation": {
-                "group": "npm-link",
-                "focus": true,
-                "reveal": "always",
-                "panel": "new",
-                "showReuseMessage": false
-            },
-            "runOptions": {
-                "runOn": "default"
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "npm-link-database-models",
-            "type": "shell",
-            "command": "npm link ../database-models/",
-            "presentation": {
-                "group": "npm-link",
-                "focus": true,
-                "reveal": "always",
-                "panel": "new",
-                "showReuseMessage": false
-            },
-            "runOptions": {
-                "runOn": "default"
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "npm-link-all",
-            "type": "shell",
-            "command": "",
-            "group": "none",
-            "presentation": {
-                "focus": true,
-                "group": "npm-link",
-                "reveal": "silent",
-                "panel": "new",
-                "showReuseMessage": false
-            },
-            "dependsOn": ["npm-link-universal-types", "npm-link-database-models"],
-            "runOptions": {
-                "runOn": "default"
-            },
-            "problemMatcher": []
-        },
+    "tasks": [
         {
             "label": "open-terminal",
             "type": "shell",
