@@ -1,10 +1,10 @@
 import path from 'path';
-import webpack, { Configuration } from 'webpack';
-import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
-import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
-import WebpackShellPluginNext from 'webpack-shell-plugin-next';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
+import webpack, { Configuration } from 'webpack';
 import nodeExternals from 'webpack-node-externals';
+import WebpackShellPluginNext from 'webpack-shell-plugin-next';
 import { getEnvironmentVariables } from './src/config/dotenv';
 
 const webpackConfiguration = (env: {

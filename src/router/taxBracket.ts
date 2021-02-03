@@ -10,7 +10,7 @@ const taxBracketRouter: Router = Router();
 taxBracketRouter.post(
     `/${pointOfSaleTypes.ROUTES.TAXBRACKET_GET_ALL_TAXBRACKETS}`,
     async (req, res) => {
-        let response: pointOfSaleTypes.taxBracketResponseTypes.IGetTaxBrackets;
+        let response: pointOfSaleTypes.taxBracketResponseTypes.IGetAllTaxBrackets;
         try {
             // use verification token like this
             const tokenPayload = await authorizationController.verifyToken(getToken(req));

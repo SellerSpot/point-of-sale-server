@@ -14,11 +14,13 @@ import {
  */
 export const getSales = async (
     tenantId: string,
-): Promise<pointOfSaleTypes.saleResponseTypes.IGetSales> => {
+): Promise<pointOfSaleTypes.saleResponseTypes.IGetAllSales> => {
     try {
         const tenantDb = global.currentDb.useDb(tenantId);
         const SaleModel = getSaleModel(tenantDb);
-        const data = <pointOfSaleTypes.saleResponseTypes.IGetSales['data']>await SaleModel.find();
+        const data = <pointOfSaleTypes.saleResponseTypes.IGetAllSales['data']>(
+            await SaleModel.find()
+        );
         return Promise.resolve({
             status: true,
             statusCode: STATUS_CODES.OK,

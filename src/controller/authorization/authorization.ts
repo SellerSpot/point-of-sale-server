@@ -185,7 +185,11 @@ export const verifyToken = async (
                         CONFIG.APP_SECRET,
                         (err, decoded: pointOfSaleTypes.authResponseTypes.ITokenPayload) => {
                             if (err) {
-                                reject('tokenExpired');
+                                reject({
+                                    status: false,
+                                    statusCode: STATUS_CODES.UNAUTHORIZED,
+                                    error: 'Authentication token expired',
+                                });
                             }
                             const tokenResponse: pointOfSaleTypes.authResponseTypes.IVerifyTokenResponse = {
                                 status: true,
