@@ -15,7 +15,7 @@ export const createProductValidationSchema = Joi.object({
     name: Joi.string().required(),
     category: Joi.string().required(),
     brand: Joi.string().required(),
-    gtinNumber: Joi.string(),
+    gtinNumber: Joi.string().allow(''),
     mrpPrice: Joi.number(),
     landingPrice: Joi.number(),
     sellingPrice: Joi.number(),

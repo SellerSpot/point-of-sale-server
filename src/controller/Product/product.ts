@@ -112,15 +112,30 @@ export const createProduct = async (
             // getting instance of database modal
             const tenantDb = global.currentDb.useDb(tenantId);
             const ProductModel = getProductModel(tenantDb);
-            const productToAdd = await ProductModel.find({ name: productData.name });
-            const data = <pointOfSaleTypes.productResponseTypes.ICreateProduct['data']>(
-                (<unknown>await ProductModel.create(<never>productData))
-            ); // fix this @RohitRajP
-            if (productToAdd.length === 0) {
+            const existingProductInstance = await ProductModel.findOne({ name: productData.name });
+            if (isNull(existingProductInstance)) {
+                // compiling data to push into database
+                const productToAdd: pointOfSaleTypes.productRequestTypes.ICreateProduct = {
+                    brand: productData.brand,
+                    category: productData.category,
+                    name: productData.name,
+                    sellingPrice: productData.sellingPrice,
+                    stockInformation: {
+                        availableStock: productData.stockInformation.availableStock,
+                        stockUnit: productData.stockInformation.stockUnit,
+                    },
+                    taxBracket: productData.taxBracket,
+                    gtinNumber: productData.gtinNumber,
+                    landingPrice: productData.landingPrice,
+                    mrpPrice: productData.mrpPrice,
+                    profitPercent: productData.profitPercent,
+                };
+                // adding product to database
+                const addedProduct = await ProductModel.create(productToAdd);
                 return Promise.resolve({
                     status: true,
                     statusCode: STATUS_CODES.CREATED,
-                    data,
+                    addedProduct,
                 });
             } else {
                 throw {
