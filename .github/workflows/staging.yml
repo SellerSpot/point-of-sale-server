@@ -1,0 +1,40 @@
+name: point-of-sale-server-staging
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - staging
+
+env:
+    DOCKER_REPO_NAME: sellerspot/point-of-sale-server-staging
+    K8S_DEPLOYMENT_NAME: point-of-sale-server-staging
+    K8S_DEPLOYMENT_NAMESPACE: staging
+
+jobs:
+    staging:
+        name: point-of-sale-server-staging
+        if: github.ref == 'refs/heads/staging'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v2
+
+            - name: Make .env file
+              run: echo ${{ secrets.STAGING_ENVIRONMENT_VARIABLES }} | base64 --decode > .env
+
+            - name: Login, Build, Push Latest, Push Snapshot to DockerHub
+              uses: elgohr/Publish-Docker-Github-Action@master
+              with:
+                  name: ${{ env.DOCKER_REPO_NAME }}
+                  username: ${{ secrets.DOCKER_USERNAME }}
+                  password: ${{ secrets.DOCKER_PASSWORD }}
+                  tags: 'latest'
+                  snapshot: true
+
+            - name: k8s Update Deployment
+              uses: actions-hub/kubectl@master
+              env:
+                  KUBE_CONFIG: ${{ secrets.STAGING_KUBE_CONFIG }}
+              with:
+                  args: rollout restart deploy ${{ env.K8S_DEPLOYMENT_NAME }} -n ${{ env.K8S_DEPLOYMENT_NAMESPACE }}
