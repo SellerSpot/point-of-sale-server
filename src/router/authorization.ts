@@ -1,7 +1,7 @@
-import { pointOfSaleTypes, STATUS_CODES } from '@sellerspot/universal-types';
 import { getToken } from 'controller/authorization/authorization';
 import { Router } from 'express';
 import { isUndefined } from 'lodash';
+import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
 import { authorizationController } from '../controller/controller';
 
 const authorizationRouter: Router = Router();
@@ -42,6 +42,26 @@ authorizationRouter.post(`/${pointOfSaleTypes.ROUTES.AUTHENTICATE}`, async (req,
                 error: 'Please verify authentication parameters',
             };
         }
+    } catch (error) {
+        // used to handle unexpected and uncaught errors
+        response = isUndefined(error.status)
+            ? {
+                  status: false,
+                  statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+                  error: error.message,
+              }
+            : error;
+    } finally {
+        res.send(response);
+    }
+});
+
+// authenticate user router
+authorizationRouter.post(`/${pointOfSaleTypes.ROUTES.VERIFY_TOKEN}`, async (req, res) => {
+    let response: pointOfSaleTypes.authResponseTypes.IVerifyTokenResponse;
+    try {
+        const tokenPayload = await authorizationController.verifyToken(getToken(req));
+        response = tokenPayload;
     } catch (error) {
         // used to handle unexpected and uncaught errors
         response = isUndefined(error.status)
