@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "@sellerspot/database-models": "^10.5.0",
-    "@sellerspot/universal-types": "^1.5.1",
+    "@sellerspot/universal-types": "^1.5.2",
     "bcryptjs": "^2.4.3",
     "chalk": "^4.1.0",
     "cors": "^2.8.5",
