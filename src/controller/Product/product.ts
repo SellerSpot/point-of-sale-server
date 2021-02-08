@@ -1,4 +1,4 @@
-import lodash, { isNull } from 'lodash';
+import { isNull } from 'lodash';
 import { joiSchemaOptions } from 'utilities';
 import { getProductModel } from 'utilities/modelService';
 import { STATUS_CODES, pointOfSaleTypes } from '@sellerspot/universal-types';
@@ -72,7 +72,7 @@ export const getSingleProduct = async (
                     })
                     .populate('taxBracket'))
             );
-            if (!lodash.isNull(requestedData)) {
+            if (!isNull(requestedData)) {
                 return Promise.resolve({
                     status: true,
                     statusCode: STATUS_CODES.OK,
@@ -183,21 +183,21 @@ export const updateProduct = async (
         if (!error) {
             // checking if a product with the given id exists in database
             const existingProduct = await ProductModel.findById(updateData.id);
-            if (!lodash.isNull(existingProduct)) {
-                // checking if a product with the same name already exists
+            if (!isNull(existingProduct)) {
+                // checking if a product with the same name already exists other than the current product
                 const existingProductName = await ProductModel.findOne({
                     name: updateData.productData.name,
+                    _id: { $ne: updateData.id },
                 });
-                const data = <pointOfSaleTypes.productResponseTypes.IUpdateProduct['data']>(
-                    (<unknown>await ProductModel.findByIdAndUpdate(
+                if (isNull(existingProductName)) {
+                    const data: pointOfSaleTypes.productResponseTypes.IGetProduct['data'] = await ProductModel.findByIdAndUpdate(
                         updateData.id,
-                        <unknown>updateData.productData, // fix this @RohitRajP
+                        updateData.productData,
                         {
                             new: true,
                         },
-                    ))
-                );
-                if (lodash.isNull(existingProductName)) {
+                    );
+
                     return Promise.resolve({
                         status: true,
                         statusCode: STATUS_CODES.OK,
@@ -261,10 +261,11 @@ export const deleteProduct = async (
         if (!error) {
             // checking if the product to delete exists in database
             const existingProduct = await ProductModel.findById(productData.id);
-            if (!lodash.isNull(existingProduct)) {
-                const data = <
-                    pointOfSaleTypes.productResponseTypes.IDeleteProduct['data'] // fix @RohitRajP
-                >(<unknown>await ProductModel.findByIdAndDelete(productData.id));
+            if (!isNull(existingProduct)) {
+                // product exists, so removing it from the database
+                const data: pointOfSaleTypes.productResponseTypes.IGetProduct['data'] = await ProductModel.findByIdAndDelete(
+                    productData.id,
+                );
                 return Promise.resolve({
                     status: true,
                     statusCode: STATUS_CODES.OK,
