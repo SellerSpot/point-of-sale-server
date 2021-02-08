@@ -1,0 +1,40 @@
+name: point-of-sale-server-production
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - production
+
+env:
+    DOCKER_REPO_NAME: sellerspot/point-of-sale-server-production
+    K8S_DEPLOYMENT_NAME: point-of-sale-server-production
+    K8S_DEPLOYMENT_NAMESPACE: production
+
+jobs:
+    production:
+        name: point-of-sale-server-production
+        if: github.ref == 'refs/heads/production'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v2
+
+            - name: Make .env file
+              run: echo ${{ secrets.PRODUCTION_ENVIRONMENT_VARIABLES }} | base64 --decode > .env
+
+            - name: Login, Build, Push Latest, Push Snapshot to DockerHub
+              uses: elgohr/Publish-Docker-Github-Action@master
+              with:
+                  name: ${{ env.DOCKER_REPO_NAME }}
+                  username: ${{ secrets.DOCKER_USERNAME }}
+                  password: ${{ secrets.DOCKER_PASSWORD }}
+                  tags: 'latest'
+                  snapshot: true
+
+            - name: k8s Update Deployment
+              uses: actions-hub/kubectl@master
+              env:
+                  KUBE_CONFIG: ${{ secrets.PRODUCTION_KUBE_CONFIG }}
+              with:
+                  args: rollout restart deploy ${{ env.K8S_DEPLOYMENT_NAME }} -n ${{ env.K8S_DEPLOYMENT_NAMESPACE }}
