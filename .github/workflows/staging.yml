@@ -24,7 +24,7 @@ jobs:
               run: echo ${{ secrets.STAGING_ENVIRONMENT_VARIABLES }} | base64 --decode > .env
 
             - name: Login, Build, Push Latest, Push Snapshot to DockerHub
-              uses: elgohr/Publish-Docker-Github-Action@master
+              uses: elgohr/Publish-Docker-Github-Action@v5
               with:
                   name: ${{ env.DOCKER_REPO_NAME }}
                   username: ${{ secrets.DOCKER_USERNAME }}
